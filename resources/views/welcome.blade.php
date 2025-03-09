@@ -22,7 +22,9 @@
             class="flex items-center justify-center w-full -mt-6 transition-opacity opacity-100 duration-750 grow lg:max-w-4xl">
             <main class="w-full lg:max-w-4xl">
                 <div class="flex flex-col justify-center text-[13px] leading-[20px] dark:text-[#EDEDEC]">
+
                     <p>trying dev branch </p>
+
                     <h1 class="mb-1 text-3xl font-medium">Absensi Karyawan Qr Code</h1>
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]"> Solusi praktis untuk kehadiran karyawan dengan
                         scan QR Code. Cepat, efisien, dan akurat. </p>
