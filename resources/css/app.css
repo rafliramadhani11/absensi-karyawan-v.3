@@ -6,3 +6,7 @@
 .fi-btn {
     @apply !font-medium;
 }
+
+.fi-input-wrp {
+    @apply dark:focus:!ring-white;
+}
