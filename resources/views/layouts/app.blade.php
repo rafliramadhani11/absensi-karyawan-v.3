@@ -12,15 +12,19 @@
         @include('partials.head')
     </head>
 
-    <body class="h-screen min-h-screen text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100 lg:flex">
-        <div x-data="{ isOpen: false }" @click.outside="isOpen = false">
+    <body class="h-screen min-h-screen antialiased text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 lg:flex">
+
+        <div x-data="{ isOpen: false }" @click.outside="isOpen = false" x-cloak>
             {{-- Sidebar --}}
-            <nav class="fixed inset-y-0 left-0 z-10 h-screen w-72 transform p-4 text-gray-50 transition duration-300 dark:bg-zinc-900 lg:relative lg:translate-x-0 lg:opacity-100 dark:lg:bg-zinc-950"
-                :class="{ '-translate-x-full opacity-0': !isOpen, 'translate-x-0 opacity-100': isOpen }" x-transition>
+            <div class="fixed z-10 px-4 py-2 transition duration-300 transform rounded-lg bottom-2 left-2 top-2 w-72 text-gray-50 ring-1 ring-zinc-950/50 dark:bg-zinc-900 dark:ring-zinc-700 lg:h-screen lg:translate-x-0 lg:opacity-100 lg:ring-0 dark:lg:bg-zinc-950"
+                :class="{ '-translate-x-full opacity-0': !isOpen, 'translate-x-0 opacity-100': isOpen }">
 
                 {{-- Navbar header --}}
                 <div class="flex items-center justify-between py-2">
-                    <span>PT Birdie Indonesia</span>
+                    <div class="flex items-center gap-x-3">
+                        <img src="{{ asset('img/logo-birdie-hexagon.png') }}" alt="logo" class="w-10 h-auto">
+                        <p class="text-sm lg:text-base">PT Birdie Indonesia</p>
+                    </div>
                     <x-filament::icon-button @click="isOpen = false" icon="icon-panel-right-open" size="sm"
                         class="block lg:hidden" />
                 </div>
@@ -45,11 +49,13 @@
                         </li>
                     </ul>
                 </div>
-            </nav>
+
+            </div>
+
 
             {{-- Header --}}
             <header class="block p-3 lg:hidden">
-                <div class="rounded-xl border px-4 py-3 dark:border-zinc-700 dark:bg-zinc-900">
+                <div class="px-4 py-3 border rounded-xl dark:border-zinc-700 dark:bg-zinc-900">
                     <x-filament::icon-button @click="isOpen = !isOpen" icon="icon-panel-left-open" size="sm" />
                 </div>
             </header>
@@ -57,7 +63,7 @@
 
 
         {{-- Main Content --}}
-        <main class="m-2 grow rounded-xl p-6 lg:border dark:lg:border-zinc-800 dark:lg:bg-zinc-900">
+        <main class="m-2 grow rounded-xl p-6 lg:ms-[19rem] lg:border dark:lg:border-zinc-700 dark:lg:bg-zinc-900">
             {{ $slot }}
         </main>
         @livewireScripts
