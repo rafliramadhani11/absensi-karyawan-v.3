@@ -47,7 +47,7 @@
         </div>
     </form> --}}
     <div class="mb-3">
-        <p class="text-2xl dark:text-white">Login your account</p>
+        <p class="text-2xl font-medium dark:text-darkTheme">Login your account</p>
     </div>
     <livewire:auth.login-form />
 </x-guest-layout>
