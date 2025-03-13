@@ -8,12 +8,14 @@
             .matches)
     }">
 
+
+
     <head>
         @include('partials.head')
     </head>
 
     <body
-        class="flex min-h-screen flex-col items-center gap-4 bg-white px-6 text-[#1b1b18] dark:bg-zinc-950 lg:justify-center">
+        class="flex min-h-screen flex-col items-center gap-4 bg-zinc-100 px-6 text-[#1b1b18] dark:bg-zinc-950 lg:justify-center">
         <header class="mt-6 flex w-full justify-end lg:max-w-4xl">
             <x-theme />
         </header>

@@ -24,13 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('authentication', function (Request $request) {
-            return Limit::perMinute(3)
-                ->by($request->user()?->id ?: $request->ip());
-        });
-
-        FilamentColor::register([
-            'primary' => Color::Zinc
-        ]);
+        //
     }
 }

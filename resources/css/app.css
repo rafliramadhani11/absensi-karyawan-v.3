@@ -8,5 +8,5 @@
 }
 
 .fi-input-wrp {
-    @apply dark:focus:!ring-white;
+    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-700 dark:focus-within:ring-zinc-100 !important;
 }
