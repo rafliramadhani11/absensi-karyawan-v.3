@@ -4,9 +4,29 @@
 @tailwind variants;
 
 .fi-btn {
-    @apply !font-medium;
+    @apply font-medium  !important;
 }
 
 .fi-input-wrp {
-    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-700 dark:focus-within:ring-zinc-100 !important;
+    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-700 dark:focus-within:ring-zinc-100  !important;
+}
+
+.auth-dropdown {
+    @apply transition-none flex justify-between duration-0 ring-0 text-start hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:hover:bg-zinc-200 !important;
+}
+
+.fi-dropdown-panel {
+    @apply transition-none w-full max-w-64 dark:ring-zinc-700 ring-zinc-300 !important;
+}
+
+.btnThemeDashboard {
+    @apply justify-start transition-none flex py-2 cursor-default duration-0 ring-0 gap-x-3 text-start hover:bg-zinc-100 lg:hover:bg-zinc-200 dark:hover:bg-zinc-800 !important;
+}
+
+.fi-dropdown-list-item {
+    @apply hover:bg-zinc-200/50 lg:hover:bg-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 !important;
+}
+
+.dropdown-authHeader {
+    @apply dark:border-zinc-700 !important;
 }

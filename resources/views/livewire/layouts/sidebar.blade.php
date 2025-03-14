@@ -1,25 +1,63 @@
-<div class="fixed bottom-2 left-2 top-2 z-10 w-72 transform rounded-lg border border-theme px-4 py-2 text-gray-50 transition duration-300 dark:border-darkTheme dark:bg-darkCardTheme lg:h-screen lg:translate-x-0 lg:border-none lg:opacity-100 dark:lg:bg-darkTheme"
+<div class="fixed bottom-2 left-2 top-2 z-10 flex w-72 transform flex-col justify-between rounded-lg border border-theme bg-cardTheme px-4 py-4 text-gray-50 transition dark:border-darkTheme dark:bg-darkCardTheme lg:bottom-0 lg:top-0 lg:h-screen lg:translate-x-0 lg:border-none lg:bg-theme lg:py-6 lg:opacity-100 dark:lg:bg-darkTheme"
     :class="{ '-translate-x-full opacity-0': !isOpen, 'translate-x-0 opacity-100': isOpen }">
 
-    {{-- Navbar header --}}
-    <div class="flex items-center justify-between py-2">
+    <div>
+        {{-- Navbar header --}}
+
         <div class="flex items-center gap-x-3">
-            <img src="{{ asset('img/logo-birdie-hexagon.png') }}" alt="logo" class="h-auto w-10">
-            <p class="text-sm lg:text-base">PT Birdie Indonesia</p>
+            <img :src="logo" alt="Logo" class="h-auto w-10">
+            <p class="text-base text-sm text-theme dark:text-darkTheme">PT Birdie Indonesia</p>
         </div>
-        <x-filament::icon-button @click="isOpen = false" icon="icon-panel-right-open" size="sm"
-            class="block lg:hidden" />
+
+        {{-- Navbar List --}}
+        <div class="mt-5">
+
+            <ul class="space-y-2">
+                <li>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        Dashboard
+                    </x-nav-link>
+                </li>
+                {{-- <li>
+                    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('Profile')">
+                        Profile
+                    </x-nav-link>
+                </li> --}}
+
+            </ul>
+
+        </div>
     </div>
 
-    {{-- Navbar List --}}
-    <div class="mt-3">
-        <ul class="space-y-2">
-            <li>
-                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    Dashboard
-                </x-nav-link>
+    <div class="hidden lg:block">
+        <ul>
+            <li class="mb-3">
+                <x-theme class="cursor-default" />
             </li>
+            <li>
+                <x-filament::dropdown>
+                    <x-slot name="trigger">
+                        <x-filament::button icon-position="after" icon="heroicon-o-chevron-up" outlined
+                            class="auth-dropdown w-full cursor-default">
+                            {{ auth()->user()->email }}
+                        </x-filament::button>
+                    </x-slot>
+
+                    <x-filament::dropdown.list>
+
+                        {{-- <x-filament::dropdown.list.item icon="heroicon-o-user">
+                            Profile Settings
+                        </x-filament::dropdown.list.item> --}}
+
+                        <x-filament::dropdown.list.item class="btn-logout" icon="icon-log-out" wire:click='logout'>
+                            Log out
+                        </x-filament::dropdown.list.item>
+                    </x-filament::dropdown.list>
+                </x-filament::dropdown>
+            </li>
+
         </ul>
     </div>
+
 
 </div>
