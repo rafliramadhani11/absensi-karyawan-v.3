@@ -2,12 +2,16 @@
 
 namespace App\Providers;
 
-use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentColor;
-use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
+use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Support\ServiceProvider;
+use Filament\Notifications\Notification;
+use Illuminate\Cache\RateLimiting\Limit;
+use Filament\Support\Facades\FilamentColor;
+use Illuminate\Support\Facades\RateLimiter;
+use Filament\Support\Enums\VerticalAlignment;
+use Filament\Notifications\Livewire\Notifications;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Notifications::alignment(Alignment::End);
+        Notifications::verticalAlignment(VerticalAlignment::End);
+
         FilamentColor::register([
             'primary' => Color::Zinc
         ]);

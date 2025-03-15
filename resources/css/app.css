@@ -20,7 +20,7 @@
 }
 
 .btnThemeDashboard {
-    @apply justify-start transition-none flex py-2 cursor-default duration-0 ring-0 gap-x-3 text-start hover:bg-zinc-100 lg:hover:bg-zinc-200 dark:hover:bg-zinc-800 !important;
+    @apply justify-start transition-none flex sm:py-2 py-2.5 cursor-default duration-0 ring-0 gap-x-3 text-start hover:bg-zinc-100 lg:hover:bg-zinc-200 dark:hover:bg-zinc-800 !important;
 }
 
 .fi-dropdown-list-item {
@@ -29,4 +29,12 @@
 
 .dropdown-authHeader {
     @apply dark:border-zinc-700 !important;
+}
+
+.fi-no-notification {
+    @apply dark:ring-zinc-600  ring-zinc-300 !important;
+}
+
+.auth-signed-as {
+    @apply cursor-default dark:hover:bg-darkCardTheme hover:bg-cardTheme !important;
 }

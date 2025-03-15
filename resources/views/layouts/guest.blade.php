@@ -13,7 +13,7 @@
     </head>
 
     <body class="font-sans antialiased">
-        <div class="flex flex-col items-center min-h-screen pt-6 bg-theme dark:bg-darkTheme sm:justify-center sm:pt-0">
+        <div class="flex min-h-screen flex-col items-center bg-theme pt-6 dark:bg-darkTheme sm:justify-center sm:pt-0">
             {{-- <div>
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-zinc-500" />
@@ -21,10 +21,12 @@
             </div> --}}
 
             <div
-                class="w-full px-6 py-4 overflow-hidden border shadow border-theme bg-cardTheme dark:border-darkTheme dark:bg-darkCardTheme sm:max-w-sm sm:rounded-xl">
+                class="w-full overflow-hidden border border-theme bg-cardTheme px-6 py-4 shadow dark:border-darkTheme dark:bg-darkCardTheme sm:max-w-sm sm:rounded-xl">
                 {{ $slot }}
             </div>
         </div>
+
+        @livewire('notifications')
 
         @livewireScripts
         @filamentScripts

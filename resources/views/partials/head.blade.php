@@ -6,7 +6,14 @@
 
 <link rel="icon" type="image/png" href="{{ asset('img/logo-birdie-hexagon.png') }}">
 <link rel="icon" type="image/x-icon" href="{{ asset('img/logo-birdie-hexagon.png') }}">
-<title>Welcome - {{ config('app.name') }}</title>
+
+@hasSection('title')
+    <title>
+        @yield('title') - {{ config('app.name') }}
+    </title>
+@else
+    <title>{{ config('app.name') }}</title>
+@endif
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">

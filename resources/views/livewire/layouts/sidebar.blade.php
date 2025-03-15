@@ -6,7 +6,7 @@
 
         <div class="flex items-center gap-x-3">
             <img :src="logo" alt="Logo" class="h-auto w-10">
-            <p class="text-base text-sm text-theme dark:text-darkTheme">PT Birdie Indonesia</p>
+            <p class="text-base text-theme dark:text-darkTheme">PT Birdie Indonesia</p>
         </div>
 
         {{-- Navbar List --}}
@@ -39,20 +39,30 @@
                     <x-slot name="trigger">
                         <x-filament::button icon-position="after" icon="heroicon-o-chevron-up" outlined
                             class="auth-dropdown w-full cursor-default">
-                            {{ auth()->user()->email }}
+                            {{ Str::words(auth()->user()->name, 2, '') }}
+                            <p class="text-xs">{{ auth()->user()->email }}</p>
                         </x-filament::button>
                     </x-slot>
 
                     <x-filament::dropdown.list>
-
-                        {{-- <x-filament::dropdown.list.item icon="heroicon-o-user">
-                            Profile Settings
+                        {{-- <x-filament::dropdown.list.item class="auth-signed-as">
+                            <div>
+                                <p class="text-xs text-darkSecondary">Signed as</p>
+                                <p class="text-xs text-darkSecondary">{{ auth()->user()->email }}</p>
+                            </div>
+                            <hr class="mt-2 border border-theme dark:border-darkTheme">
                         </x-filament::dropdown.list.item> --}}
+
+                        <x-filament::dropdown.list.item icon="heroicon-o-user" tag="a"
+                            href="{{ route('profile.edit') }}">
+                            Profile Settings
+                        </x-filament::dropdown.list.item>
 
                         <x-filament::dropdown.list.item class="btn-logout" icon="icon-log-out" wire:click='logout'>
                             Log out
                         </x-filament::dropdown.list.item>
                     </x-filament::dropdown.list>
+
                 </x-filament::dropdown>
             </li>
 
