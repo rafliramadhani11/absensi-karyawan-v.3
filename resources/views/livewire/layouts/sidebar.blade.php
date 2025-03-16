@@ -15,8 +15,26 @@
             <ul class="space-y-2">
                 <li>
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        Dashboard
+                        <div class="flex">
+                            <x-filament::icon icon="heroicon-o-home"
+                                class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                            Dashboard
+                        </div>
                     </x-nav-link>
+                </li>
+                <li>
+                    <ul>
+                        <p class="mb-3 mt-5 text-xs">Resources</p>
+                        <li>
+                            <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+                                <div class="flex">
+                                    <x-filament::icon icon="heroicon-o-users"
+                                        class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                    Users
+                                </div>
+                            </x-nav-link>
+                        </li>
+                    </ul>
                 </li>
             </ul>
 

@@ -42,3 +42,35 @@
 .input-delete-account {
     @apply focus-within:ring-red-500 dark:focus-within:ring-red-500 !important;
 }
+
+.fi-ta-cell {
+    @apply dark:bg-zinc-900 !important;
+}
+
+.fi-ta-header-cell {
+    @apply dark:bg-zinc-900 !important;
+}
+
+.fi-ta-table {
+    @apply dark:divide-zinc-600 !important;
+}
+
+.fi-ta-ctn {
+    @apply ring-0 !important;
+}
+
+.fi-ta-actions-header-cell {
+    @apply dark:bg-zinc-900 !important;
+}
+
+tbody {
+    @apply dark:divide-zinc-600 !important;
+}
+
+.fi-ta-ctn {
+    @apply dark:divide-zinc-600 !important;
+}
+
+.fi-pagination-overview {
+    @apply dark:text-darkSecondary !important;
+}
