@@ -23,12 +23,12 @@ new class extends Component implements HasTable, HasForms {
                     ->sortable(),
                 TextColumn::make('email')
                     ->sortable(),
-            ])
-            ->actions([
-                DeleteAction::make()
-                    ->requiresConfirmation()
-                    ->button()
             ]);
+        // ->actions([
+        //     DeleteAction::make()
+        //         ->requiresConfirmation()
+        //         ->button()
+        // ]);
     }
 }; ?>
 
