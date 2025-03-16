@@ -38,3 +38,7 @@
 .auth-signed-as {
     @apply cursor-default dark:hover:bg-darkCardTheme hover:bg-cardTheme !important;
 }
+
+.input-delete-account {
+    @apply focus-within:ring-red-500 dark:focus-within:ring-red-500 !important;
+}

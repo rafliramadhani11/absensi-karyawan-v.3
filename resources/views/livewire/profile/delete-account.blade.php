@@ -45,6 +45,8 @@ new class extends Component implements HasForms, HasActions {
                     ->required()
                     ->rules([
                         new EnsureCurrentPassword
+                    ])->extraAttributes([
+                        'class' => 'input-delete-account'
                     ])
             ])
             ->extraAttributes([
