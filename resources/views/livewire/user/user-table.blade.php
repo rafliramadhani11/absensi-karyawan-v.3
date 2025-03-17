@@ -16,19 +16,17 @@ new class extends Component implements HasTable, HasForms {
 
     public function table(Table $table): Table
     {
-        return $table
-            ->query(User::query()->where('email', '!=', 'admin@mail.com'))
-            ->columns([
-                TextColumn::make('name')
-                    ->sortable(),
-                TextColumn::make('email')
-                    ->sortable(),
-            ]);
+        return $table->query(User::query()->where('email', '!=', 'admin@mail.com'))->columns([TextColumn::make('name')->sortable(), TextColumn::make('email')->sortable()]);
         // ->actions([
         //     DeleteAction::make()
         //         ->requiresConfirmation()
         //         ->button()
         // ]);
+    }
+
+    public function placeholder()
+    {
+        return view('skeleton.loading');
     }
 }; ?>
 
