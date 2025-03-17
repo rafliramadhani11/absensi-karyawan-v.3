@@ -15,9 +15,9 @@
     @apply transition-none flex justify-between duration-0 ring-0 text-start hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:hover:bg-zinc-200 !important;
 }
 
-.fi-dropdown-panel {
+/* .fi-dropdown-panel {
     @apply transition-none w-full max-w-64 dark:ring-zinc-700 ring-zinc-300 !important;
-}
+} */
 
 .btnThemeDashboard {
     @apply justify-start transition-none flex sm:py-2 py-2.5 cursor-default duration-0 ring-0 gap-x-3 text-start hover:bg-zinc-100 lg:hover:bg-zinc-200 dark:hover:bg-zinc-800 !important;
@@ -73,4 +73,8 @@ tbody {
 
 .fi-pagination-overview {
     @apply dark:text-darkSecondary !important;
+}
+
+.fi-icon-btn {
+    @apply cursor-default dark:hover:bg-zinc-800 !important;
 }

@@ -45,10 +45,10 @@
     <div class="hidden lg:block">
         <ul>
             <li class="mb-3">
-                <x-theme class="cursor-default" />
+                <x-theme class="cursor-default" placement="top-end" />
             </li>
             <li>
-                <x-filament::dropdown>
+                <x-filament::dropdown placement="top-end">
                     <x-slot name="trigger">
                         <x-filament::button icon-position="after" icon="heroicon-o-chevron-up" outlined
                             class="auth-dropdown w-full cursor-default">
@@ -57,15 +57,7 @@
                         </x-filament::button>
                     </x-slot>
 
-                    <x-filament::dropdown.list>
-                        {{-- <x-filament::dropdown.list.item class="auth-signed-as">
-                            <div>
-                                <p class="text-xs text-darkSecondary">Signed as</p>
-                                <p class="text-xs text-darkSecondary">{{ auth()->user()->email }}</p>
-                            </div>
-                            <hr class="mt-2 border border-theme dark:border-darkTheme">
-                        </x-filament::dropdown.list.item> --}}
-
+                    <x-filament::dropdown.list class="auth-dropdown-list">
                         <x-filament::dropdown.list.item icon="heroicon-o-user" tag="a"
                             href="{{ route('profile.edit') }}">
                             Profile Settings
