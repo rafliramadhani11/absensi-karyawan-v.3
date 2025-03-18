@@ -8,7 +8,7 @@
 }
 
 .fi-input-wrp {
-    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-700 dark:focus-within:ring-zinc-100  !important;
+    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-600 dark:focus-within:ring-zinc-100  !important;
 }
 
 .auth-dropdown {
@@ -77,4 +77,19 @@ tbody {
 
 .fi-icon-btn {
     @apply cursor-default dark:hover:bg-zinc-800 !important;
+}
+
+.fi-badge {
+    @apply dark:ring-zinc-500 dark:text-white ring-zinc-300 text-black !important;
+}
+
+.btn-new-users {
+    @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 rounded-md !important;
+}
+.btn-new-users .fi-btn-icon {
+    @apply dark:text-theme me-1 !important;
+}
+
+.fi-section {
+    @apply dark:bg-zinc-800 ring-zinc-300 dark:ring-zinc-600 !important;
 }

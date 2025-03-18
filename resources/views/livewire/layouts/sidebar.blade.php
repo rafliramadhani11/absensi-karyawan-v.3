@@ -27,12 +27,15 @@
                     <ul>
                         <p class="mb-3 mt-5 text-xs">Resources</p>
                         <li>
-                            <x-nav-link :href="route('user.index')" :active="request()->routeIs('user.index')">
+                            <x-nav-link :href="route('user.index')" :active="request()->routeIs('user*')">
                                 <div class="flex">
                                     <x-filament::icon icon="heroicon-o-users"
                                         class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
                                     Users
                                 </div>
+                                <x-filament::badge>
+                                    {{ $this->userCount }}
+                                </x-filament::badge>
                             </x-nav-link>
                         </li>
                     </ul>
