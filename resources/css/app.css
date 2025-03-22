@@ -46,7 +46,6 @@
 .input-delete-account {
     @apply focus-within:ring-red-500 dark:focus-within:ring-red-500 !important;
 }
-
 .fi-ta-cell {
     @apply dark:bg-zinc-900 !important;
 }
@@ -128,3 +127,4 @@ tbody {
     @apply dark:text-zinc-500 !important;
 }
 /* ---------------------------------------------------------------------------- */
+
