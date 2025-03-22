@@ -10,6 +10,7 @@ use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -93,22 +94,16 @@ new class extends Component implements HasTable, HasForms {
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    BulkAction::make('delete')
+                    DeleteBulkAction::make()
                         ->color('danger')
                         ->icon('heroicon-o-archive-box-arrow-down')
                         ->modalIcon('heroicon-o-archive-box-arrow-down')
                         ->requiresConfirmation()
-                        ->action(function (Collection $records) {
-                            $records->each->delete();
-
+                        ->successNotification(
                             Notification::make()
                                 ->success()
                                 ->title('Succesfully delete selected user.')
-                                ->send();
-
-                            $this->redirect(url()->previous());
-                        }),
-
+                        ),
 
                     BulkAction::make('forceDelete')
                         ->color('danger')
