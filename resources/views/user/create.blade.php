@@ -1,4 +1,4 @@
-@section('title', 'Edit User')
+@section('title', 'Create New User')
 
 <x-app-layout>
     {{-- Breadcrumb --}}
@@ -8,19 +8,18 @@
         </li>
         >
         <li>
-            <a href="{{ route('user.edit', $user) }}" class="hover:text-zinc-200">{{ $user->name }}</a>
+            Create
         </li>
-        >
-        <li>Edit</li>
+
     </ul>
 
     {{-- Heading --}}
     <div class="flex items-center justify-between">
         <h1 class="mt-3 text-3xl font-semibold">
-            Detail {{ $user->name }}
+            Create New User
         </h1>
     </div>
 
 
-    <livewire:user.user-edit lazy :$user />
+    <livewire:user.user-create />
 </x-app-layout>

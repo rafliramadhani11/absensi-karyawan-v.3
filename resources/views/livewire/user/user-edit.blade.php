@@ -23,6 +23,7 @@ use Filament\Forms\Components\Section as FormSection;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Actions\EditAction;
 use App\Actions\ResetStars;
+use Filament\Infolists\Components\Grid as ComponentsGrid;
 
 new class extends Component implements HasForms, HasInfolists {
     use InteractsWithForms, InteractsWithInfolists;
@@ -38,12 +39,14 @@ new class extends Component implements HasForms, HasInfolists {
     {
         return $form
             ->schema([
+
                 // Account Information
-                FormSection::make('Account Information')
+                FormSection::make('Personal Account')
                     ->id('accountInformation')
                     ->schema([
                         Grid::make([
                             'default' => 1,
+                            'sm' => 2,
                             'xl' => 2
                         ])->schema([
                             TextInput::make('email')
@@ -71,7 +74,7 @@ new class extends Component implements HasForms, HasInfolists {
                                     ->send();
                             })
                             ->extraAttributes([
-                                'class' => 'dark:bg-white dark:text-black dark:hover:bg-white/80 bg-black text-white hover:bg-black/80'
+                                'class' => 'btn-primary'
                             ]),
 
                     ])
@@ -84,6 +87,7 @@ new class extends Component implements HasForms, HasInfolists {
                     ->schema([
                         Grid::make([
                             'default' => 1,
+                            'sm' => 2,
                             'xl' => 2
                         ])->schema([
                             TextInput::make('nik')
@@ -99,7 +103,7 @@ new class extends Component implements HasForms, HasInfolists {
                             DatePicker::make('birth_date')
                                 ->native(false),
                             TextInput::make('address')
-                                ->columnSpan(['xl' => 2])
+                                ->columnSpan(['md' => 2])
                         ])
                     ])
                     ->footerActions([
@@ -122,7 +126,7 @@ new class extends Component implements HasForms, HasInfolists {
                                     ->send();
                             })
                             ->extraAttributes([
-                                'class' => 'dark:bg-white dark:text-black dark:hover:bg-white/80 bg-black text-white hover:bg-black/80'
+                                'class' => 'btn-primary'
                             ]),
                     ])
                     ->footerActionsAlignment(Alignment::End)
@@ -139,14 +143,23 @@ new class extends Component implements HasForms, HasInfolists {
             ->schema([
                 Section::make()
                     ->schema([
-                        TextEntry::make('created_at'),
-                        TextEntry::make('updated_at'),
+                        ComponentsGrid::make([
+                            'default' => 2
+                        ])->schema([
+                            TextEntry::make('created_at'),
+                            TextEntry::make('updated_at'),
+                        ])
                     ])
             ]);
     }
+
+    public function placeholder()
+    {
+        return view('skeleton.loading');
+    }
 }; ?>
 
-<div class="mt-10 xl:grid xl:grid-cols-3 xl:gap-x-6">
+<div class="flex flex-col-reverse mt-10 gap-y-6 xl:grid xl:grid-cols-3 xl:gap-x-6">
     <div class="xl:col-span-2">
         {{ $this->form }}
     </div>

@@ -6,19 +6,21 @@ use Filament\Actions\Action;
 use Livewire\Volt\Component;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\BulkActionGroup;
+use Illuminate\Database\Eloquent\Collection;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Notifications\Notification;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 
@@ -67,17 +69,22 @@ new class extends Component implements HasTable, HasForms {
                         ->icon('heroicon-o-eye')
                         ->color('info')
                         ->url(fn($record) => route('user.edit', $record)),
+
                     DeleteAction::make()
-                        ->label('Archive')
                         ->icon('heroicon-o-archive-box-arrow-down')
                         ->requiresConfirmation()
-                        ->modalHeading('Archive User')
                         ->modalIcon('heroicon-o-archive-box-arrow-down')
-                        ->successNotification(Notification::make()->success()->title('User berhasil di archive')),
+                        ->successNotification(
+                            Notification::make()
+                                ->success()
+                                ->title('Successfully delete user')
+                        ),
+
                     ForceDeleteAction::make()
                         ->icon('heroicon-o-trash')
                         ->visible()
                         ->requiresConfirmation(),
+
                     RestoreAction::make()
                         ->requiresConfirmation(),
                 ])
@@ -86,17 +93,43 @@ new class extends Component implements HasTable, HasForms {
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->label('Archive yang dipilih')
+                    BulkAction::make('delete')
+                        ->color('danger')
                         ->icon('heroicon-o-archive-box-arrow-down')
-                        ->requiresConfirmation()
-                        ->modalHeading('Archive User')
                         ->modalIcon('heroicon-o-archive-box-arrow-down')
-                        ->successNotification(Notification::make()->success()->title('User berhasil di archive')),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->delete();
+
+                            Notification::make()
+                                ->success()
+                                ->title('Succesfully delete selected user.')
+                                ->send();
+
+                            $this->redirect(url()->previous());
+                        }),
+
+
+                    BulkAction::make('forceDelete')
+                        ->color('danger')
+                        ->icon('heroicon-o-trash')
+                        ->visible()
+                        ->requiresConfirmation()
+                        ->action(function (Collection $records) {
+                            $records->each->forceDelete();
+
+                            Notification::make()
+                                ->success()
+                                ->title('Succesfully force delete selected user.')
+                                ->send();
+
+                            $this->redirect(url()->previous());
+                        }),
+
+                    RestoreBulkAction::make()
+                        ->requiresConfirmation(),
                 ]),
-            ]);
+            ])->selectCurrentPageOnly();
     }
 
 

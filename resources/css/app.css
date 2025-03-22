@@ -3,6 +3,10 @@
 @tailwind utilities;
 @tailwind variants;
 
+.btn-primary {
+    @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 py-1.5 rounded-md !important;
+}
+
 .fi-btn {
     @apply font-medium  !important;
 }
@@ -84,8 +88,9 @@ tbody {
 }
 
 .btn-new-users {
-    @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 rounded-md !important;
+    @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 py-1.5 rounded-md !important;
 }
+
 .btn-new-users .fi-btn-icon {
     @apply dark:text-theme me-1 !important;
 }
@@ -93,3 +98,33 @@ tbody {
 .fi-section {
     @apply dark:bg-zinc-800 ring-zinc-300 dark:ring-zinc-600 !important;
 }
+
+.animate-spin {
+    @apply text-darkTheme dark:text-theme !important;
+}
+
+/* Wizard */
+.btn-prev-act {
+    @apply cursor-default dark:ring-zinc-500 py-1.5 !important;
+}
+
+.fi-fo-wizard {
+    @apply dark:bg-zinc-800 dark:ring-zinc-600 !important;
+}
+
+.fi-fo-wizard-header-step-label {
+    @apply dark:text-darkTheme !important;
+}
+
+.fi-fo-wizard-header-step-icon-ctn {
+    @apply dark:border-zinc-700 dark:bg-zinc-900 !important;
+}
+
+.fi-fo-wizard-header-step-indicator {
+    @apply dark:text-white !important;
+}
+
+.fi-fo-wizard-header-step-separator svg {
+    @apply dark:text-zinc-500 !important;
+}
+/* ---------------------------------------------------------------------------- */
