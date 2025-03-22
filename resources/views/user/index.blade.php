@@ -2,7 +2,7 @@
 
 <x-app-layout>
     {{-- Breadcrumb --}}
-    <ul class="flex text-sm gap-x-3 text-secondary dark:text-darkSecondary">
+    <ul class="flex gap-x-3 text-sm text-secondary dark:text-darkSecondary">
         <li>
             <a href="{{ route('user.index') }}" class="hover:text-zinc-200">Users</a>
         </li>
@@ -19,6 +19,8 @@
             New User
         </x-filament::button>
     </div>
+
+
 
     <livewire:user.user-table lazy />
 </x-app-layout>
