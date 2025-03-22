@@ -1,4 +1,4 @@
-@section('title', 'Users')
+@section('title', 'Create New User')
 
 <x-app-layout>
     {{-- Breadcrumb --}}
@@ -7,18 +7,19 @@
             <a href="{{ route('user.index') }}" class="hover:text-zinc-200">Users</a>
         </li>
         >
-        <li>List</li>
+        <li>
+            Create
+        </li>
+
     </ul>
 
     {{-- Heading --}}
     <div class="flex items-center justify-between">
         <h1 class="mt-3 text-3xl font-semibold">
-            User List
+            Create New User
         </h1>
-        <x-filament::button size="sm" class="btn-new-users" icon="heroicon-m-plus" :href="route('user.create')" tag="a">
-            New User
-        </x-filament::button>
     </div>
 
-    <livewire:user.user-table lazy />
+
+    <livewire:user.user-create />
 </x-app-layout>
