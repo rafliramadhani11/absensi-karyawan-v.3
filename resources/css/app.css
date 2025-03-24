@@ -79,10 +79,10 @@ tbody {
 }
 
 .fi-icon-btn {
-    @apply cursor-default dark:hover:bg-zinc-800 !important;
+    @apply cursor-default dark:hover:bg-zinc-800 hover:bg-zinc-200 !important;
 }
 
-.fi-badge {
+.sidebar-badge {
     @apply dark:ring-zinc-500 dark:text-white ring-zinc-300 text-black !important;
 }
 
@@ -99,7 +99,11 @@ tbody {
 }
 
 .animate-spin {
-    @apply text-darkTheme dark:text-theme !important;
+    @apply dark:text-darkTheme text-theme !important;
+}
+
+.fi-tabs-item {
+    @apply cursor-default;
 }
 
 /* Wizard */
@@ -127,4 +131,3 @@ tbody {
     @apply dark:text-zinc-500 !important;
 }
 /* ---------------------------------------------------------------------------- */
-
