@@ -1,4 +1,4 @@
-<div class="fixed bottom-2 left-2 top-2 z-10 flex w-72 transform flex-col justify-between rounded-lg border border-theme bg-cardTheme px-4 py-4 text-gray-50 transition dark:border-darkTheme dark:bg-darkCardTheme lg:bottom-0 lg:top-0 lg:h-screen lg:translate-x-0 lg:border-none lg:bg-theme lg:py-6 lg:opacity-100 dark:lg:bg-darkTheme"
+<div class="fixed z-10 flex flex-col justify-between px-4 py-4 transition transform border rounded-lg bottom-2 left-2 top-2 w-72 border-theme bg-cardTheme text-gray-50 dark:border-darkTheme dark:bg-darkCardTheme lg:bottom-0 lg:top-0 lg:h-screen lg:translate-x-0 lg:border-none lg:bg-theme lg:py-6 lg:opacity-100 dark:lg:bg-darkTheme"
     :class="{ '-translate-x-full opacity-0': !isOpen, 'translate-x-0 opacity-100': isOpen }">
 
     <div>
@@ -33,14 +33,17 @@
                             <x-nav-link :href="route('user.index')" :active="request()->routeIs('user*')">
                                 <div class="flex">
                                     <x-filament::icon icon="heroicon-o-users"
+
                                         class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
                                     Users
                                 </div>
                                 <x-filament::badge class="sidebar-badge">
+
                                     {{ $this->userCount }}
                                 </x-filament::badge>
                             </x-nav-link>
                         </li>
+
                         <li>
                             <x-nav-link :href="route('attendance.index')" :active="request()->routeIs('attendance*')">
                                 <div class="flex">
@@ -68,7 +71,6 @@
                     <x-slot name="trigger">
                         <x-filament::button icon-position="after" icon="heroicon-o-chevron-up" outlined
                             class="auth-dropdown w-full cursor-default">
-
                             {{ Str::words(auth()->user()->name, 2, '') }}
                             <p class="text-xs">{{ auth()->user()->email }}</p>
                         </x-filament::button>

@@ -159,6 +159,7 @@ new class extends Component implements HasForms, HasInfolists {
     }
 }; ?>
 
+
 <div class="flex flex-col-reverse mt-5 gap-y-6 xl:grid xl:grid-cols-3 xl:gap-x-6">
     <div class="xl:col-span-2">
         {{ $this->form }}

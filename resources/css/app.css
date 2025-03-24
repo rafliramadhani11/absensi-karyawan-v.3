@@ -83,6 +83,7 @@ tbody {
 }
 
 .sidebar-badge {
+
     @apply dark:ring-zinc-500 dark:text-white ring-zinc-300 text-black !important;
 }
 
@@ -104,6 +105,7 @@ tbody {
 
 .fi-tabs-item {
     @apply cursor-default;
+
 }
 
 /* Wizard */
@@ -131,3 +133,4 @@ tbody {
     @apply dark:text-zinc-500 !important;
 }
 /* ---------------------------------------------------------------------------- */
+

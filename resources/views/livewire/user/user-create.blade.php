@@ -143,7 +143,9 @@ new class extends Component implements HasForms {
     }
 }; ?>
 
+
 <div class="mt-5">
+
     <form wire:submit="create">
         {{ $this->form }}
 

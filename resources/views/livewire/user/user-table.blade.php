@@ -99,12 +99,12 @@ new class extends Component implements HasTable, HasForms {
                         ->icon('heroicon-o-archive-box-arrow-down')
                         ->modalIcon('heroicon-o-archive-box-arrow-down')
                         ->requiresConfirmation()
+
                         ->successNotification(
                             Notification::make()
                                 ->success()
                                 ->title('Succesfully delete selected user.')
                         ),
-
                     BulkAction::make('forceDelete')
                         ->color('danger')
                         ->icon('heroicon-o-trash')

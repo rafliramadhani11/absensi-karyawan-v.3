@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn() => view('welcome'));
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', fn() => view('dashboard'))
         ->name('dashboard');
@@ -30,6 +29,7 @@ Route::middleware('auth')->group(function () {
             ->name('attendance.create');
         Route::get('/{attendance}/edit', fn(Attendance $attendance) => view('attendance.edit', compact('attendance')))
             ->name('attendance.edit');
+
     });
 });
 
