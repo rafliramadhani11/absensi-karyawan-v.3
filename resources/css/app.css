@@ -6,6 +6,9 @@
 .btn-primary {
     @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 py-1.5 rounded-md !important;
 }
+.btn-primary .fi-btn-icon {
+    @apply dark:text-theme me-1 !important;
+}
 
 .fi-btn {
     @apply font-medium  !important;
@@ -83,20 +86,15 @@ tbody {
 }
 
 .sidebar-badge {
-
     @apply dark:ring-zinc-500 dark:text-white ring-zinc-300 text-black !important;
 }
 
-.btn-new-users {
-    @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 py-1.5 rounded-md !important;
-}
-
-.btn-new-users .fi-btn-icon {
-    @apply dark:text-theme me-1 !important;
-}
-
 .fi-section {
-    @apply dark:bg-zinc-800 ring-zinc-300 dark:ring-zinc-600 !important;
+    @apply dark:bg-zinc-900 ring-zinc-950 dark:ring-zinc-600 !important;
+}
+
+.fi-section-content-ctn {
+    @apply border-zinc-950 dark:border-zinc-600 !important;
 }
 
 .animate-spin {
@@ -105,7 +103,6 @@ tbody {
 
 .fi-tabs-item {
     @apply cursor-default;
-
 }
 
 /* Wizard */
@@ -114,7 +111,11 @@ tbody {
 }
 
 .fi-fo-wizard {
-    @apply dark:bg-zinc-800 dark:ring-zinc-600 !important;
+    @apply dark:bg-zinc-900 dark:ring-zinc-600 !important;
+}
+
+.fi-fo-wizard-header {
+    @apply dark:border-zinc-600 !important;
 }
 
 .fi-fo-wizard-header-step-label {
@@ -122,7 +123,7 @@ tbody {
 }
 
 .fi-fo-wizard-header-step-icon-ctn {
-    @apply dark:border-zinc-700 dark:bg-zinc-900 !important;
+    @apply dark:border-zinc-600 dark:bg-zinc-800 !important;
 }
 
 .fi-fo-wizard-header-step-indicator {
@@ -134,3 +135,7 @@ tbody {
 }
 /* ---------------------------------------------------------------------------- */
 
+/* Modal */
+.fi-modal-window {
+    @apply dark:ring-zinc-600 !important;
+}

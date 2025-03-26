@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Layouts;
 
+use App\Models\Division;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,12 @@ class Sidebar extends Component
     public function userCount()
     {
         return User::where('is_admin', false)->count();
+    }
+
+    #[Computed]
+    public function divisionCount()
+    {
+        return Division::count();
     }
 
     public function render()

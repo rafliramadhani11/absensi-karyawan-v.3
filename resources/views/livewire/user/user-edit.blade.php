@@ -39,7 +39,6 @@ new class extends Component implements HasForms, HasInfolists {
     {
         return $form
             ->schema([
-
                 // Account Information
                 FormSection::make('Personal Account')
                     ->id('accountInformation')
@@ -50,7 +49,8 @@ new class extends Component implements HasForms, HasInfolists {
                             'xl' => 2
                         ])->schema([
                             TextInput::make('email')
-                                ->required(),
+                                ->required()
+                                ->email(),
                             TextInput::make('phone')
                                 ->mask('9999 9999 9999 99')
                                 ->tel()
