@@ -63,11 +63,13 @@ new class extends Component implements HasTable, HasForms {
                     ->searchable(),
 
                 TextColumn::make('absen_datang')
+                    ->label('in')
                     ->formatStateUsing(
                         fn($state) => Carbon::parse($state)->translatedFormat('H:i')
                     ),
 
                 TextColumn::make('absen_pulang')
+                    ->label('out')
                     ->formatStateUsing(
                         fn($state) => Carbon::parse($state)->translatedFormat('H:i')
                     ),

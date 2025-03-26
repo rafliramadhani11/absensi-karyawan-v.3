@@ -25,7 +25,9 @@ return new class extends Migration
             $table->enum('gender', ['Laki - Laki', 'Perempuan'])->nullable();
             $table->date('birth_date')->nullable();
             $table->string('address')->nullable();
-            // $table->enum('role', ['Kepala Divisi', 'Anggota Divisi'])->nullable();
+
+            $table->enum('role', ['Kepala Divisi', 'Anggota Divisi'])->nullable();
+            $table->foreignId('division_id')->references('id')->on('divisions')->onDelete('cascade');
 
             $table->softDeletes();
             $table->timestamps();

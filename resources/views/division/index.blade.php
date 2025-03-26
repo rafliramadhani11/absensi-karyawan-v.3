@@ -1,10 +1,10 @@
-@section('title', 'Users')
+@section('title', 'Division')
 
 <x-app-layout>
     {{-- Breadcrumb --}}
     <ul class="flex gap-x-3 text-sm text-secondary dark:text-darkSecondary">
         <li>
-            <a href="{{ route('user.index') }}" class="hover:text-zinc-200">Users</a>
+            <a href="{{ route('user.index') }}" class="hover:text-zinc-200">Divisions</a>
         </li>
         >
         <li>List</li>
@@ -13,14 +13,12 @@
     {{-- Heading --}}
     <div class="flex items-center justify-between">
         <h1 class="mt-3 text-3xl font-semibold">
-            User List
+            Division List
         </h1>
-        <x-filament::button size="sm" class="btn-primary" icon="heroicon-m-plus" :href="route('user.create')" tag="a">
-            New User
-        </x-filament::button>
+        <livewire:division.division-create />
     </div>
 
 
 
-    <livewire:user.user-table lazy />
+    <livewire:division.division-table lazy />
 </x-app-layout>

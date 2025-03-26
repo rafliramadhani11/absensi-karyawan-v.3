@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Division;
+use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', fn() => view('welcome'));
 
@@ -11,6 +12,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', fn() => view('dashboard'))
         ->name('dashboard');
 
+    // Division
+    Route::prefix('divisions')->group(function () {
+        Route::get('/', fn() => view('division.index'))
+            ->name('division.index');
+        Route::get('/{division}/detail', fn(Division $division) => view('division.detail', compact('division')))
+            ->name('division.detail');
+    });
+  
     // Users
     Route::prefix('users')->group(function () {
         Route::get('/', fn() => view('user.index'))
@@ -29,7 +38,6 @@ Route::middleware('auth')->group(function () {
             ->name('attendance.create');
         Route::get('/{attendance}/edit', fn(Attendance $attendance) => view('attendance.edit', compact('attendance')))
             ->name('attendance.edit');
-
     });
 });
 

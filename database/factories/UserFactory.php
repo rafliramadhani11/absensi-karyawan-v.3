@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Division;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -24,6 +25,8 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $divisions = Division::all();
+
         return [
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make(123),
@@ -35,8 +38,8 @@ class UserFactory extends Factory
             'birth_date' => fake()->date(),
             'address' => fake()->address(),
 
-            // 'division_id' => $divisions->random()->id,
-            // 'role' => Arr::random(['Kepala Divisi', 'Anggota Divisi']),
+            'division_id' => $divisions->random()->id,
+            'role' => Arr::random(['Kepala Divisi', 'Anggota Divisi']),
         ];
     }
 

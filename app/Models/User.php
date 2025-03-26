@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -52,9 +53,12 @@ class User extends Authenticatable
         $query->where('is_admin', 'false');
     }
 
+    public function division(): BelongsTo
+    {
+        return $this->belongsTo(Division::class);
+    }
+
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
     }
-
-}
