@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{division}/detail', fn(Division $division) => view('division.detail', compact('division')))
             ->name('division.detail');
     });
-
+  
     // Users
     Route::prefix('users')->group(function () {
         Route::get('/', fn() => view('user.index'))
