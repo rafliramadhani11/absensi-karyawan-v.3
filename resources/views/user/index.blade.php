@@ -13,7 +13,7 @@
     {{-- Heading --}}
     <div class="flex items-center justify-between">
         <h1 class="mt-3 text-3xl font-semibold">
-            User List
+            Employees List
         </h1>
         <x-filament::button size="sm" class="btn-primary" icon="heroicon-m-plus" :href="route('user.create')" tag="a">
             New User

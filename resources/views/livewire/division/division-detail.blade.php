@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Filament\Forms\Set;
+use App\Models\Division;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
@@ -29,6 +30,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Components\Grid as ComponentsGrid;
 use Filament\Infolists\Components\Section as InfolistsSection;
+use Filament\Notifications\Notification;
 
 new class extends Component implements HasForms, HasInfolists, HasTable {
     use InteractsWithForms, InteractsWithInfolists, InteractsWithTable;
@@ -88,9 +90,10 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
         return $table
             ->relationship(fn() => $this->division->users())
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
-            ->defaultPaginationPageOption(8)
+            ->defaultPaginationPageOption(5)
             ->searchPlaceholder('Nik, Name, Email ...')
             ->defaultSort('created_at', 'desc')
+            ->emptyStateHeading('No Employees')
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
@@ -110,9 +113,12 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     ->label('Jenis Kelamin')
                     ->sortable()
             ])
-            ->headerActions([
-                AssociateAction::make(),
-            ])
+            // ->headerActions([
+            //     AssociateAction::make()
+            //         ->modalHeading('Associate Employee')
+            //         ->modalFooterActionsAlignment(Alignment::Center)
+            //         ->associateAnother(false),
+            // ])
             ->actions([
                 ViewAction::make()
                     ->label('Detail')
@@ -122,7 +128,29 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     ->extraAttributes([
                         'wire:navigate' => true
                     ]),
-                DissociateAction::make(),
+                DissociateAction::make()
+                    ->label('Change')
+                    ->color('success')
+                    ->icon('heroicon-o-link')
+                    ->form([
+                        Select::make('division_id')
+                            ->label('Division')
+                            ->options(Division::all()->pluck('name', 'id'))
+                            ->searchable()
+                    ])
+                    ->using(function ($record, $data) {
+                        $user = $record;
+                        $user->update($data);
+                    })
+                    ->modalIcon('heroicon-o-link')
+                    ->modalHeading('Change user division')
+                    ->modalDescription(null)
+                    ->modalSubmitActionLabel('Change Division')
+                    ->successNotification(
+                        Notification::make()
+                            ->title('Successfully change user division')
+                            ->success()
+                    ),
                 // ActionGroup::make([
 
 
@@ -196,11 +224,9 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
         </div>
     </div>
 
-
-
-
-
-
+    <div class="mt-5">
+        {{ $this->table }}
+    </div>
 
     <x-filament-actions::modals />
 </div>
