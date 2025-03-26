@@ -46,7 +46,7 @@
                                 <div class="flex">
                                     <x-filament::icon icon="heroicon-o-user"
                                         class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
-                                    Users
+                                    Employees
                                 </div>
                                 <x-filament::badge class="sidebar-badge">
                                     {{ $this->userCount }}
