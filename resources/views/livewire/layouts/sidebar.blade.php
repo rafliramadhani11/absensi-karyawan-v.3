@@ -17,7 +17,7 @@
 
             <ul class="space-y-2">
                 <li>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link wire:navigate :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         <div class="flex">
                             <x-filament::icon icon="heroicon-o-home"
                                 class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />

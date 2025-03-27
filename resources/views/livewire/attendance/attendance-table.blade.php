@@ -1,16 +1,12 @@
 <?php
 
 use Carbon\Carbon;
-use App\Models\User;
 use Filament\Forms\Get;
 use App\Models\Attendance;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 use Filament\Forms\Components\Grid;
-use Filament\Tables\Actions\Action;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Forms\Components\Select;
 use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\EditAction;
@@ -23,7 +19,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Livewire\Attributes\Computed;
@@ -144,6 +139,7 @@ new class extends Component implements HasTable, HasForms {
                                         ->required(),
 
                                     TextInput::make('alasan')
+                                        ->label('Reason')
                                         ->minLength(3)
                                         ->required()
                                         ->hidden(
