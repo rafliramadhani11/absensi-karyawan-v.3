@@ -36,7 +36,6 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
     use InteractsWithForms, InteractsWithInfolists, InteractsWithTable;
     public ?array $data = [];
     public $division;
-    public User $user;
 
     public function mount(): void
     {
@@ -113,12 +112,6 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     ->label('Jenis Kelamin')
                     ->sortable()
             ])
-            // ->headerActions([
-            //     AssociateAction::make()
-            //         ->modalHeading('Associate Employee')
-            //         ->modalFooterActionsAlignment(Alignment::Center)
-            //         ->associateAnother(false),
-            // ])
             ->actions([
                 ViewAction::make()
                     ->label('Detail')
@@ -151,59 +144,6 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                             ->title('Successfully change user division')
                             ->success()
                     ),
-                // ActionGroup::make([
-
-
-                //     EditAction::make()
-                //         ->label('Edit')
-                //         ->color('success')
-                //         ->form([
-                //             Grid::make([
-                //                 'default' => 1,
-                //                 'sm' => 2,
-                //                 'xl' => 2
-                //             ])->schema([
-                //                 TextInput::make('email')
-                //                     ->required()
-                //                     ->email(),
-                //                 TextInput::make('phone')
-                //                     ->mask('9999 9999 9999 99')
-                //                     ->tel()
-                //                     ->required(),
-                //             ]),
-
-                //             Grid::make([
-                //                 'default' => 1,
-                //                 'sm' => 2,
-                //                 'xl' => 2
-                //             ])->schema([
-                //                 TextInput::make('nik')
-                //                     ->mask('9999 9999 9999 9999')
-                //                     ->tel(),
-                //                 TextInput::make('name')
-                //                     ->required(),
-                //                 Select::make('gender')
-                //                     ->options([
-                //                         'Laki - Laki' => 'Laki - Laki',
-                //                         'Perempuan' => 'Perempuan',
-                //                     ])->native(false),
-                //                 DatePicker::make('birth_date')
-                //                     ->native(false),
-                //                 TextInput::make('address')
-                //                     ->columnSpan(['md' => 2])
-                //             ])
-                //         ])
-
-                //         ->modalHeading(fn($record) => 'Edit Employee')
-                //         ->modalFooterActionsAlignment(Alignment::End),
-
-                //     ForceDeleteAction::make()
-                //         ->icon('heroicon-o-trash')
-                //         ->visible()
-                //         ->requiresConfirmation(),
-                // ])
-                //     ->icon('heroicon-o-ellipsis-horizontal')
-                //     ->iconButton()
             ]);
     }
 
