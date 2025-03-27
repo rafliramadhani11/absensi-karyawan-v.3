@@ -10,13 +10,15 @@ use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\ActionGroup;
 
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -25,7 +27,6 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 
 new class extends Component implements HasForms, HasTable {
@@ -50,7 +51,9 @@ new class extends Component implements HasForms, HasTable {
 
                 TextColumn::make('users_count')
                     ->label('Total Employee')
-                    ->counts('users')
+                    ->counts([
+                        'users' => fn(Builder $query) => $query->where('is_admin', false),
+                    ])
                     ->formatStateUsing(fn($state) => $state . ' Employee')
             ])
             ->filters([
