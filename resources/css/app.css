@@ -3,6 +3,22 @@
 @tailwind utilities;
 @tailwind variants;
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: var(--icon-filter);
+}
+
+/* input[type="date"] {
+    @apply rounded-lg dark:bg-zinc-800 dark:text-white;
+} */
+
+:root {
+    --icon-filter: invert(0);
+}
+
+.dark {
+    --icon-filter: invert(1);
+}
+
 .btn-primary {
     @apply cursor-default bg-darkTheme hover:bg-black/80 text-darkTheme dark:bg-white dark:text-theme dark:hover:bg-white/80 py-1.5 rounded-md !important;
 }
@@ -15,7 +31,7 @@
 }
 
 .fi-input-wrp {
-    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-600 dark:focus-within:ring-zinc-100  !important;
+    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-600 dark:focus-within:ring-zinc-100   !important;
 }
 
 .auth-dropdown {

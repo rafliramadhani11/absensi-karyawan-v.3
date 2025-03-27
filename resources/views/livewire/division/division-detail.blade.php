@@ -87,7 +87,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
     public function table(Table $table): Table
     {
         return $table
-            ->relationship(fn() => $this->division->users())
+            ->relationship(fn() => $this->division->users()->withoutAdmin())
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultPaginationPageOption(5)
             ->searchPlaceholder('Nik, Name, Email ...')
