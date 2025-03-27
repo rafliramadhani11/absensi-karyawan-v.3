@@ -1,19 +1,24 @@
 <?php
 
-use App\Models\User;
+use Filament\Forms\Set;
+use App\Models\Division;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
+use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -23,58 +28,59 @@ use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Actions\ForceDeleteBulkAction;
 
-new class extends Component implements HasTable, HasForms {
-    use InteractsWithTable, InteractsWithForms;
-    public string $filter = 'all';
+new class extends Component implements HasForms, HasTable {
+    use InteractsWithForms, InteractsWithTable;
 
     public function table(Table $table): Table
     {
         return $table
-            ->query(function () {
-                $query = User::withoutAdmin();
-
-                if ($this->filter === 'trashed') {
-                    return $query->onlyTrashed();
-                } else {
-                    return $query;
-                }
-            })
-            ->paginated([5, 8, 10, 25, 50, 100, 'all'])
-            ->defaultPaginationPageOption(8)
-            ->searchPlaceholder('Nik, Name, Email ...')
+            ->query(Division::query())
+            ->defaultSort('created_at', 'desc')
+            ->searchPlaceholder('Division name ...')
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
-                TextColumn::make('nik')
-                    ->copyable()
-                    ->searchable(),
+
                 TextColumn::make('name')
-                    ->copyable()
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('email')
-                    ->copyable()
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('gender')
-                    ->label('Jenis Kelamin')
-                    ->sortable()
+                    ->copyable(),
+
+                TextColumn::make('slug'),
+
+                TextColumn::make('users_count')
+                    ->label('Total Employee')
+                    ->counts([
+                        'users' => fn(Builder $query) => $query->where('is_admin', false),
+                    ])
+                    ->formatStateUsing(fn($state) => $state . ' Employee')
             ])
-            ->defaultSort('created_at', 'desc')
-            ->filters([TrashedFilter::make()])
+            ->filters([
+                TrashedFilter::make()
+            ])
             ->actions([
                 ActionGroup::make([
-                    EditAction::make()
-                        ->label('Detail')
-                        ->icon('heroicon-o-eye')
+                    ViewAction::make()
                         ->color('info')
-                        ->url(fn($record) => route('user.edit', $record))
-                        ->extraAttributes([
-                            'wire:navigate' => true
-                        ]),
+                        ->url(fn($record) => route('division.detail', $record)),
+
+                    EditAction::make()
+                        ->color('success')
+                        ->form([
+                            TextInput::make('name')
+                                ->required()
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
+
+                            TextInput::make('slug')
+                                ->required()
+                                ->readOnly(),
+
+                        ])
+                        ->modalHeading(fn($record) => 'Edit Division ' . $record->name)
+                        ->modalFooterActionsAlignment(Alignment::Center)
+                        ->modalWidth(MaxWidth::Large),
 
                     DeleteAction::make()
                         ->icon('heroicon-o-archive-box-arrow-down')
@@ -108,7 +114,7 @@ new class extends Component implements HasTable, HasForms {
                         ->successNotification(
                             Notification::make()
                                 ->success()
-                                ->title('Succesfully delete selected user.')
+                                ->title('Succesfully delete selected division.')
                         ),
                     BulkAction::make('forceDelete')
                         ->color('danger')
@@ -120,7 +126,7 @@ new class extends Component implements HasTable, HasForms {
 
                             Notification::make()
                                 ->success()
-                                ->title('Succesfully force delete selected user.')
+                                ->title('Succesfully force delete selected division.')
                                 ->send();
 
                             $this->redirect(url()->previous());
@@ -131,8 +137,6 @@ new class extends Component implements HasTable, HasForms {
                 ]),
             ])->selectCurrentPageOnly();
     }
-
-
 
     public function placeholder()
     {
