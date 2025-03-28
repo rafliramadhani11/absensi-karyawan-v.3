@@ -29,8 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Notifications::alignment(Alignment::End);
-        Notifications::verticalAlignment(VerticalAlignment::End);
-
         FilamentColor::register([
             'primary' => Color::Zinc
         ]);

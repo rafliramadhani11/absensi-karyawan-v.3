@@ -31,23 +31,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .fi-input-wrp {
-    @apply ring-zinc-400/50 focus-within:ring-zinc-900 dark:ring-zinc-600 dark:focus-within:ring-zinc-100   !important;
+    @apply ring-zinc-400/50 mx-0.5 sm:mx-0 focus-within:ring-zinc-900 dark:ring-zinc-600 dark:focus-within:ring-zinc-100   !important;
 }
 
 .auth-dropdown {
     @apply transition-none flex justify-between duration-0 ring-0 text-start hover:bg-zinc-100 dark:hover:bg-zinc-800 lg:hover:bg-zinc-200 !important;
 }
 
-/* .fi-dropdown-panel {
-    @apply transition-none w-full max-w-64 dark:ring-zinc-700 ring-zinc-300 !important;
-} */
+.fi-dropdown-panel {
+    @apply transition-none dark:ring-zinc-600 ring-zinc-300 !important;
+}
 
 .btnThemeDashboard {
     @apply justify-start transition-none flex sm:py-2 py-2.5 cursor-default duration-0 ring-0 gap-x-3 text-start hover:bg-zinc-100 lg:hover:bg-zinc-200 dark:hover:bg-zinc-800 !important;
 }
 
 .fi-dropdown-list-item {
-    @apply hover:bg-zinc-200/50 lg:hover:bg-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 !important;
+    @apply lg:hover:bg-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 !important;
 }
 
 .dropdown-authHeader {
@@ -55,7 +55,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .fi-no-notification {
-    @apply dark:ring-zinc-600  ring-zinc-300 !important;
+    @apply dark:ring-zinc-600  ring-zinc-300 shadow-xl !important;
 }
 
 .auth-signed-as {
@@ -65,32 +65,33 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .input-delete-account {
     @apply focus-within:ring-red-500 dark:focus-within:ring-red-500 !important;
 }
+
 .fi-ta-cell {
     @apply dark:bg-zinc-900 !important;
 }
 
 .fi-ta-header-cell {
-    @apply dark:bg-zinc-900 !important;
+    @apply dark:bg-zinc-900  !important;
 }
 
 .fi-ta-table {
-    @apply dark:divide-zinc-600 !important;
+    @apply dark:divide-zinc-600 divide-zinc-300  !important;
 }
 
 .fi-ta-ctn {
-    @apply ring-0 !important;
+    @apply ring-zinc-300 dark:ring-zinc-600 m-0.5  !important;
 }
 
 .fi-ta-actions-header-cell {
-    @apply dark:bg-zinc-900 !important;
+    @apply dark:bg-zinc-900  !important;
 }
 
 tbody {
-    @apply dark:divide-zinc-600 !important;
+    @apply dark:divide-zinc-600 divide-zinc-300   !important;
 }
 
 .fi-ta-ctn {
-    @apply dark:divide-zinc-600 !important;
+    @apply dark:divide-zinc-600 divide-zinc-300 rounded-xl   !important;
 }
 
 .fi-pagination-overview {
@@ -106,40 +107,48 @@ tbody {
 }
 
 .fi-section {
-    @apply dark:bg-zinc-900 ring-zinc-950 dark:ring-zinc-600 !important;
+    @apply dark:bg-zinc-900 ring-zinc-300 dark:ring-zinc-600 mx-0.5 !important;
 }
 
 .fi-section-content-ctn {
-    @apply border-zinc-950 dark:border-zinc-600 !important;
+    @apply border-zinc-300 dark:border-zinc-600 my-0.5 !important;
 }
 
 .animate-spin {
     @apply dark:text-darkTheme text-theme !important;
 }
 
+.fi-tabs {
+    @apply ring-zinc-300 dark:ring-zinc-600 mx-0.5  !important;
+}
+
 .fi-tabs-item {
-    @apply cursor-default;
+    @apply cursor-default lg:hover:bg-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-800;
 }
 
 /* Wizard */
 .btn-prev-act {
-    @apply cursor-default dark:ring-zinc-500 py-1.5 !important;
+    @apply cursor-default dark:ring-zinc-600 ring-zinc-300 py-1.5 !important;
 }
 
 .fi-fo-wizard {
-    @apply dark:bg-zinc-900 dark:ring-zinc-600 !important;
+    @apply dark:bg-zinc-900  dark:ring-zinc-600 ring-zinc-300 dark:border-b dark:border-zinc-600 mx-0.5 !important;
 }
 
 .fi-fo-wizard-header {
-    @apply dark:border-zinc-600 !important;
+    @apply dark:border-darkTheme border-theme !important;
 }
 
 .fi-fo-wizard-header-step-label {
-    @apply dark:text-darkTheme !important;
+    @apply dark:text-darkTheme text-theme !important;
 }
 
 .fi-fo-wizard-header-step-icon-ctn {
-    @apply dark:border-zinc-600 dark:bg-zinc-800 !important;
+    @apply dark:border-zinc-600 dark:bg-zinc-800 border-theme !important;
+}
+
+.fi-fo-wizard-step {
+    @apply mb-5 md:border md:dark:border-zinc-600;
 }
 
 .fi-fo-wizard-header-step-indicator {
@@ -154,4 +163,9 @@ tbody {
 /* Modal */
 .fi-modal-window {
     @apply dark:ring-zinc-600 !important;
+}
+
+/* Widget Section */
+.fi-wi-stats-overview-stat {
+    @apply dark:ring-zinc-600 mx-0.5 ring-zinc-300 !important;
 }
