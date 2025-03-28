@@ -33,8 +33,7 @@ $watch('darkMode', val => localStorage.setItem('darkMode', val))"
 
         {{-- Main Content --}}
         <main
-
-            class="m-2 grow overflow-auto rounded-xl sm:px-3 lg:m-2 lg:ms-[19rem] lg:border lg:border-theme lg:bg-cardTheme lg:px-8 lg:py-6 dark:lg:border-darkTheme dark:lg:bg-darkCardTheme">
+            class="mx-4 my-2 grow overflow-auto rounded-xl lg:m-2 lg:ms-[19rem] lg:border lg:border-theme lg:bg-cardTheme lg:px-8 lg:py-6 dark:lg:border-darkTheme dark:lg:bg-darkCardTheme">
 
             {{ $slot }}
         </main>

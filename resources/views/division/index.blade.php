@@ -12,13 +12,11 @@
 
     {{-- Heading --}}
     <div class="flex items-center justify-between">
-        <h1 class="mt-3 text-3xl font-semibold">
+        <h1 class="mt-3 text-2xl font-semibold sm:text-3xl">
             Division List
         </h1>
         <livewire:division.division-create />
     </div>
-
-
 
     <livewire:division.division-table lazy />
 </x-app-layout>

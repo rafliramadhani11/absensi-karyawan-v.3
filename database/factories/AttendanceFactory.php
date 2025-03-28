@@ -18,7 +18,7 @@ class AttendanceFactory extends Factory
      */
     public function definition(): array
     {
-        $users = User::all();
+        $users = User::withoutAdmin()->get();
         $status = Arr::random(['hadir', 'izin', 'tidak hadir']);
 
         return [
@@ -27,7 +27,7 @@ class AttendanceFactory extends Factory
             'alasan' => in_array($status, ['izin', 'tidak hadir']) ? fake()->sentence(3) : null,
 
             'status' => $status,
-            'user_id' => rand(2, 11),
+            'user_id' => $users->random()->id,
             'created_at' => fake()->dateTimeBetween('-12 week', '+1 week'),
         ];
     }

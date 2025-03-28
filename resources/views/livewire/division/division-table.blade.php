@@ -13,9 +13,9 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -78,6 +78,11 @@ new class extends Component implements HasForms, HasTable {
                                 ->readOnly(),
 
                         ])
+                        ->using(function (Model $record, array $data): Model {
+                            $record->update();
+
+                            return $record;
+                        })
                         ->modalHeading(fn($record) => 'Edit Division ' . $record->name)
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->modalWidth(MaxWidth::Large),

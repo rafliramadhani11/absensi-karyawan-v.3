@@ -1,6 +1,6 @@
-<header class="block py-3 sm:px-3 lg:hidden">
+<header class="block px-4 py-3 lg:hidden">
     <div
-        class="flex items-center justify-between border border-theme bg-cardTheme px-4 py-3 dark:border-darkTheme dark:bg-darkCardTheme sm:rounded-xl">
+        class="flex items-center justify-between rounded-xl border border-theme bg-cardTheme px-4 py-3 dark:border-darkTheme dark:bg-darkCardTheme">
         <x-filament::icon-button @click="isOpen = !isOpen" icon="icon-panel-left-open" size="sm" />
 
         <div class="flex sm:gap-x-3 lg:gap-x-0">
