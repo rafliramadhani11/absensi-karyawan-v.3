@@ -67,11 +67,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .fi-ta-cell {
-    @apply dark:bg-zinc-900 !important;
+    @apply dark:bg-zinc-950 dark:lg:bg-zinc-900 bg-zinc-100 lg:bg-white !important;
 }
 
 .fi-ta-header-cell {
-    @apply dark:bg-zinc-900  !important;
+    @apply dark:bg-zinc-950 dark:lg:bg-zinc-900 bg-zinc-100 lg:bg-white  !important;
+}
+
+.fi-ta-actions-header-cell {
+    @apply dark:bg-zinc-950 dark:lg:bg-zinc-900 bg-zinc-100 lg:bg-white  !important;
 }
 
 .fi-ta-table {
@@ -79,11 +83,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .fi-ta-ctn {
-    @apply ring-zinc-300 dark:ring-zinc-600 m-0.5  !important;
-}
-
-.fi-ta-actions-header-cell {
-    @apply dark:bg-zinc-900  !important;
+    @apply ring-0 m-0.5 dark:bg-zinc-950 dark:lg:bg-zinc-900 bg-zinc-100 lg:bg-white  !important;
 }
 
 tbody {
