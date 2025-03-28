@@ -15,9 +15,7 @@
         <h1 class="mt-3 text-2xl font-semibold sm:text-3xl">
             Attendance List
         </h1>
-        <x-filament::button size="sm" class="btn-new-users" icon="heroicon-m-plus" :href="route('user.create')" tag="a">
-            New User
-        </x-filament::button>
+        <livewire:attendance.attendance-create />
     </div>
 
 
