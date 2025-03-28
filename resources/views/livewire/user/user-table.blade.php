@@ -2,8 +2,8 @@
 
 use App\Models\User;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
 use Livewire\Volt\Component;
+use Filament\Tables\Actions\Action;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\BulkAction;
