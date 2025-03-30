@@ -84,15 +84,24 @@ new class extends Component implements HasTable, HasForms {
                             Notification::make()
                                 ->success()
                                 ->title('Successfully delete user')
-                        ),
+                        )
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
 
                     ForceDeleteAction::make()
                         ->icon('heroicon-o-trash')
                         ->visible()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
 
                     RestoreAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
                 ])
                     ->icon('heroicon-o-ellipsis-horizontal')
                     ->iconButton(),
@@ -109,7 +118,11 @@ new class extends Component implements HasTable, HasForms {
                             Notification::make()
                                 ->success()
                                 ->title('Succesfully delete selected user.')
-                        ),
+                        )
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
+
                     BulkAction::make('forceDelete')
                         ->color('danger')
                         ->icon('heroicon-o-trash')
@@ -124,10 +137,16 @@ new class extends Component implements HasTable, HasForms {
                                 ->send();
 
                             $this->redirect(url()->previous());
+                        })
+                        ->after(function () {
+                            $this->dispatch('user-updated');
                         }),
 
                     RestoreBulkAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
                 ]),
             ])->selectCurrentPageOnly();
     }

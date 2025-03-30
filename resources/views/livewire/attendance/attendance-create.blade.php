@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Filament\Forms\Get;
 use App\Models\Division;
 use App\Models\Attendance;
@@ -19,7 +18,6 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Actions\Concerns\InteractsWithActions;
-use Illuminate\Database\Eloquent\Model;
 
 new class extends Component implements HasForms, HasActions {
     use InteractsWithForms, InteractsWithActions;

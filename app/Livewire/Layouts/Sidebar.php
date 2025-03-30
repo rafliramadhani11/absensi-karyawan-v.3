@@ -2,11 +2,12 @@
 
 namespace App\Livewire\Layouts;
 
-use App\Models\Division;
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Division;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Auth;
 
 class Sidebar extends Component
 {
@@ -17,12 +18,14 @@ class Sidebar extends Component
         return redirect('/');
     }
 
+    #[On('user-updated')]
     #[Computed]
     public function userCount()
     {
         return User::where('is_admin', false)->count();
     }
 
+    #[On('division-updated')]
     #[Computed]
     public function divisionCount()
     {

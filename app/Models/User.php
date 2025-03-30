@@ -48,6 +48,15 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function booted()
+    {
+        static::addGlobalScope('divisionNotDeleted', function (Builder $builder) {
+            $builder->whereHas('division', function ($query) {
+                $query->whereNull('deleted_at');
+            });
+        });
+    }
+
     public function scopeWithoutAdmin(Builder $query): void
     {
         $query->where('is_admin', 'false');
