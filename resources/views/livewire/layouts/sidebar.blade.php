@@ -22,7 +22,7 @@
                         <x-nav-link wire:navigate :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             <div class="flex">
                                 <x-filament::icon icon="icon-qr-code" class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
-                                Employees Qr Code
+                                Qr Code Absent
                             </div>
                         </x-nav-link>
                     </li>

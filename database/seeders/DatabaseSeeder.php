@@ -17,21 +17,21 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        User::create([
-            'is_admin' => true,
-            'email' => 'admin@mail.com',
+        // User::create([
+        //     'is_admin' => true,
+        //     'email' => 'admin@mail.com',
 
-            'password' => Hash::make(123),
-            'nik' => null,
-            'name' => 'Admin',
-            'phone' => null,
-            'gender' => null,
-            'birth_date' => null,
-            'address' => null,
+        //     'password' => Hash::make(123),
+        //     'nik' => null,
+        //     'name' => 'Admin',
+        //     'phone' => null,
+        //     'gender' => null,
+        //     'birth_date' => null,
+        //     'address' => null,
 
-            'role' => null,
-            'division_id' => null,
-        ]);
+        //     'role' => null,
+        //     'division_id' => null,
+        // ]);
 
         // Division::factory(5)->create();
         // User::factory(20)->create();
