@@ -21,16 +21,16 @@ class AttendancesChart extends ChartWidget
     public Carbon $toDate;
 
     #[On('updateFromDate')]
-    public function updateFromDate(string $from): void
+    public function updateFromDate(?string $from): void
     {
-        $this->fromDate = Carbon::parse($from);
+        $this->fromDate =  Carbon::parse($from);
         $this->updateChartData();
     }
 
     #[On('updateToDate')]
-    public function updateToDate(string $to): void
+    public function updateToDate(?string $to): void
     {
-        $this->toDate = Carbon::parse($to);
+        $this->toDate =  Carbon::parse($to);
         $this->updateChartData();
     }
 
@@ -40,6 +40,7 @@ class AttendancesChart extends ChartWidget
             {
                 scales: {
                     y: {
+                      beginAtZero: true,
                       ticks: {
                         stepSize: 1,
                       }
@@ -57,6 +58,7 @@ class AttendancesChart extends ChartWidget
         $hadir = Trend::query(
             Attendance::query()->where('status', 'hadir')
         )
+            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();
@@ -64,6 +66,7 @@ class AttendancesChart extends ChartWidget
         $izin = Trend::query(
             Attendance::query()->where('status', 'izin')
         )
+            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();
@@ -71,6 +74,7 @@ class AttendancesChart extends ChartWidget
         $tidakHadir = Trend::query(
             Attendance::query()->where('status', 'tidak hadir')
         )
+            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();

@@ -21,13 +21,13 @@ class StatsOverview extends BaseWidget
     public ?Carbon $toDate;
 
     #[On('updateFromDate')]
-    public function updateFromDate(string $from): void
+    public function updateFromDate(?string $from): void
     {
         $this->fromDate = Carbon::parse($from);
     }
 
     #[On('updateToDate')]
-    public function updateToDate(string $to): void
+    public function updateToDate(?string $to): void
     {
         $this->toDate = Carbon::parse($to);
     }
@@ -54,6 +54,7 @@ class StatsOverview extends BaseWidget
         $attendanceChart = Trend::query(
             Attendance::query()
         )
+            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();
@@ -81,9 +82,9 @@ class StatsOverview extends BaseWidget
                 ->color('primary'),
 
             Stat::make(
-                'Total Employee',
+                'Total Attendances',
                 Attendance::query()
-                    ->whereBetween('created_at', [$fromDate, $toDate])
+                    ->whereBetween('date', [$fromDate, $toDate])
                     ->count()
             )
                 ->description('Daily data grouped by week ')

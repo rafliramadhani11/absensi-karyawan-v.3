@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Carbon\Carbon;
 use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Widgets\Widget;
@@ -27,13 +28,19 @@ class Filters extends Widget implements HasForms
                         DatePicker::make('from')
                             ->maxDate(fn(Get $get) => $get('to') ?: now())
                             ->live()
-                            ->afterStateUpdated(fn(?string $state) => $this->dispatch('updateFromDate', from: $state)),
+                            ->afterStateUpdated(function (?string $state) {
+                                $stateWithTime = Carbon::parse($state)->format('Y-m-d') . ' ' . now()->format('H:i:s');
+                                $this->dispatch('updateFromDate', from: $stateWithTime);
+                            }),
 
                         DatePicker::make('to')
                             ->minDate(fn(Get $get) => $get('from') ?: now())
                             ->maxDate(now())
                             ->live()
-                            ->afterStateUpdated(fn(?string $state) => $this->dispatch('updateToDate', to: $state)),
+                            ->afterStateUpdated(function (?string $state) {
+                                $stateWithTime = Carbon::parse($state)->format('Y-m-d') . ' ' . now()->format('H:i:s');
+                                $this->dispatch('updateToDate', to: $stateWithTime);
+                            }),
                     ]),
             ]);
     }

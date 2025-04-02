@@ -32,7 +32,7 @@ new class extends Component implements HasForms, HasActions {
             ->form([
                 Grid::make(['xl' => 2])
                     ->schema([
-                        DatePicker::make('created_at')
+                        DatePicker::make('date')
                             ->default(now())
                             ->label('Date')
                             ->displayFormat('j F Y')
