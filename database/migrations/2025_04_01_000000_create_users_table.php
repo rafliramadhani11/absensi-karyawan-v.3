@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->boolean('is_admin')->default(false);
+            $table->boolean('is_hrd')->default(false);
 
             $table->string('email')->unique();
             $table->string('password');

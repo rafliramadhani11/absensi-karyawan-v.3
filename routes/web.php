@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{division}/detail', fn(Division $division) => view('division.detail', compact('division')))
             ->name('division.detail');
     });
-  
+
     // Users
     Route::prefix('users')->group(function () {
         Route::get('/', fn() => view('user.index'))
@@ -39,7 +39,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/{attendance}/edit', fn(Attendance $attendance) => view('attendance.edit', compact('attendance')))
             ->name('attendance.edit');
     });
+
+    // Qr Absent
+    Route::prefix('absents')->group(function () {
+        Route::get('/', fn() => view('absent.index'))
+            ->name('absent.index');
+    });
 });
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
