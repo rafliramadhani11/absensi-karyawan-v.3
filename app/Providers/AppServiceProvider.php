@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Http\Request;
 use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Auth;
 use Filament\Support\Enums\Alignment;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Filament\Notifications\Notification;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -28,6 +30,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Blade::if('admin', function () {
+            return Auth::check() && Auth::user()->is_admin;
+        });
+
+        Blade::if('hrd', function () {
+            return Auth::check() && Auth::user()->is_hrd;
+        });
+
+        Blade::if('hrdAndEmployee', function () {
+            return Auth::check() && !Auth::user()->is_admin;
+        });
+
+
+
         Notifications::alignment(Alignment::End);
         FilamentColor::register([
             'primary' => Color::Zinc
