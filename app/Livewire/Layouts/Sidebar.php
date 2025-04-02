@@ -22,7 +22,7 @@ class Sidebar extends Component
     #[Computed]
     public function userCount()
     {
-        return User::where('is_admin', false)->count();
+        return User::withoutAdmin()->divisionNotDeleted()->count();
     }
 
     #[On('division-updated')]

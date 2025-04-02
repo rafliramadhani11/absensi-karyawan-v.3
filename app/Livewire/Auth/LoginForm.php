@@ -31,13 +31,12 @@ class LoginForm extends Component implements HasForms
                     ->label('Email Address')
                     ->email()
                     ->autofocus()
-                    ->autocomplete()
                     ->required(),
+
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
                     ->revealable()
-                    ->autocomplete()
                     ->required()
             ])
             ->statePath('data');
@@ -48,14 +47,17 @@ class LoginForm extends Component implements HasForms
         $this->ensureIsNotRateLimited();
 
         $validated = $this->form->getState();
+
         if (Auth::attempt($validated)) {
             session()->regenerate();
 
             $this->redirect(route('dashboard'));
         }
+
         throw ValidationException::withMessages([
             'email' => "The provided credentials do not match our records.",
         ]);
+
         $this->redirect(url()->previous(), true);
     }
 

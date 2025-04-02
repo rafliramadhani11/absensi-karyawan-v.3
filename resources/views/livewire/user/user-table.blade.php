@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -33,7 +34,7 @@ new class extends Component implements HasTable, HasForms {
     {
         return $table
             ->query(function () {
-                $query = User::withoutAdmin();
+                $query = User::withoutAdmin()->divisionNotDeleted();
 
                 if ($this->filter === 'trashed') {
                     return $query->onlyTrashed();
