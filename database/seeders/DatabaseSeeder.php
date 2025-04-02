@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'admin@mail.com',
         //     'is_admin' => true
         // ]);
-        // User::factory(10)->create();
-        Attendance::factory(50)->create();
+        User::factory(100)->create();
+        // Attendance::factory(50)->create();
     }
 }

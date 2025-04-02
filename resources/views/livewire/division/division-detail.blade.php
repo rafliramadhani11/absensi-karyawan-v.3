@@ -97,17 +97,24 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
+
                 TextColumn::make('nik')
                     ->copyable()
                     ->searchable(),
+
+                TextColumn::make('role')
+                    ->sortable(),
+
                 TextColumn::make('name')
                     ->copyable()
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('email')
                     ->copyable()
                     ->searchable()
                     ->sortable(),
+
                 TextColumn::make('gender')
                     ->label('Jenis Kelamin')
                     ->sortable()
