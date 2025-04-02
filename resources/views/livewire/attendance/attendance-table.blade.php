@@ -38,18 +38,18 @@ new class extends Component implements HasTable, HasForms {
             })
             ->searchPlaceholder('Employee Name ...')
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
-            ->defaultSort('updated_at', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(8)
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('created_at')
+                TextColumn::make('date')
                     ->label('Date')
-                    ->dateTime('l')
+                    ->date('l')
                     ->sortable()
-                    ->description(fn($state) => $state->translatedFormat('j F Y')),
+                    ->description(fn($state) => Carbon::parse($state)->format('j F Y')),
 
                 TextColumn::make('user.name')
                     ->sortable()

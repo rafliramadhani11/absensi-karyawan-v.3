@@ -16,9 +16,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Division::factory(2)->create();
+        Division::factory(5)->create();
         User::factory(20)->create();
-        Attendance::factory(50)->create();
         User::factory()->create([
             'is_admin' => true,
             'email' => 'admin@mail.com',
@@ -34,5 +33,6 @@ class DatabaseSeeder extends Seeder
             'role' => null,
             'division_id' => null,
         ]);
+        Attendance::factory(100)->create();
     }
 }
