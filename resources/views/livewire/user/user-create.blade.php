@@ -1,7 +1,11 @@
 <?php
 
 use App\Models\User;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use App\Models\Division;
 use Filament\Forms\Form;
+use Illuminate\Support\Str;
 use Livewire\Volt\Component;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
@@ -17,6 +21,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+
+use function Livewire\after;
 
 new class extends Component implements HasForms {
     use InteractsWithForms;
@@ -33,6 +40,7 @@ new class extends Component implements HasForms {
         return $form
             ->schema([
                 Wizard::make([
+
                     Step::make('Personal Account')
                         ->completedIcon('heroicon-m-check-circle')
                         ->schema([
@@ -58,7 +66,42 @@ new class extends Component implements HasForms {
                                 ])
                         ])->columns(2),
 
+                    Step::make('Division')
+                        ->completedIcon('heroicon-m-check-circle')
+                        ->schema([
+                            Select::make('division_id')
+                                ->label('Division')
+                                ->options(Division::all()->pluck('name', 'id'))
+                                ->required()
+                                ->live()
+                                ->native(false),
+
+                            Select::make('role')
+                                ->label('Position')
+                                ->options([
+                                    'Kepala Divisi' => 'Kepala Divisi',
+                                    'Anggota Divisi' => 'Anggota Divisi'
+                                ])
+                                //     // ->disableOptionWhen(function (Get $get, $value) {
+                                //     //     $divisionId = $get('division_id');
+
+                                //     //     $kepalaDivisiExists = User::where('division_id', $divisionId)
+                                //     //         ->where('role', 'Kepala Divisi')
+                                //     //         ->exists();
+
+                                //     //     return $value === 'Kepala Divisi' && $kepalaDivisiExists;
+                                //     // })
+                                ->disableOptionWhen(fn(Get $get, string $value): bool =>  $value === 'Kepala Divisi' && User::where('division_id', $get('division_id'))
+                                    ->where('role', 'Kepala Divisi')
+                                    ->exists())
+                                ->native(false)
+
+                        ])
+                        ->columns(2),
+
+
                     Step::make('Personal Information')
+                        ->completedIcon('heroicon-m-check-circle')
                         ->schema([
                             Grid::make([
                                 'sm' => 2,
