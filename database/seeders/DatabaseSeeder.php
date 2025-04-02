@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         User::create([
             'is_admin' => true,
             'email' => 'admin@mail.com',
