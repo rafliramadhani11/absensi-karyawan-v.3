@@ -27,7 +27,9 @@ return new class extends Migration
             $table->string('address')->nullable();
 
             $table->enum('role', ['Kepala Divisi', 'Anggota Divisi'])->nullable();
-            $table->foreignId('division_id')->references('id')->on('divisions')->onDelete('cascade');
+
+            $table->foreignId('division_id')->nullable()->constrained('divisions', 'id', 'users_division_id')
+                ->cascadeOnDelete();
 
             $table->softDeletes();
             $table->timestamps();

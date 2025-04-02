@@ -19,7 +19,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Tables\Actions\ForceDeleteAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Livewire\Attributes\Computed;
 
@@ -38,7 +38,7 @@ new class extends Component implements HasTable, HasForms {
             })
             ->searchPlaceholder('Employee Name ...')
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('updated_at', 'desc')
             ->defaultPaginationPageOption(8)
             ->columns([
                 TextColumn::make('index')
@@ -94,6 +94,7 @@ new class extends Component implements HasTable, HasForms {
                             Grid::make(['xl' => 2])
                                 ->schema([
                                     DatePicker::make('created_at')
+                                        ->label('Date')
                                         ->displayFormat('j F Y')
                                         ->required()
                                         ->native(false)
@@ -168,9 +169,11 @@ new class extends Component implements HasTable, HasForms {
                         })
                         ->modalWidth(MaxWidth::Large),
 
-                    ForceDeleteAction::make()
+                    DeleteAction::make()
+                        ->icon('heroicon-o-trash')
                         ->visible()
                         ->requiresConfirmation()
+
                 ])->icon('heroicon-o-ellipsis-horizontal')
                     ->iconButton()
             ]);
@@ -202,8 +205,8 @@ new class extends Component implements HasTable, HasForms {
     }
 }; ?>
 
-<div class="mt-5 space-y-10">
-    <div class="flex justify-center">
+<div class="mt-5">
+    <div class="flex justify-center ">
         <x-filament::tabs>
             <x-filament::tabs.item
                 :active="$this->filter === 'all'"
@@ -252,7 +255,7 @@ new class extends Component implements HasTable, HasForms {
         </x-filament::tabs>
     </div>
 
-    <div>
+    <div class="mt-10">
         {{ $this->table }}
     </div>
 </div>

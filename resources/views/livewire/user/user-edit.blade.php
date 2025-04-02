@@ -159,6 +159,16 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                             TextEntry::make('created_at'),
                             TextEntry::make('updated_at'),
                         ])
+                    ]),
+
+                Section::make('Division Information')
+                    ->schema([
+                        ComponentsGrid::make([
+                            'default' => 2
+                        ])->schema([
+                            TextEntry::make('division.name'),
+                            TextEntry::make('role'),
+                        ])
                     ])
             ]);
     }

@@ -2,8 +2,8 @@
 
 use App\Models\User;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
 use Livewire\Volt\Component;
+use Filament\Tables\Actions\Action;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\BulkAction;
@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -33,7 +34,7 @@ new class extends Component implements HasTable, HasForms {
     {
         return $table
             ->query(function () {
-                $query = User::withoutAdmin();
+                $query = User::withoutAdmin()->divisionNotDeleted();
 
                 if ($this->filter === 'trashed') {
                     return $query->onlyTrashed();
@@ -84,15 +85,24 @@ new class extends Component implements HasTable, HasForms {
                             Notification::make()
                                 ->success()
                                 ->title('Successfully delete user')
-                        ),
+                        )
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
 
                     ForceDeleteAction::make()
                         ->icon('heroicon-o-trash')
                         ->visible()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
 
                     RestoreAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
                 ])
                     ->icon('heroicon-o-ellipsis-horizontal')
                     ->iconButton(),
@@ -109,7 +119,11 @@ new class extends Component implements HasTable, HasForms {
                             Notification::make()
                                 ->success()
                                 ->title('Succesfully delete selected user.')
-                        ),
+                        )
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
+
                     BulkAction::make('forceDelete')
                         ->color('danger')
                         ->icon('heroicon-o-trash')
@@ -124,10 +138,16 @@ new class extends Component implements HasTable, HasForms {
                                 ->send();
 
                             $this->redirect(url()->previous());
+                        })
+                        ->after(function () {
+                            $this->dispatch('user-updated');
                         }),
 
                     RestoreBulkAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('user-updated');
+                        }),
                 ]),
             ])->selectCurrentPageOnly();
     }

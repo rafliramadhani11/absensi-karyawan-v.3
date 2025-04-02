@@ -13,9 +13,9 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
@@ -78,6 +78,11 @@ new class extends Component implements HasForms, HasTable {
                                 ->readOnly(),
 
                         ])
+                        ->using(function (Model $record, array $data): Model {
+                            $record->update();
+
+                            return $record;
+                        })
                         ->modalHeading(fn($record) => 'Edit Division ' . $record->name)
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->modalWidth(MaxWidth::Large),
@@ -90,15 +95,24 @@ new class extends Component implements HasForms, HasTable {
                             Notification::make()
                                 ->success()
                                 ->title('Successfully delete user')
-                        ),
+                        )
+                        ->after(function () {
+                            $this->dispatch('division-updated');
+                        }),
 
                     ForceDeleteAction::make()
                         ->icon('heroicon-o-trash')
                         ->visible()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('division-updated');
+                        }),
 
                     RestoreAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('division-updated');
+                        }),
                 ])
                     ->icon('heroicon-o-ellipsis-horizontal')
                     ->iconButton(),
@@ -115,7 +129,11 @@ new class extends Component implements HasForms, HasTable {
                             Notification::make()
                                 ->success()
                                 ->title('Succesfully delete selected division.')
-                        ),
+                        )
+                        ->after(function () {
+                            $this->dispatch('division-updated');
+                        }),
+
                     BulkAction::make('forceDelete')
                         ->color('danger')
                         ->icon('heroicon-o-trash')
@@ -130,10 +148,16 @@ new class extends Component implements HasForms, HasTable {
                                 ->send();
 
                             $this->redirect(url()->previous());
+                        })
+                        ->after(function () {
+                            $this->dispatch('division-updated');
                         }),
 
                     RestoreBulkAction::make()
-                        ->requiresConfirmation(),
+                        ->requiresConfirmation()
+                        ->after(function () {
+                            $this->dispatch('division-updated');
+                        }),
                 ]),
             ])->selectCurrentPageOnly();
     }
