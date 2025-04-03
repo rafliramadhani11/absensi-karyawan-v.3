@@ -17,9 +17,11 @@ $watch('darkMode', val => localStorage.setItem('darkMode', val))"
 
     <head>
         @include('partials.head')
+
+        @stack('scripts')
     </head>
 
-    <body class="h-full min-h-screen bg-theme text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100 lg:flex">
+    <body class="h-full min-h-screen antialiased bg-theme text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 lg:flex">
 
         <div x-data="{ isOpen: false }" @click.outside="isOpen = false" x-cloak>
             {{-- Sidebar --}}
@@ -37,6 +39,7 @@ $watch('darkMode', val => localStorage.setItem('darkMode', val))"
 
             {{ $slot }}
         </main>
+
 
         @livewire('notifications')
 
