@@ -45,7 +45,7 @@ new class extends Component implements HasTable, HasForms {
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('date')
+                TextColumn::make('created_at')
                     ->label('Date')
                     ->date('l')
                     ->sortable()

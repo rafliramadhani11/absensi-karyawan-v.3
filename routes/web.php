@@ -5,6 +5,7 @@ use App\Models\Division;
 use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AttendanceController;
 
 Route::get('/', fn() => view('welcome'));
 
@@ -44,6 +45,18 @@ Route::middleware('auth')->group(function () {
     Route::prefix('absents')->group(function () {
         Route::get('/', fn() => view('absent.index'))
             ->name('absent.index');
+
+        Route::get('absen-datang', [AttendanceController::class, 'absenDatang'])
+            ->name('user.absen-datang');
+
+        Route::get('absen-pulang', [AttendanceController::class, 'absenPulang'])
+            ->name('user.absen-pulang');
+    });
+
+    // Employee qr code
+    Route::prefix('employees-qr-code')->group(function () {
+        Route::get('/', fn() => view('admin.employees-qr-code'))
+            ->name('admin.employees-qr-code');
     });
 });
 

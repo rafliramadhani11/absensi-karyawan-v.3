@@ -51,7 +51,7 @@ class LoginForm extends Component implements HasForms
         if (Auth::attempt($validated)) {
             session()->regenerate();
 
-            $this->redirect(route('dashboard'));
+            return redirect()->intended(Auth::user()->is_admin ? route('admin.employees-qr-code') : route('dashboard'));
         }
 
         throw ValidationException::withMessages([
