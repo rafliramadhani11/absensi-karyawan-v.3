@@ -22,8 +22,7 @@ class DatabaseSeeder extends Seeder
             'name' => $name,
             'slug' => Str::slug($name),
         ]);
-
-
+      
         User::create([
             'is_hrd' => true,
             'email' => 'hrd@mail.com',
@@ -34,6 +33,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'Kepala Divisi',
             'division_id' => 1,
         ]);
+
 
         // Division::factory(5)->create();
         // User::factory(20)->create();

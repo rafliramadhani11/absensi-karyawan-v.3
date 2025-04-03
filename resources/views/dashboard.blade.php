@@ -1,4 +1,8 @@
-@section('title', 'Dashboard')
+@if (Auth::check() && Auth::user()->is_admin)
+    @section('title', 'Qr Code Absent')
+@else
+    @section('title', 'Dashboard')
+@endif
 
 <x-app-layout>
     <div class="space-y-10">
