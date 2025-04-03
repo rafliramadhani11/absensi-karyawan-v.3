@@ -57,7 +57,7 @@ class AttendancesChart extends ChartWidget
         $hadir = Trend::query(
             Attendance::query()->where('status', 'hadir')
         )
-            ->dateColumn('date')
+
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();
@@ -65,7 +65,7 @@ class AttendancesChart extends ChartWidget
         $izin = Trend::query(
             Attendance::query()->where('status', 'izin')
         )
-            ->dateColumn('date')
+
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();
@@ -73,7 +73,7 @@ class AttendancesChart extends ChartWidget
         $tidakHadir = Trend::query(
             Attendance::query()->where('status', 'tidak hadir')
         )
-            ->dateColumn('date')
+
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();

@@ -54,7 +54,7 @@ class StatsOverview extends BaseWidget
         $attendanceChart = Trend::query(
             Attendance::query()
         )
-            ->dateColumn('date')
+            ->dateColumn('created_at')
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();
@@ -84,7 +84,7 @@ class StatsOverview extends BaseWidget
             Stat::make(
                 'Total Attendances',
                 Attendance::query()
-                    ->whereBetween('date', [$fromDate, $toDate])
+                    ->whereBetween('created_at', [$fromDate, $toDate])
                     ->count()
             )
                 ->description('Daily data grouped by week ')

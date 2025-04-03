@@ -22,15 +22,13 @@ class AttendanceFactory extends Factory
         $status = Arr::random(['hadir', 'izin', 'tidak hadir']);
 
         return [
-            'date' => fake()->dateTimeBetween('-3 months', 'now'),
-
             'absen_datang' => $status === 'hadir' ? fake()->dateTimeBetween('-8 hours', '-4 hours') : null,
             'absen_pulang' => $status === 'hadir' ? fake()->dateTimeBetween('-4 hours') : null,
             'alasan' => in_array($status, ['izin', 'tidak hadir']) ? fake()->sentence(3) : null,
 
             'status' => $status,
             // 'user_id' => $users->random()->id,
-            'user_id' => rand(1, 20),
+            'user_id' => 2,
             'created_at' => fake()->dateTimeBetween('-12 week', '+1 week'),
         ];
     }
