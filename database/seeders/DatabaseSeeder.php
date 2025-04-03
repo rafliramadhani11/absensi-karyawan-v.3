@@ -17,27 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::create([
-        //     'is_admin' => true,
-        //     'email' => 'admin@mail.com',
-
-        //     'password' => Hash::make(123),
-        //     'nik' => null,
-        //     'name' => 'Admin',
-        //     'phone' => null,
-        //     'gender' => null,
-        //     'birth_date' => null,
-        //     'address' => null,
-
-        //     'role' => null,
-        //     'division_id' => null,
-        // ]);
-
         $name = fake()->jobTitle();
         Division::create([
             'name' => $name,
             'slug' => Str::slug($name),
         ]);
+
 
         User::create([
             'is_hrd' => true,
