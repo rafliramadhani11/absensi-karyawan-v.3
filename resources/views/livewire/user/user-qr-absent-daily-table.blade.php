@@ -14,6 +14,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 new class extends Component implements HasForms, HasTable {
     use InteractsWithTable, InteractsWithForms;
 
+
     public function table(Table $table): Table
     {
         return $table

@@ -41,10 +41,12 @@ $watch('darkMode', val => localStorage.setItem('darkMode', val))"
         </main>
 
 
-        @livewire('notifications')
 
+        @livewire('notifications')
         @livewireScripts
         @filamentScripts
+
+
     </body>
 
 </html>
