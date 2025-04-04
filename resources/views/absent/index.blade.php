@@ -9,7 +9,7 @@
         {{-- <livewire:attendance.attendance-create /> --}}
     </div>
 
-    <div wire:ignore>
+    <div wire:ignore class="mt-10">
         <div id="reader" width="10px" class="md:w-1/2 md:translate-x-1/2"></div>
     </div>
 
@@ -43,5 +43,29 @@
     {{-- ----------------------------------------------------------------- --}}
 
     <livewire:user.user-qr-absent-daily-table lazy />
+
+    <script src="{{ asset('js/html5-qrcode.min.js') }}" type="text/javascript"></script>
+    <script>
+        console.log('im here');
+
+        function onScanSuccess(decodedText, decodedResult) {
+            window.location.href = decodedText;
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // for example:
+            console.warn(`Code scan error = ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", {
+            fps: 10,
+            qrbox: {
+                width: 250,
+                height: 250
+            }
+        }, false);
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    </script>
 
 </x-app-layout>

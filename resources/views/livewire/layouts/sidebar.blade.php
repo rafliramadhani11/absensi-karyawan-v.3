@@ -17,7 +17,7 @@
 
                 @admin
                     <li>
-                        <x-nav-link :href="route('admin.employees-qr-code')" :active="request()->routeIs('admin.employees-qr-code*')">
+                        <x-nav-link wire:navigate :href="route('admin.employees-qr-code')" :active="request()->routeIs('admin.employees-qr-code*')">
                             <div class="flex">
                                 <x-filament::icon icon="icon-qr-code" class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
                                 Employees Qr Code
@@ -28,7 +28,7 @@
 
                 @hrdAndEmployee
                     <li>
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link wire:navigate :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                             <div class="flex">
                                 <x-filament::icon icon="heroicon-o-home"
                                     class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
@@ -61,7 +61,7 @@
                             <p class="mt-5 mb-3 text-xs text-secondary dark:text-darkSecondary">Resources</p>
 
                             <li>
-                                <x-nav-link :href="route('division.index')" :active="request()->routeIs('division*')">
+                                <x-nav-link wire:navigate :href="route('division.index')" :active="request()->routeIs('division*')">
                                     <div class="flex">
                                         <x-filament::icon icon="heroicon-o-user-group"
                                             class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
@@ -74,7 +74,7 @@
                             </li>
 
                             <li>
-                                <x-nav-link :href="route('user.index')" :active="request()->routeIs('user*')">
+                                <x-nav-link wire:navigate :href="route('user.index')" :active="request()->routeIs('user*')">
                                     <div class="flex">
                                         <x-filament::icon icon="heroicon-o-user"
                                             class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
@@ -87,7 +87,7 @@
                             </li>
 
                             <li>
-                                <x-nav-link :href="route('attendance.index')" :active="request()->routeIs('attendance*')">
+                                <x-nav-link wire:navigate :href="route('attendance.index')" :active="request()->routeIs('attendance*')">
                                     <div class="flex">
                                         <x-filament::icon icon="icon-calendar-check-2"
                                             class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
