@@ -1,13 +1,25 @@
 <?php
 
 use Carbon\Carbon;
+use Filament\Forms\Get;
 use App\Models\Attendance;
 use Filament\Tables\Table;
 use Livewire\Volt\Component;
+use Filament\Forms\Components\Grid;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
+use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 
@@ -61,6 +73,100 @@ new class extends Component implements HasForms, HasTable {
                         'proses' => 'icon-timer',
                     })
                     ->sortable(),
+            ])
+            ->actions([
+                ActionGroup::make([
+                    EditAction::make()
+                        ->label('Detail')
+                        ->color('info')
+                        ->icon('heroicon-o-eye')
+                        ->form([
+                            Grid::make(['xl' => 2])
+                                ->schema([
+                                    DatePicker::make('created_at')
+                                        ->label('Date')
+                                        ->displayFormat('j F Y')
+                                        ->required()
+                                        ->native(false)
+                                        ->columnSpan(2),
+                                    ToggleButtons::make('status')
+                                        ->options([
+                                            'hadir' => 'Hadir',
+                                            'proses' => 'Proses',
+                                            'izin' => 'Izin',
+                                            'tidak hadir' => 'Tidak Hadir',
+                                        ])
+                                        ->colors([
+                                            'hadir' => 'success',
+                                            'izin' => 'warning',
+                                            'tidak hadir' => 'danger',
+                                        ])
+                                        ->live()
+                                        ->required()
+                                        ->inline()
+                                        ->columnSpanFull(),
+                                ]),
+                            Grid::make(['xl' => 2])
+                                ->schema([
+                                    DateTimePicker::make('absen_datang')
+                                        // ->label('Absen Datang')
+                                        ->label('In')
+                                        ->date(false)
+                                        ->seconds(false)
+                                        ->native(false)
+                                        ->visible(
+                                            fn(Get $get): bool => in_array($get('status'), ['hadir', 'proses'])
+                                        )
+                                        ->required(),
+
+                                    DateTimePicker::make('absen_pulang')
+                                        // ->label('Absen Pulang')
+                                        ->label('Out')
+                                        ->date(false)
+                                        ->seconds(false)
+                                        ->native(false)
+                                        ->visible(
+                                            fn(Get $get): bool => in_array($get('status'), ['hadir', 'proses'])
+                                        )
+                                        ->required(),
+
+                                    TextInput::make('alasan')
+                                        ->label('Reason')
+                                        ->minLength(3)
+                                        ->required()
+                                        ->hidden(
+                                            fn(Get $get): bool => in_array($get('status'), ['hadir', 'proses'])
+                                        )->columnSpan(['xl' => 2]),
+                                ])
+                        ])
+                        ->modalHeading(fn($record) => 'Detail Attendance ' . $record->user->name)
+                        ->modalFooterActionsAlignment(Alignment::Center)
+                        ->using(function (Model $record, array $data): Model {
+                            $updateData = [
+                                'status' => $data['status'],
+                                'alasan' => null,
+                                'absen_datang' => $data['absen_datang'] ?? null,
+                                'absen_pulang' => $data['absen_pulang'] ?? null,
+                            ];
+
+                            if (in_array($data['status'], ['izin', 'tidak hadir'])) {
+                                $updateData['alasan'] = $data['alasan'];
+                                $updateData['absen_datang'] = null;
+                                $updateData['absen_pulang'] = null;
+                            }
+
+                            $record->update($updateData);
+                            return $record;
+                        })
+                        ->modalWidth(MaxWidth::Large),
+
+                    DeleteAction::make()
+                        ->icon('heroicon-o-trash')
+                        ->visible()
+                        ->requiresConfirmation()
+
+                ])->icon('heroicon-o-ellipsis-horizontal')
+                    ->iconButton()
             ]);
     }
 
