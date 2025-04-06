@@ -41,6 +41,15 @@ Route::middleware('auth')->group(function () {
             ->name('attendance.edit');
     });
 
+    // Salary
+    Route::prefix('salaries')->group(function () {
+        Route::get('/', fn() => view('salary.index'))
+            ->name('salary.index');
+
+        Route::get('create', fn() => view('salary.create'))
+            ->name('salary.create');
+    });
+
     // Qr Absent
     Route::prefix('absents')->group(function () {
         Route::get('/', fn() => view('absent.index'))

@@ -58,7 +58,6 @@ class AttendancesChart extends ChartWidget
         $hadir = Trend::query(
             Attendance::query()->where('status', 'hadir')
         )
-
             ->between(start: $fromDate, end: $toDate)
             ->perDay()
             ->count();

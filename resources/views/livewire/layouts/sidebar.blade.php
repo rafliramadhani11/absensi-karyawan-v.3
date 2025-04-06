@@ -95,6 +95,16 @@
                                     </div>
                                 </x-nav-link>
                             </li>
+
+                            <li>
+                                <x-nav-link wire:navigate :href="route('salary.index')" :active="request()->routeIs('salary*')">
+                                    <div class="flex">
+                                        <x-filament::icon icon="heroicon-o-banknotes"
+                                            class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
+                                        Salaries
+                                    </div>
+                                </x-nav-link>
+                            </li>
                         </ul>
                     </li>
                 @endhrd

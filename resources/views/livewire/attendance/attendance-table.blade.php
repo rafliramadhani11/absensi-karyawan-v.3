@@ -5,7 +5,9 @@ use Filament\Forms\Get;
 use App\Models\Attendance;
 use Filament\Tables\Table;
 use Livewire\Volt\Component;
+use Livewire\Attributes\Computed;
 use Filament\Forms\Components\Grid;
+use Livewire\Attributes\Renderless;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
@@ -16,12 +18,11 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Livewire\Attributes\Computed;
 
 new class extends Component implements HasTable, HasForms {
     use InteractsWithTable, InteractsWithForms;
@@ -52,9 +53,8 @@ new class extends Component implements HasTable, HasForms {
                     ->description(fn($state) => Carbon::parse($state)->format('j F Y')),
 
                 TextColumn::make('user.name')
-                    ->sortable()
-                    ->copyable()
                     ->label('Employee')
+                    ->sortable()
                     ->searchable(),
 
                 TextColumn::make('absen_datang')
@@ -76,11 +76,13 @@ new class extends Component implements HasTable, HasForms {
                         'hadir' => 'success',
                         'izin' => 'warning',
                         'tidak hadir' => 'danger',
+                        'proses' => 'gray'
                     })
                     ->icon(fn(string $state): string => match ($state) {
                         'hadir' => 'heroicon-o-check-circle',
                         'izin' => 'heroicon-o-envelope',
                         'tidak hadir' => 'heroicon-o-x-circle',
+                        'proses' => 'icon-timer',
                     })
                     ->sortable(),
             ])

@@ -28,8 +28,8 @@ class AttendanceFactory extends Factory
 
             'status' => $status,
             // 'user_id' => $users->random()->id,
-            'user_id' => 2,
-            'created_at' => fake()->dateTimeBetween('-12 week', '+1 week'),
+            'user_id' => 3,
+            'created_at' => fake()->dateTimeBetween('-1 week', '+3 week'),
         ];
     }
 }
