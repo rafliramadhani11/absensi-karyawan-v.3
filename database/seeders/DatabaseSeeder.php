@@ -25,6 +25,13 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // User::create([
+        //     'is_admin' => true,
+        //     'name' => 'Admin',
+        //     'email' => 'admin@mail.com',
+        //     'password' => Hash::make(123),
+        // ]);
+
+        // User::create([
         //     'is_hrd' => true,
         //     'email' => 'hrd@mail.com',
         //     'password' => Hash::make(123),
@@ -42,7 +49,7 @@ class DatabaseSeeder extends Seeder
 
 
         // Division::factory(3)->create();
-        // User::factory(10)->create();
-        Attendance::factory(20)->create();
+        // User::factory(1)->create();
+        Attendance::factory(10)->create();
     }
 }

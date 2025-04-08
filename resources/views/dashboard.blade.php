@@ -12,14 +12,14 @@
             </h1>
         @endadmin
 
-        @hrdAndEmployee
-            <livewire:filters />
 
-            @hrd
-                @livewire(App\Livewire\StatsOverview::class)
-                @livewire(App\Livewire\AttendancesChart::class)
-            @endhrd
-        @endhrdAndEmployee
+        <livewire:filters />
+
+        @hrd
+            @livewire(App\Livewire\StatsOverview::class)
+            @livewire(App\Livewire\AttendancesChart::class)
+        @endhrd
+
 
     </div>
 </x-app-layout>

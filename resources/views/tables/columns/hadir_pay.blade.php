@@ -10,8 +10,9 @@
         ->whereMonth('date', $monthFilter)
         ->whereYear('date', $yearFilter)
         ->count();
-@endphp
 
+    $hadir_pay = $total_hadir * 200000;
+@endphp
 <div class="ms-3">
-    {{ $total_hadir }}
+    Rp. + {{ number_format($hadir_pay, 0, ',', '.') }}
 </div>

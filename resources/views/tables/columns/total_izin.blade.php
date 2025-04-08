@@ -5,13 +5,13 @@
     $yearFilter = $this->getTableFilterState('date')['year'] ?? now()->year;
 
     $userId = $getRecord()->id;
-    $total_hadir = Attendance::where('user_id', $userId)
-        ->where('status', 'hadir')
+    $total_izin = Attendance::where('user_id', $userId)
+        ->where('status', 'izin')
         ->whereMonth('date', $monthFilter)
         ->whereYear('date', $yearFilter)
         ->count();
 @endphp
 
 <div class="ms-3">
-    {{ $total_hadir }}
+    {{ $total_izin }}
 </div>

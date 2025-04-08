@@ -29,7 +29,9 @@ class Filters extends Widget implements HasForms
                             ->maxDate(fn(Get $get) => $get('to') ?: now())
                             ->live()
                             ->afterStateUpdated(function (?string $state) {
-                                $stateWithTime = Carbon::parse($state)->format('Y-m-d') . ' ' . now()->format('H:i:s');
+                                $stateWithTime = Carbon::parse($state)->startOfDay()
+                                    ->format('Y-m-d H:i:s');
+
                                 $this->dispatch('updateFromDate', from: $stateWithTime);
                             }),
 
@@ -38,7 +40,8 @@ class Filters extends Widget implements HasForms
                             ->maxDate(now())
                             ->live()
                             ->afterStateUpdated(function (?string $state) {
-                                $stateWithTime = Carbon::parse($state)->format('Y-m-d') . ' ' . now()->format('H:i:s');
+                                $stateWithTime = Carbon::parse($state)
+                                    ->endOfDay()->format('Y-m-d H:i:s');
                                 $this->dispatch('updateToDate', to: $stateWithTime);
                             }),
                     ]),

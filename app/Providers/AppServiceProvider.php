@@ -38,11 +38,9 @@ class AppServiceProvider extends ServiceProvider
             return Auth::check() && Auth::user()->is_hrd;
         });
 
-        Blade::if('hrdAndEmployee', function () {
-            return Auth::check() && !Auth::user()->is_admin;
+        Blade::if('employee', function () {
+            return Auth::check() && !Auth::user()->is_hrd && !Auth::user()->is_admin;
         });
-
-
 
         Notifications::alignment(Alignment::End);
         FilamentColor::register([

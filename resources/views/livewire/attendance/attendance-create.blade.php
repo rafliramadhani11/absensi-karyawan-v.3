@@ -1,10 +1,15 @@
 <?php
 
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Salary;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use App\Models\Division;
 use App\Models\Attendance;
 use Livewire\Volt\Component;
 use Filament\Actions\CreateAction;
+use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Components\Select;
@@ -33,29 +38,35 @@ new class extends Component implements HasForms, HasActions {
                 Grid::make(['xl' => 2])
                     ->schema([
                         DatePicker::make('date')
-                            ->default(now())
+                            ->default(now()->toDateString())
                             ->label('Date')
-                            ->displayFormat('j F Y')
                             ->required()
+                            ->displayFormat('j F Y')
                             ->native(false)
+                            ->live()
+                            ->seconds(false)
+                            ->formatStateUsing(fn($state) =>  Carbon::parse($state)->toDateString())
+                            ->afterStateUpdated(function (Set $set) {
+                                $set('user_id', null);
+                            })
                             ->columnSpan(2),
 
                         Select::make('user_id')
                             ->label('Employee name')
-                            ->options(function () {
-                                return Division::with('users')->get()->mapWithKeys(function ($division) {
-                                    return [
-                                        $division->name => $division->users()->withoutAdmin()
-                                            ->whereDoesntHave('attendances', function (Builder $query) {
-                                                $query->whereDate('created_at', today());
-                                            })->pluck('name', 'id')->toArray()
-                                    ];
-                                })->toArray();
-                            })
+                            ->options(User::withoutAdmin()->pluck('name', 'id'))
                             ->preload()
                             ->searchable()
+                            ->required()
                             ->noSearchResultsMessage('The employee you are looking for has already checked in')
-                            ->columnSpan(2),
+                            ->columnSpan(2)
+                            ->disableOptionWhen(function ($value, Get $get) {
+                                $date = $get('date');
+                                $exists = Attendance::where('user_id', $value)
+                                    ->whereDate('date', $date)
+                                    ->exists();
+
+                                return $exists;
+                            }),
 
                         ToggleButtons::make('status')
                             ->options([
@@ -107,7 +118,54 @@ new class extends Component implements HasForms, HasActions {
                     ])
             ])
             ->using(function (array $data) {
-                return Attendance::create($data);
+                Attendance::create($data);
+
+                // $period = Carbon::parse($data['date'])->format('Y-m');
+
+                // // Hitung total berdasarkan period
+                // $userId = $data['user_id'];
+                // $hadirTotal = Attendance::where('user_id', $userId)
+                //     ->where('status', 'hadir')
+                //     ->whereRaw("DATE_FORMAT(date, '%Y-%m') = ?", [$period])
+                //     ->count();
+
+                // $izinTotal = Attendance::where('user_id', $userId)
+                //     ->where('status', 'izin')
+                //     ->whereRaw("DATE_FORMAT(date, '%Y-%m') = ?", [$period])
+                //     ->count();
+
+                // $tidakHadirTotal = Attendance::where('user_id', $userId)
+                //     ->where('status', 'tidak hadir')
+                //     ->whereRaw("DATE_FORMAT(date, '%Y-%m') = ?", [$period])
+                //     ->count();
+
+                // // Tentukan rate gaji (opsional: bisa disesuaikan dari DB atau config)
+                // $hadirRate = 200000; // contoh
+                // $izinRate = 10000;
+                // $tidakHadirRate = 20000;
+
+                // $hadirPay = $hadirTotal * $hadirRate;
+                // $izinPay = $izinTotal * $izinRate;
+                // $tidakHadirPay = $tidakHadirTotal * $tidakHadirRate;
+                // $totalSalary = $hadirPay - $izinPay - $tidakHadirPay;
+
+                // Salary::updateOrCreate(
+                //     [
+                //         'user_id' => $userId,
+                //         'date' => $period,
+                //     ],
+                //     [
+                //         'hadir_total' => $hadirTotal,
+                //         'izin_total' => $izinTotal,
+                //         'tidakHadir_total' => $tidakHadirTotal,
+
+                //         'hadir_pay' => $hadirPay,
+                //         'izin_pay' => $izinPay,
+                //         'tidakHadir_pay' => $tidakHadirPay,
+
+                //         'total_salary' => $totalSalary,
+                //     ]
+                // );
             })
             ->extraAttributes(['class' => 'btn-primary'])
             ->modalSubmitActionLabel('Create')

@@ -5,13 +5,14 @@
     $yearFilter = $this->getTableFilterState('date')['year'] ?? now()->year;
 
     $userId = $getRecord()->id;
-    $total_hadir = Attendance::where('user_id', $userId)
-        ->where('status', 'hadir')
+    $total_izin = Attendance::where('user_id', $userId)
+        ->where('status', 'izin')
         ->whereMonth('date', $monthFilter)
         ->whereYear('date', $yearFilter)
         ->count();
-@endphp
 
+    $izin_pay = $total_izin * 10000;
+@endphp
 <div class="ms-3">
-    {{ $total_hadir }}
+    Rp. - {{ number_format($izin_pay, 0, ',', '.') }}
 </div>

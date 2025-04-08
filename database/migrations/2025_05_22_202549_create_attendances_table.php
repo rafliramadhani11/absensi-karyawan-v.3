@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
 
+            $table->date('date');
             $table->time('absen_datang')->nullable();
             $table->time('absen_pulang')->nullable();
             $table->enum('status', ['hadir', 'izin', 'tidak hadir', 'proses'])

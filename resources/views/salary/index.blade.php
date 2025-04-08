@@ -15,9 +15,6 @@
         <h1 class="mt-3 text-2xl font-semibold sm:text-3xl">
             Salary List
         </h1>
-        <x-filament::button size="sm" class="btn-primary" icon="heroicon-m-plus" :href="route('salary.create')" tag="a">
-            New Salary
-        </x-filament::button>
     </div>
 
     <livewire:salary.salary-table lazy />

@@ -39,14 +39,14 @@ new class extends Component implements HasTable, HasForms {
             })
             ->searchPlaceholder('Employee Name ...')
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('date', 'desc')
             ->defaultPaginationPageOption(8)
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('created_at')
+                TextColumn::make('date')
                     ->label('Date')
                     ->date('l')
                     ->sortable()
