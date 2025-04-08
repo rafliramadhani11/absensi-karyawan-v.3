@@ -102,6 +102,11 @@ new class extends Component implements HasTable, HasForms {
             ])
         ;
     }
+
+    public function placeholder()
+    {
+        return view('skeleton.loading');
+    }
 }; ?>
 
 <div class="mt-10">
