@@ -95,7 +95,7 @@ new class extends Component implements HasTable, HasForms {
                         ->form([
                             Grid::make(['xl' => 2])
                                 ->schema([
-                                    DatePicker::make('created_at')
+                                    DatePicker::make('date')
                                         ->label('Date')
                                         ->displayFormat('j F Y')
                                         ->required()
@@ -154,6 +154,7 @@ new class extends Component implements HasTable, HasForms {
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->using(function (Model $record, array $data): Model {
                             $updateData = [
+                                'date' => $data['date'],
                                 'status' => $data['status'],
                                 'alasan' => null,
                                 'absen_datang' => $data['absen_datang'] ?? null,

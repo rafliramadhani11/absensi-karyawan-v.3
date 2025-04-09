@@ -38,22 +38,31 @@
                 </li>
 
 
-                @employee
-                    <li>
-                        <ul class="space-y-2">
-                            <p class="mb-3 mt-5 text-xs text-secondary dark:text-darkSecondary">App</p>
-                            <li>
-                                <x-nav-link :href="route('absent.index')" :active="request()->routeIs('absent*')">
-                                    <div class="flex">
-                                        <x-filament::icon icon="icon-scan-qr-code"
-                                            class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
-                                        Qr Code Absent
-                                    </div>
-                                </x-nav-link>
-                            </li>
-                        </ul>
-                    </li>
-                @endemployee
+
+                <li>
+                    <ul class="space-y-2">
+                        <p class="mb-3 mt-5 text-xs text-secondary dark:text-darkSecondary">App</p>
+                        <li>
+                            <x-nav-link :href="route('absent.index')" :active="request()->routeIs('absent*')">
+                                <div class="flex">
+                                    <x-filament::icon icon="icon-scan-qr-code"
+                                        class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                    Daily Absent
+                                </div>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link wire:navigate :href="route('salary.index')" :active="request()->routeIs('salary*')">
+                                <div class="flex">
+                                    <x-filament::icon icon="heroicon-o-banknotes"
+                                        class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                    Salaries
+                                </div>
+                            </x-nav-link>
+                        </li>
+                    </ul>
+                </li>
+
 
 
                 @hrd
@@ -97,15 +106,7 @@
                                 </x-nav-link>
                             </li>
 
-                            <li>
-                                <x-nav-link wire:navigate :href="route('salary.index')" :active="request()->routeIs('salary*')">
-                                    <div class="flex">
-                                        <x-filament::icon icon="heroicon-o-banknotes"
-                                            class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
-                                        Salaries
-                                    </div>
-                                </x-nav-link>
-                            </li>
+
                         </ul>
                     </li>
                 @endhrd

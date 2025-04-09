@@ -184,18 +184,18 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
             })
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultPaginationPageOption(5)
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('date', 'desc')
             ->emptyStateHeading('No Attendances')
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('created_at')
+                TextColumn::make('date')
                     ->label('Date')
                     ->dateTime('l')
                     ->sortable()
-                    ->description(fn($state) => $state->translatedFormat('j F Y')),
+                    ->description(fn($state) => Carbon::parse($state)->format('j F Y')),
 
                 TextColumn::make('absen_datang')
                     ->label('in')
@@ -233,7 +233,8 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         ->form([
                             Grid::make(['xl' => 2])
                                 ->schema([
-                                    DatePicker::make('created_at')
+                                    DatePicker::make('date')
+                                        ->label('Date')
                                         ->displayFormat('j F Y')
                                         ->required()
                                         ->native(false)
@@ -291,6 +292,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->using(function (Model $record, array $data): Model {
                             $updateData = [
+                                'date' => $data['date'],
                                 'status' => $data['status'],
                                 'alasan' => null,
                                 'absen_datang' => $data['absen_datang'] ?? null,
@@ -343,7 +345,9 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
 }; ?>
 
 
-<div>
+<div class="mt-10 space-y-10">
+
+
     <div class="flex flex-col-reverse mt-5 gap-y-6 xl:grid xl:grid-cols-3 xl:gap-x-6">
         <div class="xl:col-span-2">
             {{ $this->form }}
@@ -354,7 +358,16 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
         </div>
     </div>
 
-    <div class="mt-10 space-y-8">
+    <div>
+        <livewire:filters />
+
+        <div class="mt-10">
+            @livewire(App\Livewire\Employee\PerformanceAttendanceChart::class, ['user' => $this->user])
+        </div>
+    </div>
+
+    <div class="space-y-10">
+
         <div class="flex justify-center">
             <x-filament::tabs>
                 <x-filament::tabs.item
@@ -410,4 +423,5 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
     </div>
 
     <x-filament-actions::modals />
+
 </div>

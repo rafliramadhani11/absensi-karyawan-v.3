@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Employee;
 
 use Carbon\Carbon;
 use App\Models\Attendance;
@@ -10,14 +10,14 @@ use Livewire\Attributes\On;
 use Flowframe\Trend\TrendValue;
 use Filament\Widgets\ChartWidget;
 
-class AttendancesChart extends ChartWidget
+class PerformanceAttendanceChart extends ChartWidget
 {
-    protected static ?string $heading = 'Attendance Chart';
-    protected static ?string $description = 'Daily data grouped by week';
-    protected static bool $isLazy = true;
+    protected static ?string $heading = 'Performance Attendance Chart';
     protected static ?string $maxHeight = '300px';
+    protected static bool $isLazy = true;
     public Carbon $fromDate;
     public Carbon $toDate;
+    public $user;
 
     #[On('updateFromDate')]
     public function updateFromDate(?string $from): void
@@ -55,7 +55,9 @@ class AttendancesChart extends ChartWidget
         $toDate = $this->toDate ?? now()->endOfWeek();
 
         $hadir = Trend::query(
-            Attendance::query()->where('status', 'hadir')
+            Attendance::query()
+                ->where('user_id', $this->user->id)
+                ->where('status', 'hadir')
         )
             ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
@@ -63,7 +65,9 @@ class AttendancesChart extends ChartWidget
             ->count();
 
         $izin = Trend::query(
-            Attendance::query()->where('status', 'izin')
+            Attendance::query()
+                ->where('user_id', $this->user->id)
+                ->where('status', 'izin')
         )
             ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
@@ -71,7 +75,9 @@ class AttendancesChart extends ChartWidget
             ->count();
 
         $tidakHadir = Trend::query(
-            Attendance::query()->where('status', 'tidak hadir')
+            Attendance::query()
+                ->where('user_id', $this->user->id)
+                ->where('status', 'tidak hadir')
         )
             ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
@@ -102,7 +108,6 @@ class AttendancesChart extends ChartWidget
             'labels' => $hadir->map(fn(TrendValue $value) => Carbon::parse($value->date)->format('j F Y')),
         ];
     }
-
 
     protected function getType(): string
     {

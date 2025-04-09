@@ -1,8 +1,8 @@
-@section('title', 'Edit User')
+@section('title', 'Detail User')
 
 <x-app-layout>
     {{-- Breadcrumb --}}
-    <ul class="flex text-sm gap-x-3 text-secondary dark:text-darkSecondary">
+    <ul class="flex gap-x-3 text-sm text-secondary dark:text-darkSecondary">
         <li>
             <a href="{{ route('user.index') }}" class="hover:text-zinc-200">Users</a>
         </li>
@@ -19,6 +19,8 @@
         <h1 class="mt-3 text-3xl font-semibold">
             Detail {{ $user->name }}
         </h1>
+
+        <livewire:user.user-delete-action :$user />
     </div>
 
 

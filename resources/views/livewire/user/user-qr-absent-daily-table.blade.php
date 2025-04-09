@@ -29,8 +29,12 @@ new class extends Component implements HasForms, HasTable {
 
     public function table(Table $table): Table
     {
+        // dd(now()->toDateString());
         return $table
-            ->query(Attendance::query()->where('user_id', Auth::id()))
+            ->query(function () {
+                return Attendance::query()
+                    ->whereDate('date', now()->toDateString());
+            })
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(8)
@@ -39,7 +43,7 @@ new class extends Component implements HasForms, HasTable {
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('created_at')
+                TextColumn::make('date')
                     ->label('Date')
                     ->date('l')
                     ->sortable()
@@ -83,7 +87,7 @@ new class extends Component implements HasForms, HasTable {
                         ->form([
                             Grid::make(['xl' => 2])
                                 ->schema([
-                                    DatePicker::make('created_at')
+                                    DatePicker::make('date')
                                         ->label('Date')
                                         ->displayFormat('j F Y')
                                         ->required()
@@ -92,7 +96,6 @@ new class extends Component implements HasForms, HasTable {
                                     ToggleButtons::make('status')
                                         ->options([
                                             'hadir' => 'Hadir',
-                                            'proses' => 'Proses',
                                             'izin' => 'Izin',
                                             'tidak hadir' => 'Tidak Hadir',
                                         ])
@@ -115,7 +118,7 @@ new class extends Component implements HasForms, HasTable {
                                         ->seconds(false)
                                         ->native(false)
                                         ->visible(
-                                            fn(Get $get): bool => in_array($get('status'), ['hadir', 'proses'])
+                                            fn(Get $get): bool => $get('status') === 'hadir'
                                         )
                                         ->required(),
 
@@ -126,7 +129,7 @@ new class extends Component implements HasForms, HasTable {
                                         ->seconds(false)
                                         ->native(false)
                                         ->visible(
-                                            fn(Get $get): bool => in_array($get('status'), ['hadir', 'proses'])
+                                            fn(Get $get): bool => $get('status') === 'hadir'
                                         )
                                         ->required(),
 
@@ -135,7 +138,7 @@ new class extends Component implements HasForms, HasTable {
                                         ->minLength(3)
                                         ->required()
                                         ->hidden(
-                                            fn(Get $get): bool => in_array($get('status'), ['hadir', 'proses'])
+                                            fn(Get $get): bool => $get('status') === 'hadir'
                                         )->columnSpan(['xl' => 2]),
                                 ])
                         ])
@@ -143,6 +146,7 @@ new class extends Component implements HasForms, HasTable {
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->using(function (Model $record, array $data): Model {
                             $updateData = [
+                                'date' => $data['date'],
                                 'status' => $data['status'],
                                 'alasan' => null,
                                 'absen_datang' => $data['absen_datang'] ?? null,

@@ -2,7 +2,6 @@
 
 use Filament\Actions\Action;
 use Livewire\Volt\Component;
-use Filament\Actions\DeleteAction;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Actions\Contracts\HasActions;
@@ -11,7 +10,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 
 new class extends Component implements HasForms, HasActions {
     use InteractsWithForms, InteractsWithActions;
-    public $division;
+    public $user;
 
     public function deleteAction(): Action
     {
@@ -20,12 +19,16 @@ new class extends Component implements HasForms, HasActions {
             ->icon('heroicon-o-archive-box-arrow-down')
             ->requiresConfirmation()
             ->action(function () {
-                $this->division->delete();
+                $this->user->delete();
 
-                Notification::make()->title('Successfully delete division')->success()->send();
+                Notification::make()
+                    ->title('Successfully delete user')
+                    ->success()
+                    ->send();
 
-                $this->redirect(route('division.index'));
-            });
+                $this->redirect(route('user.index'));
+            })
+        ;
     }
 
     public function forceDeleteAction(): Action
@@ -35,14 +38,18 @@ new class extends Component implements HasForms, HasActions {
             ->icon('heroicon-o-trash')
             ->requiresConfirmation()
             ->action(function () {
-                $this->division->forceDelete();
+                $this->user->forceDelete();
 
-                Notification::make()->title('Successfully delete permanent division')->success()->send();
+                Notification::make()
+                    ->title('Successfully delete permanent user')
+                    ->success()
+                    ->send();
 
-                $this->redirect(route('division.index'));
-            });
+                $this->redirect(route('user.index'));
+            })
+        ;
     }
-};
+}
 ?>
 
 <div class="space-x-3">
