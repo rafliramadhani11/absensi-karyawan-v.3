@@ -72,9 +72,19 @@
                         @if (Route::has('login'))
                             <nav class="flex items-center justify-start gap-4">
                                 @auth
-                                    <x-primary-button href="{{ route('dashboard') }}" tag="a">
-                                        Dashboard
-                                    </x-primary-button>
+                                    @if (Auth::user()->is_admin)
+                                        <x-primary-button href="{{ route('admin.employees-qr-code') }}" tag="a">
+                                            App
+                                        </x-primary-button>
+                                    @elseif (Auth::user()->is_hrd)
+                                        <x-primary-button href="{{ route('hrd.dashboard') }}" tag="a">
+                                            Dashboard
+                                        </x-primary-button>
+                                    @else
+                                        <x-primary-button href="{{ route('user.dashboard') }}" tag="a">
+                                            Dashboard
+                                        </x-primary-button>
+                                    @endif
                                 @else
                                     <x-primary-button href="{{ route('login') }}" tag="a">
                                         Log in

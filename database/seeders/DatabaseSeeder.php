@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Division;
 use App\Models\Attendance;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,26 +18,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $name = fake()->jobTitle();
-        Division::create([
-            'name' => $name,
-            'slug' => Str::slug($name),
-        ]);
-      
-        User::create([
-            'is_hrd' => true,
-            'email' => 'hrd@mail.com',
+        // $name = fake()->jobTitle();
+        // Division::create([
+        //     'name' => $name,
+        //     'slug' => Str::slug($name),
+        // ]);
 
-            'password' => Hash::make(123),
-            'name' => 'Nadin Risyani',
+        // User::create([
+        //     'is_admin' => true,
+        //     'name' => 'Admin',
+        //     'email' => 'admin@mail.com',
+        //     'password' => Hash::make(123),
+        // ]);
 
-            'role' => 'Kepala Divisi',
-            'division_id' => 1,
-        ]);
+        // User::create([
+        //     'is_hrd' => true,
+        //     'name' => 'Human Resources Development',
+        //     'email' => 'hrd@mail.com',
+        //     'password' => Hash::make(123),
+        // ]);
 
 
-        // Division::factory(5)->create();
-        // User::factory(20)->create();
-        // Attendance::factory(5)->create();
+        // Division::factory(3)->create();
+        User::factory(1)->create();
+        Attendance::factory(20)->create();
     }
 }

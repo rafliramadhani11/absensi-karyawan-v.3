@@ -63,7 +63,7 @@ new class extends Component implements HasForms, HasTable {
                 ActionGroup::make([
                     ViewAction::make()
                         ->color('info')
-                        ->url(fn($record) => route('division.detail', $record)),
+                        ->url(fn($record) => route('hrd.division.detail', $record)),
 
                     EditAction::make()
                         ->color('success')

@@ -1,10 +1,15 @@
 <?php
 
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Salary;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use App\Models\Division;
 use App\Models\Attendance;
 use Livewire\Volt\Component;
 use Filament\Actions\CreateAction;
+use Illuminate\Support\Facades\DB;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Components\Select;
@@ -30,94 +35,93 @@ new class extends Component implements HasForms, HasActions {
             ->size('sm')
             ->model(Attendance::class)
             ->form([
-                Grid::make(['xl' => 2])
-                    ->schema([
-                        DatePicker::make('date')
-                            ->default(now())
-                            ->label('Date')
-                            ->displayFormat('j F Y')
-                            ->required()
-                            ->native(false)
-                            ->columnSpan(2),
+                Grid::make(['xl' => 2])->schema([
+                    DatePicker::make('created_at')
+                        ->default(now()->toDateString())
+                        ->label('Date')
+                        ->required()
+                        ->displayFormat('j F Y')
+                        ->native(false)
+                        ->live()
+                        ->seconds(false)
+                        ->formatStateUsing(fn($state) => Carbon::parse($state)->toDateString())
+                        ->afterStateUpdated(function (Set $set) {
+                            $set('user_id', null);
+                        })
+                        ->columnSpan(2),
 
-                        Select::make('user_id')
-                            ->label('Employee name')
-                            ->options(function () {
-                                return Division::with('users')->get()->mapWithKeys(function ($division) {
-                                    return [
-                                        $division->name => $division->users()->withoutAdmin()
-                                            ->whereDoesntHave('attendances', function (Builder $query) {
-                                                $query->whereDate('created_at', today());
-                                            })->pluck('name', 'id')->toArray()
-                                    ];
-                                })->toArray();
-                            })
-                            ->preload()
-                            ->searchable()
-                            ->noSearchResultsMessage('The employee you are looking for has already checked in')
-                            ->columnSpan(2),
+                    Select::make('user_id')
+                        ->label('Employee name')
+                        ->options(User::withoutAdmin()->pluck('name', 'id'))
+                        ->preload()
+                        ->searchable()
+                        ->required()
+                        ->noSearchResultsMessage('The employee you are looking for has already checked in')
+                        ->columnSpan(2)
+                        ->disableOptionWhen(function ($value, Get $get) {
+                            $date = $get('created_at');
+                            $exists = Attendance::where('user_id', $value)->whereDate('created_at', $date)->exists();
 
-                        ToggleButtons::make('status')
-                            ->options([
-                                'hadir' => 'Hadir',
-                                'izin' => 'Izin',
-                                'tidak hadir' => 'Tidak Hadir',
-                            ])
-                            ->colors([
-                                'hadir' => 'success',
-                                'izin' => 'warning',
-                                'tidak hadir' => 'danger',
-                            ])
-                            ->live()
-                            ->required()
-                            ->inline()
-                            ->columnSpanFull(),
-                    ]),
-                Grid::make(['xl' => 2])
-                    ->schema([
-                        DateTimePicker::make('absen_datang')
-                            // ->label('Absen Datang')
-                            ->label('In')
-                            ->date(false)
-                            ->seconds(false)
-                            ->native(false)
-                            ->visible(
-                                fn(Get $get): bool => $get('status') === 'hadir'
-                            )
-                            ->required(),
+                            return $exists;
+                        }),
 
-                        DateTimePicker::make('absen_pulang')
-                            // ->label('Absen Pulang')
-                            ->label('Out')
-                            ->date(false)
-                            ->seconds(false)
-                            ->native(false)
-                            ->visible(
-                                fn(Get $get): bool => $get('status') === 'hadir'
-                            )
-                            ->required(),
+                    ToggleButtons::make('status')
+                        ->options([
+                            'hadir' => 'Hadir',
+                            'izin' => 'Izin',
+                            'tidak hadir' => 'Tidak Hadir',
+                        ])
+                        ->colors([
+                            'hadir' => 'success',
+                            'izin' => 'warning',
+                            'tidak hadir' => 'danger',
+                        ])
+                        ->live()
+                        ->required()
+                        ->inline()
+                        ->columnSpanFull(),
+                ]),
+                Grid::make(['xl' => 2])->schema([
+                    DateTimePicker::make('absen_datang')
+                        // ->label('Absen Datang')
+                        ->label('In')
+                        ->date(false)
+                        ->seconds(false)
+                        ->native(false)
+                        ->visible(fn(Get $get): bool => $get('status') === 'hadir')
+                        ->required(),
 
-                        TextInput::make('alasan')
-                            ->label('Reason')
-                            ->minLength(3)
-                            ->required()
-                            ->hidden(
-                                fn(Get $get): bool => $get('status') === 'hadir'
-                            )->columnSpan(['xl' => 2]),
-                    ])
+                    DateTimePicker::make('absen_pulang')
+                        // ->label('Absen Pulang')
+                        ->label('Out')
+                        ->date(false)
+                        ->seconds(false)
+                        ->native(false)
+                        ->visible(fn(Get $get): bool => $get('status') === 'hadir')
+                        ->required(),
+
+                    TextInput::make('alasan')
+                        ->label('Reason')
+                        ->minLength(3)
+                        ->required()
+                        ->hidden(fn(Get $get): bool => $get('status') === 'hadir')
+                        ->columnSpan(['xl' => 2]),
+                ]),
             ])
             ->using(function (array $data) {
-                return Attendance::create($data);
+                Attendance::create($data);
             })
             ->extraAttributes(['class' => 'btn-primary'])
             ->modalSubmitActionLabel('Create')
-            ->modalSubmitAction(fn($action) => $action->extraAttributes([
-                'class' => 'btn-primary',
-            ]))
+            ->modalSubmitAction(
+                fn($action) => $action->extraAttributes([
+                    'class' => 'btn-primary',
+                ]),
+            )
             ->createAnother(false)
             ->modalFooterActionsAlignment(Alignment::Center)
             ->modalWidth(MaxWidth::Large)
-            ->successRedirectUrl(route('attendance.index'));
+            ->successRedirectUrl(route('hrd.attendance.index'));
     }
 }; ?>
 

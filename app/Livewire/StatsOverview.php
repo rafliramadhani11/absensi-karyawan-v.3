@@ -34,60 +34,59 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        $fromDate = $this->fromDate ?? now()->startOfWeek();
-        $toDate = $this->toDate ?? now()->endOfWeek();
+        $fromDate = $this->fromDate ?? now()->startOfYear();
+        $toDate = $this->toDate ?? now()->endOfYear();
 
         $divisionChart = Trend::query(
             Division::query()
         )
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         $userChart = Trend::query(
             User::query()
         )
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         $attendanceChart = Trend::query(
             Attendance::query()
         )
-            ->dateColumn('created_at')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         return [
             Stat::make(
-                'Total Division',
+                'Total Division in year',
                 Division::query()
                     ->whereBetween('created_at', [$fromDate, $toDate])
                     ->count()
             )
-                ->description('Daily data grouped by week')
+                ->description('Data grouped per month')
                 ->chart($divisionChart->map(fn(TrendValue $value) => $value->aggregate)->toArray())
                 ->color('primary'),
 
             Stat::make(
-                'Total Employee',
+                'Total Employee in year',
                 User::query()
                     ->withoutAdmin()
                     ->whereBetween('created_at', [$fromDate, $toDate])
                     ->count()
             )
-                ->description('Daily data grouped by week ')
+                ->description('Data grouped per month ')
                 ->chart($userChart->map(fn(TrendValue $value) => $value->aggregate)->toArray())
                 ->color('primary'),
 
             Stat::make(
-                'Total Attendances',
+                'Total Attendances in year',
                 Attendance::query()
                     ->whereBetween('created_at', [$fromDate, $toDate])
                     ->count()
             )
-                ->description('Daily data grouped by week ')
+                ->description('Data grouped per month ')
                 ->chart($attendanceChart->map(fn(TrendValue $value) => $value->aggregate)->toArray())
                 ->color('primary'),
         ];

@@ -1,4 +1,4 @@
-<div class="fixed z-10 flex flex-col justify-between px-4 py-4 transition transform border rounded-lg bottom-2 left-2 top-2 w-72 border-theme bg-cardTheme text-gray-50 dark:border-darkTheme dark:bg-darkCardTheme lg:bottom-0 lg:top-0 lg:h-screen lg:translate-x-0 lg:border-none lg:bg-theme lg:py-6 lg:opacity-100 dark:lg:bg-darkTheme"
+<div class="fixed bottom-2 left-2 top-2 z-10 flex w-72 transform flex-col justify-between rounded-lg border border-theme bg-cardTheme px-4 py-4 text-gray-50 transition dark:border-darkTheme dark:bg-darkCardTheme lg:bottom-0 lg:top-0 lg:h-screen lg:translate-x-0 lg:border-none lg:bg-theme lg:py-6 lg:opacity-100 dark:lg:bg-darkTheme"
     :class="{ '-translate-x-full opacity-0': !isOpen, 'translate-x-0 opacity-100': isOpen }">
 
     <div>
@@ -6,7 +6,7 @@
 
         <div class="flex items-center gap-x-3">
 
-            <img :src="logo" alt="Logo" class="w-10 h-auto">
+            <img :src="logo" alt="Logo" class="h-auto w-10">
 
             <p class="text-base text-theme dark:text-darkTheme">PT Birdie Indonesia</p>
         </div>
@@ -15,89 +15,118 @@
         <div class="mt-5">
             <ul class="space-y-2">
 
-                @admin
+                @if (Auth::user()->is_admin)
+                    {{-- Employees Qr Code --}}
                     <li>
-                        <x-nav-link :href="route('admin.employees-qr-code')" :active="request()->routeIs('admin.employees-qr-code*')">
+                        <x-nav-link wire:navigate :href="route('admin.employees-qr-code')" :active="request()->routeIs('admin.employees-qr-code*')">
                             <div class="flex">
-                                <x-filament::icon icon="icon-qr-code" class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
+                                <x-filament::icon icon="icon-qr-code"
+                                    class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
                                 Employees Qr Code
                             </div>
                         </x-nav-link>
                     </li>
-                @endadmin
-
-                @hrdAndEmployee
+                    {{-- -------------------------------------- --}}
+                @else
+                    {{-- Dashboard --}}
                     <li>
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link wire:navigate :href="Auth::user()->is_hrd ? route('hrd.dashboard') : route('user.dashboard')" :active="Auth::user()->is_hrd
+                            ? request()->routeIs('hrd.dashboard*')
+                            : request()->routeIs('user.dashboard*')">
                             <div class="flex">
                                 <x-filament::icon icon="heroicon-o-home"
-                                    class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
+                                    class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
                                 Dashboard
                             </div>
                         </x-nav-link>
                     </li>
-                @endhrdAndEmployee
+                    {{-- ------------------------------------------ --}}
 
-                @hrdAndEmployee
+                    {{-- App --}}
                     <li>
                         <ul class="space-y-2">
-                            <p class="mt-5 mb-3 text-xs text-secondary dark:text-darkSecondary">App</p>
+                            <p class="mb-3 mt-5 text-xs text-secondary dark:text-darkSecondary">App</p>
                             <li>
-                                <x-nav-link :href="route('absent.index')" :active="request()->routeIs('absent*')">
+                                <x-nav-link :href="Auth::user()->is_hrd
+                                    ? route('hrd.daily-absent')
+                                    : route('user.daily-absent')" :active="Auth::user()->is_hrd
+                                    ? request()->routeIs('hrd.daily-absent*')
+                                    : request()->routeIs('user.daily-absent*')">
                                     <div class="flex">
                                         <x-filament::icon icon="icon-scan-qr-code"
-                                            class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
-                                        Qr Code Absent
+                                            class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                        Daily Absent
+                                    </div>
+                                </x-nav-link>
+                            </li>
+                            <li>
+                                <x-nav-link wire:navigate :href="Auth::user()->is_hrd ? route('hrd.salaries') : route('user.salaries')" :active="Auth::user()->is_hrd
+                                    ? request()->routeIs('hrd.salaries*')
+                                    : request()->routeIs('user.salaries*')">
+                                    <div class="flex">
+                                        <x-filament::icon icon="heroicon-o-banknotes"
+                                            class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                        Salaries
                                     </div>
                                 </x-nav-link>
                             </li>
                         </ul>
                     </li>
-                @endhrdAndEmployee
+                    {{-- ------------------------------------------ --}}
 
-                @hrd
-                    <li>
-                        <ul class="space-y-2">
-                            <p class="mt-5 mb-3 text-xs text-secondary dark:text-darkSecondary">Resources</p>
+                    {{-- Resources --}}
+                    @if (!Auth::user()->is_admin)
+                        <li>
+                            <ul class="space-y-2">
+                                <p class="mb-3 mt-5 text-xs text-secondary dark:text-darkSecondary">Resources</p>
 
-                            <li>
-                                <x-nav-link :href="route('division.index')" :active="request()->routeIs('division*')">
-                                    <div class="flex">
-                                        <x-filament::icon icon="heroicon-o-user-group"
-                                            class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
-                                        Divisions
-                                    </div>
-                                    <x-filament::badge class="sidebar-badge">
-                                        {{ $this->divisionCount }}
-                                    </x-filament::badge>
-                                </x-nav-link>
-                            </li>
-
-                            <li>
-                                <x-nav-link :href="route('user.index')" :active="request()->routeIs('user*')">
-                                    <div class="flex">
-                                        <x-filament::icon icon="heroicon-o-user"
-                                            class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
-                                        Employees
-                                    </div>
-                                    <x-filament::badge class="sidebar-badge">
-                                        {{ $this->userCount }}
-                                    </x-filament::badge>
-                                </x-nav-link>
-                            </li>
-
-                            <li>
-                                <x-nav-link :href="route('attendance.index')" :active="request()->routeIs('attendance*')">
-                                    <div class="flex">
-                                        <x-filament::icon icon="icon-calendar-check-2"
-                                            class="w-5 h-5 me-3 text-theme dark:text-darkTheme" />
-                                        Attendances
-                                    </div>
-                                </x-nav-link>
-                            </li>
-                        </ul>
-                    </li>
-                @endhrd
+                                @if (Auth::user()->is_hrd)
+                                    {{-- Divisions --}}
+                                    <li>
+                                        <x-nav-link wire:navigate :href="route('hrd.division.index')" :active="request()->routeIs('hrd.division.index*')">
+                                            <div class="flex">
+                                                <x-filament::icon icon="heroicon-o-user-group"
+                                                    class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                                Divisions
+                                            </div>
+                                            <x-filament::badge class="sidebar-badge">
+                                                {{ $this->divisionCount }}
+                                            </x-filament::badge>
+                                        </x-nav-link>
+                                    </li>
+                                    {{-- Employees --}}
+                                    <li>
+                                        <x-nav-link wire:navigate :href="route('hrd.employee.index')" :active="request()->routeIs('hrd.employee.index*')">
+                                            <div class="flex">
+                                                <x-filament::icon icon="heroicon-o-user"
+                                                    class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                                Employees
+                                            </div>
+                                            <x-filament::badge class="sidebar-badge">
+                                                {{ $this->userCount }}
+                                            </x-filament::badge>
+                                        </x-nav-link>
+                                    </li>
+                                @endif
+                                {{-- Attendances --}}
+                                <li>
+                                    <x-nav-link wire:navigate :href="Auth::user()->is_hrd
+                                        ? route('hrd.attendance.index')
+                                        : route('user.attendance.index')" :active="Auth::user()->is_hrd
+                                        ? request()->routeIs('hrd.attendance.index*')
+                                        : request()->routeIs('user.attendance.index*')">
+                                        <div class="flex">
+                                            <x-filament::icon icon="icon-calendar-check-2"
+                                                class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                            Attendances
+                                        </div>
+                                    </x-nav-link>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+                    {{-- ------------------------------- --}}
+                @endif
 
             </ul>
         </div>
@@ -112,7 +141,7 @@
                 <x-filament::dropdown placement="top-end">
                     <x-slot name="trigger">
                         <x-filament::button icon-position="after" icon="heroicon-o-chevron-up" outlined
-                            class="w-full cursor-default auth-dropdown">
+                            class="auth-dropdown w-full cursor-default">
                             {{ Str::words(auth()->user()->name, 2, '') }}
                             <p class="text-xs">{{ auth()->user()->email }}</p>
                         </x-filament::button>

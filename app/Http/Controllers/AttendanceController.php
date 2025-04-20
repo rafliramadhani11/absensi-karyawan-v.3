@@ -32,7 +32,7 @@ class AttendanceController extends Controller
             }
 
             if ($existingAttendance) {
-                return back()->with('status', 'absen-already');
+                return back()->with('status', 'absen-updated');
             }
 
             Attendance::create([
@@ -70,7 +70,7 @@ class AttendanceController extends Controller
             }
 
             if ($attendance->absen_pulang) {
-                return back()->with('status', 'absen-already');
+                return back()->with('status', 'absen-updated');
             }
 
             $attendance->update([

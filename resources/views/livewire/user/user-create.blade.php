@@ -82,15 +82,7 @@ new class extends Component implements HasForms {
                                     'Kepala Divisi' => 'Kepala Divisi',
                                     'Anggota Divisi' => 'Anggota Divisi'
                                 ])
-                                //     // ->disableOptionWhen(function (Get $get, $value) {
-                                //     //     $divisionId = $get('division_id');
 
-                                //     //     $kepalaDivisiExists = User::where('division_id', $divisionId)
-                                //     //         ->where('role', 'Kepala Divisi')
-                                //     //         ->exists();
-
-                                //     //     return $value === 'Kepala Divisi' && $kepalaDivisiExists;
-                                //     // })
                                 ->disableOptionWhen(fn(Get $get, string $value): bool =>  $value === 'Kepala Divisi' && User::where('division_id', $get('division_id'))
                                     ->where('role', 'Kepala Divisi')
                                     ->exists())
@@ -182,7 +174,7 @@ new class extends Component implements HasForms {
             ->success()
             ->send();
 
-        $this->redirect(route('user.index'));
+        $this->redirect(route('hrd.employee.index'));
     }
 }; ?>
 
