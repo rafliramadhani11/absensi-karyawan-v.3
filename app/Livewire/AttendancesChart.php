@@ -9,11 +9,12 @@ use Filament\Support\RawJs;
 use Livewire\Attributes\On;
 use Flowframe\Trend\TrendValue;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Auth;
 
 class AttendancesChart extends ChartWidget
 {
     protected static ?string $heading = 'Attendance Chart';
-    protected static ?string $description = 'Daily data grouped by week';
+    protected static ?string $description = 'Data grouped per month';
     protected static bool $isLazy = true;
     protected static ?string $maxHeight = '300px';
     public Carbon $fromDate;
@@ -51,31 +52,41 @@ class AttendancesChart extends ChartWidget
 
     protected function getData(): array
     {
-        $fromDate = $this->fromDate ?? now()->startOfWeek();
-        $toDate = $this->toDate ?? now()->endOfWeek();
+        $fromDate = $this->fromDate ?? now()->startOfYear();
+        $toDate = $this->toDate ?? now()->endOfYear();
 
         $hadir = Trend::query(
-            Attendance::query()->where('status', 'hadir')
+            Auth::user()->is_hrd
+                ? Attendance::query()->where('status', 'hadir')
+                : Attendance::query()
+                ->where('user_id', Auth::user()->id)
+                ->where('status', 'hadir')
         )
-            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
+
         $izin = Trend::query(
-            Attendance::query()->where('status', 'izin')
+            Auth::user()->is_hrd
+                ? Attendance::query()->where('status', 'izin')
+                : Attendance::query()
+                ->where('user_id', Auth::user()->id)
+                ->where('status', 'izin')
         )
-            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         $tidakHadir = Trend::query(
-            Attendance::query()->where('status', 'tidak hadir')
+            Auth::user()->is_hrd
+                ? Attendance::query()->where('status', 'tidak hadir')
+                : Attendance::query()
+                ->where('user_id', Auth::user()->id)
+                ->where('status', 'tidak hadir')
         )
-            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         return [
@@ -99,7 +110,7 @@ class AttendancesChart extends ChartWidget
                     'borderColor' => 'rgb(239, 68, 68)',
                 ],
             ],
-            'labels' => $hadir->map(fn(TrendValue $value) => Carbon::parse($value->date)->format('j F Y')),
+            'labels' => $hadir->map(fn(TrendValue $value) => Carbon::parse($value->date)->format('F Y')),
         ];
     }
 

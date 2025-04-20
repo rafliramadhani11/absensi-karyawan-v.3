@@ -33,23 +33,14 @@ class DatabaseSeeder extends Seeder
 
         // User::create([
         //     'is_hrd' => true,
+        //     'name' => 'Human Resources Development',
         //     'email' => 'hrd@mail.com',
         //     'password' => Hash::make(123),
-
-        //     'nik' => fake()->nik(),
-        //     'phone' => fake()->phoneNumber(),
-        //     'gender' => Arr::random(['Laki - Laki', 'Perempuan']),
-        //     'birth_date' => fake()->date(),
-        //     'address' => fake()->address(),
-        //     'name' => 'Nadin Risyani',
-
-        //     'role' => 'Kepala Divisi',
-        //     'division_id' => 1,
         // ]);
 
 
         // Division::factory(3)->create();
-        // User::factory(1)->create();
-        Attendance::factory(10)->create();
+        User::factory(1)->create();
+        Attendance::factory(20)->create();
     }
 }

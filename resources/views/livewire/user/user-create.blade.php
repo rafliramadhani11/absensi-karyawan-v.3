@@ -174,7 +174,7 @@ new class extends Component implements HasForms {
             ->success()
             ->send();
 
-        $this->redirect(route('user.index'));
+        $this->redirect(route('hrd.employee.index'));
     }
 }; ?>
 

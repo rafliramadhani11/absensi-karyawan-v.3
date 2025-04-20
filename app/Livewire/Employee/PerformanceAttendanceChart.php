@@ -51,17 +51,16 @@ class PerformanceAttendanceChart extends ChartWidget
 
     protected function getData(): array
     {
-        $fromDate = $this->fromDate ?? now()->startOfWeek();
-        $toDate = $this->toDate ?? now()->endOfWeek();
+        $fromDate = $this->fromDate ?? now()->startOfYear();
+        $toDate = $this->toDate ?? now()->endOfYear();
 
         $hadir = Trend::query(
             Attendance::query()
                 ->where('user_id', $this->user->id)
                 ->where('status', 'hadir')
         )
-            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         $izin = Trend::query(
@@ -69,9 +68,8 @@ class PerformanceAttendanceChart extends ChartWidget
                 ->where('user_id', $this->user->id)
                 ->where('status', 'izin')
         )
-            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         $tidakHadir = Trend::query(
@@ -79,9 +77,8 @@ class PerformanceAttendanceChart extends ChartWidget
                 ->where('user_id', $this->user->id)
                 ->where('status', 'tidak hadir')
         )
-            ->dateColumn('date')
             ->between(start: $fromDate, end: $toDate)
-            ->perDay()
+            ->perMonth()
             ->count();
 
         return [
@@ -105,7 +102,7 @@ class PerformanceAttendanceChart extends ChartWidget
                     'borderColor' => 'rgb(239, 68, 68)',
                 ],
             ],
-            'labels' => $hadir->map(fn(TrendValue $value) => Carbon::parse($value->date)->format('j F Y')),
+            'labels' => $hadir->map(fn(TrendValue $value) => Carbon::parse($value->date)->format('F Y')),
         ];
     }
 

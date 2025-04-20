@@ -7,8 +7,8 @@
     $userId = $getRecord()->id;
     $total_izin = Attendance::where('user_id', $userId)
         ->where('status', 'izin')
-        ->whereMonth('date', $monthFilter)
-        ->whereYear('date', $yearFilter)
+        ->whereMonth('created_at', $monthFilter)
+        ->whereYear('created_at', $yearFilter)
         ->count();
 @endphp
 

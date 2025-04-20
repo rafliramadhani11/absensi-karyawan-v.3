@@ -24,7 +24,7 @@ new class extends Component implements HasForms, HasActions {
 
                 Notification::make()->title('Successfully delete division')->success()->send();
 
-                $this->redirect(route('division.index'));
+                $this->redirect(route('hrd.division.index'));
             });
     }
 
@@ -39,7 +39,7 @@ new class extends Component implements HasForms, HasActions {
 
                 Notification::make()->title('Successfully delete permanent division')->success()->send();
 
-                $this->redirect(route('division.index'));
+                $this->redirect(route('hrd.division.index'));
             });
     }
 };

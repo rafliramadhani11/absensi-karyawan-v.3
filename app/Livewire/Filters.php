@@ -26,7 +26,6 @@ class Filters extends Widget implements HasForms
                 Grid::make()
                     ->schema([
                         DatePicker::make('from')
-                            ->maxDate(fn(Get $get) => $get('to') ?: now())
                             ->live()
                             ->afterStateUpdated(function (?string $state) {
                                 $stateWithTime = Carbon::parse($state)->startOfDay()
@@ -37,7 +36,6 @@ class Filters extends Widget implements HasForms
 
                         DatePicker::make('to')
                             ->minDate(fn(Get $get) => $get('from') ?: now())
-                            ->maxDate(now())
                             ->live()
                             ->afterStateUpdated(function (?string $state) {
                                 $stateWithTime = Carbon::parse($state)

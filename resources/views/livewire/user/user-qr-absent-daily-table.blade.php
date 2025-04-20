@@ -26,14 +26,15 @@ use Filament\Tables\Concerns\InteractsWithTable;
 new class extends Component implements HasForms, HasTable {
     use InteractsWithTable, InteractsWithForms;
 
-
     public function table(Table $table): Table
     {
-        // dd(now()->toDateString());
         return $table
             ->query(function () {
-                return Attendance::query()
-                    ->whereDate('date', now()->toDateString());
+                return Auth::user()->is_hrd
+                    ? Attendance::query()->whereDate('created_at', now()->toDateString())
+                    : Attendance::query()
+                    ->where('user_id', Auth::user()->id)
+                    ->whereDate('created_at', now()->toDateString());
             })
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultSort('created_at', 'desc')
@@ -43,7 +44,11 @@ new class extends Component implements HasForms, HasTable {
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('date')
+                TextColumn::make('user.name')
+                    ->label('Employee')
+                    ->visible(Auth::user()->is_hrd),
+
+                TextColumn::make('created_at')
                     ->label('Date')
                     ->date('l')
                     ->sortable()
@@ -51,31 +56,31 @@ new class extends Component implements HasForms, HasTable {
 
                 TextColumn::make('absen_datang')
                     ->label('in')
-                    ->formatStateUsing(
-                        fn($state) => Carbon::parse($state)->translatedFormat('H:i')
-                    ),
+                    ->formatStateUsing(fn($state) => Carbon::parse($state)->translatedFormat('H:i')),
 
                 TextColumn::make('absen_pulang')
                     ->label('out')
-                    ->formatStateUsing(
-                        fn($state) => Carbon::parse($state)->translatedFormat('H:i')
-                    ),
+                    ->formatStateUsing(fn($state) => Carbon::parse($state)->translatedFormat('H:i')),
 
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn($state) => ucwords($state))
-                    ->color(fn(string $state): string => match ($state) {
-                        'hadir' => 'success',
-                        'izin' => 'warning',
-                        'tidak hadir' => 'danger',
-                        'proses' => 'gray'
-                    })
-                    ->icon(fn(string $state): string => match ($state) {
-                        'hadir' => 'heroicon-o-check-circle',
-                        'izin' => 'heroicon-o-envelope',
-                        'tidak hadir' => 'heroicon-o-x-circle',
-                        'proses' => 'icon-timer',
-                    })
+                    ->color(
+                        fn(string $state): string => match ($state) {
+                            'hadir' => 'success',
+                            'izin' => 'warning',
+                            'tidak hadir' => 'danger',
+                            'proses' => 'gray',
+                        },
+                    )
+                    ->icon(
+                        fn(string $state): string => match ($state) {
+                            'hadir' => 'heroicon-o-check-circle',
+                            'izin' => 'heroicon-o-envelope',
+                            'tidak hadir' => 'heroicon-o-x-circle',
+                            'proses' => 'icon-timer',
+                        },
+                    )
                     ->sortable(),
             ])
             ->actions([
@@ -85,62 +90,50 @@ new class extends Component implements HasForms, HasTable {
                         ->color('info')
                         ->icon('heroicon-o-eye')
                         ->form([
-                            Grid::make(['xl' => 2])
-                                ->schema([
-                                    DatePicker::make('date')
-                                        ->label('Date')
-                                        ->displayFormat('j F Y')
-                                        ->required()
-                                        ->native(false)
-                                        ->columnSpan(2),
-                                    ToggleButtons::make('status')
-                                        ->options([
-                                            'hadir' => 'Hadir',
-                                            'izin' => 'Izin',
-                                            'tidak hadir' => 'Tidak Hadir',
-                                        ])
-                                        ->colors([
-                                            'hadir' => 'success',
-                                            'izin' => 'warning',
-                                            'tidak hadir' => 'danger',
-                                        ])
-                                        ->live()
-                                        ->required()
-                                        ->inline()
-                                        ->columnSpanFull(),
-                                ]),
-                            Grid::make(['xl' => 2])
-                                ->schema([
-                                    DateTimePicker::make('absen_datang')
-                                        // ->label('Absen Datang')
-                                        ->label('In')
-                                        ->date(false)
-                                        ->seconds(false)
-                                        ->native(false)
-                                        ->visible(
-                                            fn(Get $get): bool => $get('status') === 'hadir'
-                                        )
-                                        ->required(),
+                            Grid::make(['xl' => 2])->schema([
+                                DatePicker::make('date')->label('Date')->displayFormat('j F Y')->required()->native(false)->columnSpan(2),
+                                ToggleButtons::make('status')
+                                    ->options([
+                                        'hadir' => 'Hadir',
+                                        'izin' => 'Izin',
+                                        'tidak hadir' => 'Tidak Hadir',
+                                    ])
+                                    ->colors([
+                                        'hadir' => 'success',
+                                        'izin' => 'warning',
+                                        'tidak hadir' => 'danger',
+                                    ])
+                                    ->live()
+                                    ->required()
+                                    ->inline()
+                                    ->columnSpanFull(),
+                            ]),
+                            Grid::make(['xl' => 2])->schema([
+                                DateTimePicker::make('absen_datang')
+                                    // ->label('Absen Datang')
+                                    ->label('In')
+                                    ->date(false)
+                                    ->seconds(false)
+                                    ->native(false)
+                                    ->visible(fn(Get $get): bool => $get('status') === 'hadir')
+                                    ->required(),
 
-                                    DateTimePicker::make('absen_pulang')
-                                        // ->label('Absen Pulang')
-                                        ->label('Out')
-                                        ->date(false)
-                                        ->seconds(false)
-                                        ->native(false)
-                                        ->visible(
-                                            fn(Get $get): bool => $get('status') === 'hadir'
-                                        )
-                                        ->required(),
+                                DateTimePicker::make('absen_pulang')
+                                    // ->label('Absen Pulang')
+                                    ->label('Out')
+                                    ->date(false)
+                                    ->seconds(false)
+                                    ->native(false)
+                                    ->visible(fn(Get $get): bool => $get('status') === 'hadir')
+                                    ->required(),
 
-                                    TextInput::make('alasan')
-                                        ->label('Reason')
-                                        ->minLength(3)
-                                        ->required()
-                                        ->hidden(
-                                            fn(Get $get): bool => $get('status') === 'hadir'
-                                        )->columnSpan(['xl' => 2]),
-                                ])
+                                TextInput::make('alasan')
+                                    ->label('Reason')
+                                    ->minLength(3)
+                                    ->required()
+                                    ->hidden(fn(Get $get): bool => $get('status') === 'hadir')
+                                    ->columnSpan(['xl' => 2]),
+                            ]),
                         ])
                         ->modalHeading(fn($record) => 'Detail Attendance ' . $record->user->name)
                         ->modalFooterActionsAlignment(Alignment::Center)
@@ -164,13 +157,11 @@ new class extends Component implements HasForms, HasTable {
                         })
                         ->modalWidth(MaxWidth::Large),
 
-                    DeleteAction::make()
-                        ->icon('heroicon-o-trash')
-                        ->visible()
-                        ->requiresConfirmation()
-
-                ])->icon('heroicon-o-ellipsis-horizontal')
+                    DeleteAction::make()->icon('heroicon-o-trash')->visible()->requiresConfirmation(),
+                ])
+                    ->icon('heroicon-o-ellipsis-horizontal')
                     ->iconButton()
+                    ->visible(Auth::user()->is_hrd),
             ]);
     }
 

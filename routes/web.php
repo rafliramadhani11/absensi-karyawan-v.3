@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use App\Models\Division;
-use App\Models\Attendance;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AttendanceController;
@@ -10,66 +9,83 @@ use App\Http\Controllers\AttendanceController;
 Route::get('/', fn() => view('welcome'));
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', fn() => view('dashboard'))
-        ->name('dashboard');
-
-    // Division
-    Route::prefix('divisions')->group(function () {
-        Route::get('/', fn() => view('division.index'))
-            ->name('division.index');
-        Route::get('/{division}/detail', fn(Division $division) => view('division.detail', compact('division')))
-            ->name('division.detail');
+    // Admin
+    Route::middleware('isAdmin')->group(function () {
+        Route::prefix('admin')->group(function () {
+            Route::get('/', fn() => view('admin.employees-qr-code'))
+                ->name('admin.employees-qr-code');
+        });
     });
 
-    // Users
-    Route::prefix('users')->group(function () {
-        Route::get('/', fn() => view('user.index'))
-            ->name('user.index');
-        Route::get('/create', fn() => view('user.create'))
-            ->name('user.create');
-        Route::get('/{user}/edit', fn(User $user) => view('user.edit', compact('user')))
-            ->name('user.edit');
+    // HRD
+    Route::middleware('isHrd')->group(function () {
+        Route::prefix('hrd')->group(function () {
+            Route::get('/', fn() => view('hrd.dashboard'))
+                ->name('hrd.dashboard');
+
+            Route::get('/absent', fn() => view('hrd.daily-absent'))
+                ->name('hrd.daily-absent');
+
+            Route::get('/salaries', fn() => view('hrd.salaries'))
+                ->name('hrd.salaries');
+
+            // Division
+            Route::prefix('divisions')->group(function () {
+                Route::get('/', fn() => view('hrd.division.index'))
+                    ->name('hrd.division.index');
+
+                Route::get('/{division}/detail', fn(Division $division) => view('hrd.division.detail', compact('division')))
+                    ->name('hrd.division.detail');
+            });
+
+            // Employees
+            Route::prefix('employees')->group(function () {
+                Route::get('/', fn() => view('hrd.employee.index'))
+                    ->name('hrd.employee.index');
+
+                Route::get('/create', fn() => view('hrd.employee.create'))
+                    ->name('hrd.employee.create');
+
+                Route::get('/{user}/edit', fn(User $user) => view('hrd.employee.edit', compact('user')))
+                    ->name('hrd.employee.edit');
+            });
+
+            // Attendances
+            Route::prefix('attendances')->group(function () {
+                Route::get('/', fn() => view('hrd.attendance.index'))
+                    ->name('hrd.attendance.index');
+            });
+        });
     });
 
-    // Attendances
-    Route::prefix('attendances')->group(function () {
-        Route::get('/', fn() => view('attendance.index'))
-            ->name('attendance.index');
-        Route::get('/create', fn() => view('attendance.create'))
-            ->name('attendance.create');
-        Route::get('/{attendance}/edit', fn(Attendance $attendance) => view('attendance.edit', compact('attendance')))
-            ->name('attendance.edit');
-    });
+    // Employee
+    Route::middleware('isEmployee')->group(function () {
+        Route::prefix('employee')->group(function () {
+            Route::get('/', fn() => view('user.dashboard'))
+                ->name('user.dashboard');
 
-    // Salary
-    Route::prefix('salaries')->group(function () {
-        Route::get('/', fn() => view('salary.index'))
-            ->name('salary.index');
+            // Qr Absent
+            Route::get('/absent', fn() => view('user.daily-absent'))
+                ->name('user.daily-absent');
 
-        Route::get('create', fn() => view('salary.create'))
-            ->name('salary.create');
-    });
+            Route::prefix('absents')->group(function () {
+                Route::get('absen-datang', [AttendanceController::class, 'absenDatang'])
+                    ->name('user.absen-datang');
 
-    // Qr Absent
-    Route::prefix('absents')->group(function () {
-        Route::get('/', fn() => view('absent.index'))
-            ->name('absent.index');
+                Route::get('absen-pulang', [AttendanceController::class, 'absenPulang'])
+                    ->name('user.absen-pulang');
+            });
 
-        Route::get('absen-datang', [AttendanceController::class, 'absenDatang'])
-            ->name('user.absen-datang');
+            // Salaries
+            Route::get('/salaries', fn() => view('user.salaries'))
+                ->name('user.salaries');
 
-        Route::get('absen-pulang', [AttendanceController::class, 'absenPulang'])
-            ->name('user.absen-pulang');
-    });
-
-    // Employee qr code
-    Route::prefix('employees-qr-code')->group(function () {
-        Route::get('/', fn() => view('admin.employees-qr-code'))
-            ->name('admin.employees-qr-code');
+            // Attendances
+            Route::get('/attendances', fn() => view('user.attendance.index'))
+                ->name('user.attendance.index');
+        });
     });
 });
-
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

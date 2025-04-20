@@ -26,7 +26,7 @@ new class extends Component implements HasForms, HasActions {
                     ->success()
                     ->send();
 
-                $this->redirect(route('user.index'));
+                $this->redirect(route('hrd.employee.index'));
             })
         ;
     }
@@ -45,7 +45,7 @@ new class extends Component implements HasForms, HasActions {
                     ->success()
                     ->send();
 
-                $this->redirect(route('user.index'));
+                $this->redirect(route('hrd.employee.index'));
             })
         ;
     }

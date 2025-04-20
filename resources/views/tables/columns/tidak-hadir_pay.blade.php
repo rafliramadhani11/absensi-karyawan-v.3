@@ -7,8 +7,8 @@
     $userId = $getRecord()->id;
     $totalTidak_hadir = Attendance::where('user_id', $userId)
         ->where('status', 'tidak hadir')
-        ->whereMonth('date', $monthFilter)
-        ->whereYear('date', $yearFilter)
+        ->whereMonth('created_at', $monthFilter)
+        ->whereYear('created_at', $yearFilter)
         ->count();
 
     $tidakHadir_pay = $totalTidak_hadir * 20000;

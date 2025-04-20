@@ -124,7 +124,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     ->label('Detail')
                     ->icon('heroicon-o-eye')
                     ->color('info')
-                    ->url(fn($record) => route('user.edit', $record))
+                    ->url(fn($record) => route('hrd.employee.edit', $record))
                     ->extraAttributes([
                         'wire:navigate' => true
                     ]),
@@ -160,7 +160,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
     }
 }; ?>
 
-<div class="mt-10">
+<div class="mt-10 space-y-10">
     <div class="flex flex-col-reverse mt-5 gap-y-6 xl:grid xl:grid-cols-3 xl:gap-x-6">
         <div class="xl:col-span-2">
             {{ $this->form }}
@@ -171,8 +171,16 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
         </div>
     </div>
 
-    <div class="mt-5">
+    <div>
         {{ $this->table }}
+    </div>
+
+    <div>
+        <livewire:filters />
+
+        <div class="mt-10">
+            @livewire(App\Livewire\Division\PerformanceDivisionChart::class, ['division' => $this->division])
+        </div>
     </div>
 
     <x-filament-actions::modals />

@@ -4,6 +4,7 @@ use Filament\Forms\Form;
 use Livewire\Volt\Component;
 use Filament\Forms\Components\Grid;
 use App\Rules\EnsureCurrentPassword;
+use Filament\Forms\Components\Section;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Contracts\HasForms;
@@ -24,34 +25,37 @@ new class extends Component implements HasForms {
     {
         return $form
             ->schema([
-                Grid::make([
-                    'default' => 1,
-                    'sm' => 2,
-                    'md' => 1,
-                    'xl' => 2,
-                ])->schema([
-                    TextInput::make('current_password')
-                        ->password()
-                        ->revealable()
-                        ->required()
-                        ->columnSpanFull()
-                        ->rules([
-                            new EnsureCurrentPassword
+                Section::make()
+                    ->schema([
+                        Grid::make([
+                            'default' => 1,
+                            'sm' => 2,
+                            'md' => 1,
+                            'xl' => 2,
+                        ])->schema([
+                            TextInput::make('current_password')
+                                ->password()
+                                ->revealable()
+                                ->required()
+                                ->columnSpanFull()
+                                ->rules([
+                                    new EnsureCurrentPassword
+                                ]),
+
+                            TextInput::make('password')
+                                ->label('New Password')
+                                ->password()
+                                ->revealable()
+                                ->confirmed()
+                                ->required(),
+
+                            TextInput::make('password_confirmation')
+                                ->label('New Password Confirmation')
+                                ->password()
+                                ->revealable()
+                                ->required(),
                         ]),
-
-                    TextInput::make('password')
-                        ->label('New Password')
-                        ->password()
-                        ->revealable()
-                        ->confirmed()
-                        ->required(),
-
-                    TextInput::make('password_confirmation')
-                        ->label('New Password Confirmation')
-                        ->password()
-                        ->revealable()
-                        ->required(),
-                ]),
+                    ])
             ])
             ->statePath('data');
     }
@@ -78,8 +82,10 @@ new class extends Component implements HasForms {
 }; ?>
 
 <div class="w-full">
-    <form wire:submit="save">
+    <div>
         {{ $this->form }}
+    </div>
+    <form wire:submit="save">
 
         <div class="flex justify-end mt-5">
             <x-primary-button type="submit" class="w-full sm:w-fit">

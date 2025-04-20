@@ -7,8 +7,8 @@
     $userId = $getRecord()->id;
     $total_tidak_hadir = Attendance::where('user_id', $userId)
         ->where('status', 'tidak hadir')
-        ->whereMonth('date', $monthFilter)
-        ->whereYear('date', $yearFilter)
+        ->whereMonth('created_at', $monthFilter)
+        ->whereYear('created_at', $yearFilter)
         ->count();
 @endphp
 

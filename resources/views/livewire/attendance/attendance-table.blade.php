@@ -9,6 +9,7 @@ use Livewire\Attributes\Computed;
 use Filament\Forms\Components\Grid;
 use Livewire\Attributes\Renderless;
 use Filament\Support\Enums\MaxWidth;
+use Illuminate\Support\Facades\Auth;
 use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\EditAction;
@@ -39,14 +40,14 @@ new class extends Component implements HasTable, HasForms {
             })
             ->searchPlaceholder('Employee Name ...')
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(8)
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('date')
+                TextColumn::make('created_at')
                     ->label('Date')
                     ->date('l')
                     ->sortable()
@@ -55,7 +56,8 @@ new class extends Component implements HasTable, HasForms {
                 TextColumn::make('user.name')
                     ->label('Employee')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->visible(Auth::user()->is_hrd),
 
                 TextColumn::make('absen_datang')
                     ->label('in')
@@ -95,12 +97,20 @@ new class extends Component implements HasTable, HasForms {
                         ->form([
                             Grid::make(['xl' => 2])
                                 ->schema([
-                                    DatePicker::make('date')
+                                    DatePicker::make('created_at')
                                         ->label('Date')
                                         ->displayFormat('j F Y')
                                         ->required()
                                         ->native(false)
-                                        ->columnSpan(2),
+                                        ->columnSpan(2)
+                                        ->disabledDates(function ($record) {
+                                            $userId = $record?->user_id;
+
+                                            return Attendance::where('user_id', $userId)
+                                                ->pluck('created_at')
+                                                ->map(fn($date) => Carbon::parse($date)->toDateString())
+                                                ->toArray();
+                                        }),
                                     ToggleButtons::make('status')
                                         ->options([
                                             'hadir' => 'Hadir',
@@ -154,7 +164,7 @@ new class extends Component implements HasTable, HasForms {
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->using(function (Model $record, array $data): Model {
                             $updateData = [
-                                'date' => $data['date'],
+                                'created_at' => $data['created_at'],
                                 'status' => $data['status'],
                                 'alasan' => null,
                                 'absen_datang' => $data['absen_datang'] ?? null,
@@ -185,7 +195,9 @@ new class extends Component implements HasTable, HasForms {
     #[Computed()]
     public function attendances()
     {
-        return Attendance::query();
+        return Auth::user()->is_hrd
+            ? Attendance::query()
+            : Attendance::query()->where('user_id', Auth::user()->id);
     }
 
     #[Computed()]

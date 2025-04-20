@@ -7,8 +7,8 @@
 
     $attendanceCounts = Attendance::selectRaw('status, COUNT(*) as total')
         ->where('user_id', $userId)
-        ->whereMonth('date', $monthFilter)
-        ->whereYear('date', $yearFilter)
+        ->whereMonth('created_at', $monthFilter)
+        ->whereYear('created_at', $yearFilter)
         ->groupBy('status')
         ->pluck('total', 'status');
 

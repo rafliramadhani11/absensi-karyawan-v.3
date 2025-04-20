@@ -44,14 +44,20 @@ class LoginForm extends Component implements HasForms
 
     public function login()
     {
-        $this->ensureIsNotRateLimited();
+        // $this->ensureIsNotRateLimited();
 
         $validated = $this->form->getState();
 
         if (Auth::attempt($validated)) {
             session()->regenerate();
 
-            return redirect()->intended(Auth::user()->is_admin ? route('admin.employees-qr-code') : route('dashboard'));
+            if (Auth::user()->is_admin) {
+                return redirect()->intended(route('admin.employees-qr-code'));
+            } elseif (Auth::user()->is_hrd) {
+                return redirect()->intended(route('hrd.dashboard'));
+            } else {
+                return redirect()->intended(route('user.dashboard'));
+            }
         }
 
         throw ValidationException::withMessages([

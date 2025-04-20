@@ -30,17 +30,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::if('admin', function () {
-            return Auth::check() && Auth::user()->is_admin;
-        });
-
-        Blade::if('hrd', function () {
-            return Auth::check() && Auth::user()->is_hrd;
-        });
-
-        Blade::if('employee', function () {
-            return Auth::check() && !Auth::user()->is_hrd && !Auth::user()->is_admin;
-        });
 
         Notifications::alignment(Alignment::End);
         FilamentColor::register([

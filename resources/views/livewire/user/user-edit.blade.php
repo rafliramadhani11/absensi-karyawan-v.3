@@ -184,14 +184,14 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
             })
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultPaginationPageOption(5)
-            ->defaultSort('date', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('No Attendances')
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
                     ->rowIndex(),
 
-                TextColumn::make('date')
+                TextColumn::make('created_at')
                     ->label('Date')
                     ->dateTime('l')
                     ->sortable()
@@ -233,12 +233,20 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         ->form([
                             Grid::make(['xl' => 2])
                                 ->schema([
-                                    DatePicker::make('date')
+                                    DatePicker::make('created_at')
                                         ->label('Date')
                                         ->displayFormat('j F Y')
                                         ->required()
                                         ->native(false)
-                                        ->columnSpan(2),
+                                        ->columnSpan(2)
+                                        ->disabledDates(function ($record) {
+                                            $userId = $record?->user_id;
+
+                                            return Attendance::where('user_id', $userId)
+                                                ->pluck('created_at')
+                                                ->map(fn($date) => Carbon::parse($date)->toDateString())
+                                                ->toArray();
+                                        }),
                                     ToggleButtons::make('status')
                                         ->options([
                                             'hadir' => 'Hadir',
@@ -292,7 +300,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         ->modalFooterActionsAlignment(Alignment::Center)
                         ->using(function (Model $record, array $data): Model {
                             $updateData = [
-                                'date' => $data['date'],
+                                'created_at' => $data['created_at'],
                                 'status' => $data['status'],
                                 'alasan' => null,
                                 'absen_datang' => $data['absen_datang'] ?? null,

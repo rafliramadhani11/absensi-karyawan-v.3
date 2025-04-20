@@ -23,6 +23,7 @@
         "laravel/tinker": "^2.10.1",
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7",
+        "malzariey/filament-daterangepicker-filter": "^3.3",
         "simplesoftwareio/simple-qrcode": "~4"
     },
     "require-dev": {

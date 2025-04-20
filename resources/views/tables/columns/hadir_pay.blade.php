@@ -7,8 +7,8 @@
     $userId = $getRecord()->id;
     $total_hadir = Attendance::where('user_id', $userId)
         ->where('status', 'hadir')
-        ->whereMonth('date', $monthFilter)
-        ->whereYear('date', $yearFilter)
+        ->whereMonth('created_at', $monthFilter)
+        ->whereYear('created_at', $yearFilter)
         ->count();
 
     $hadir_pay = $total_hadir * 200000;

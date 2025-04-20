@@ -72,7 +72,7 @@ new class extends Component implements HasTable, HasForms {
                         ->label('Detail')
                         ->icon('heroicon-o-eye')
                         ->color('info')
-                        ->url(fn($record) => route('user.edit', $record))
+                        ->url(fn($record) => route('hrd.employee.edit', $record))
                         ->extraAttributes([
                             'wire:navigate' => true
                         ]),

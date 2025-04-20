@@ -26,32 +26,20 @@ new class extends Component implements HasForms, HasActions {
             ->icon('heroicon-m-plus')
             ->size('sm')
             ->model(Division::class)
-            ->form([
-                TextInput::make('name')
-                    ->placeholder('division name')
-                    ->required()
-                    ->unique()
-                    ->unique('divisions', 'name')
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
-
-                TextInput::make('slug')
-                    ->placeholder('autogenerate from name')
-                    ->required()
-                    ->readOnly(),
-            ])
+            ->form([TextInput::make('name')->placeholder('division name')->required()->unique()->unique('divisions', 'name')->live(onBlur: true)->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))), TextInput::make('slug')->placeholder('autogenerate from name')->required()->readOnly()])
             ->extraAttributes([
-                'class' => 'btn-primary'
+                'class' => 'btn-primary',
             ])
             ->modalSubmitActionLabel('Create')
-            ->modalSubmitAction(fn($action) => $action->extraAttributes([
-                'class' => 'btn-primary',
-            ]))
+            ->modalSubmitAction(
+                fn($action) => $action->extraAttributes([
+                    'class' => 'btn-primary',
+                ]),
+            )
             ->createAnother(false)
             ->modalFooterActionsAlignment(Alignment::Center)
             ->modalWidth(MaxWidth::Large)
-            ->successRedirectUrl(route('division.index'))
-        ;
+            ->successRedirectUrl(route('hrd.division.index'));
     }
 }; ?>
 

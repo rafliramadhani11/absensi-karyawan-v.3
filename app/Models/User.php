@@ -35,7 +35,8 @@ class User extends Authenticatable
 
     public function scopeWithoutAdmin(Builder $query): void
     {
-        $query->where('is_admin', 'false');
+        $query->where('is_admin', 'false')
+            ->where('is_hrd', 'false');
     }
 
     public function scopeDivisionNotDeleted(Builder $builder): void
