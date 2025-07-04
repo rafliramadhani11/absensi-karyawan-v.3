@@ -370,7 +370,8 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
         <livewire:filters />
 
         <div class="mt-10">
-            @livewire(App\Livewire\Employee\PerformanceAttendanceChart::class, ['user' => $this->user])
+            @livewire(App\Livewire\Employee\PerformanceAttendanceChart::class,
+            ['user' => $this->user])
         </div>
     </div>
 

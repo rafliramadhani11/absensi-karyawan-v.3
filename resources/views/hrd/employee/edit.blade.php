@@ -20,9 +20,9 @@
             Detail {{ $user->name }}
         </h1>
 
-        <livewire:user.user-delete-action :$user />
+        <livewire:user.user-header-action :$user />
     </div>
 
 
-    <livewire:user.user-edit lazy :$user />
+    <livewire:user.user-edit :$user />
 </x-app-layout>

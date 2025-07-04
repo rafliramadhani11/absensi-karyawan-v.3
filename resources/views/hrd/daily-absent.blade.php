@@ -43,7 +43,7 @@
     </div>
     {{-- ----------------------------------------------------------------- --}}
 
-    <livewire:user.user-qr-absent-daily-table lazy />
+    <livewire:user.user-qr-absent-daily-table />
 
     {{-- <script src="{{ asset('js/html5-qrcode.min.js') }}" type="text/javascript"></script>
     <script>

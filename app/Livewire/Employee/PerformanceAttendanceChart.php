@@ -14,7 +14,6 @@ class PerformanceAttendanceChart extends ChartWidget
 {
     protected static ?string $heading = 'Performance Attendance Chart';
     protected static ?string $maxHeight = '300px';
-    protected static bool $isLazy = true;
     public Carbon $fromDate;
     public Carbon $toDate;
     public $user;

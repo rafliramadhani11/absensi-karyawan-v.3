@@ -15,7 +15,6 @@ class AttendancesChart extends ChartWidget
 {
     protected static ?string $heading = 'Attendance Chart';
     protected static ?string $description = 'Data grouped per month';
-    protected static bool $isLazy = true;
     protected static ?string $maxHeight = '300px';
     public Carbon $fromDate;
     public Carbon $toDate;

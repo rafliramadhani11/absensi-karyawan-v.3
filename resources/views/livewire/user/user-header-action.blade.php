@@ -1,11 +1,13 @@
 <?php
 
+use Livewire\Attributes\On;
 use Filament\Actions\Action;
 use Livewire\Volt\Component;
-use Filament\Actions\DeleteAction;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\DatePicker;
 use Filament\Actions\Contracts\HasActions;
@@ -14,7 +16,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 
 new class extends Component implements HasForms, HasActions {
     use InteractsWithForms, InteractsWithActions;
-    public $division;
+    public $user;
 
     public function deleteAction(): Action
     {
@@ -23,11 +25,11 @@ new class extends Component implements HasForms, HasActions {
             ->icon('heroicon-o-archive-box-arrow-down')
             ->requiresConfirmation()
             ->action(function () {
-                $this->division->delete();
+                $this->user->delete();
 
-                Notification::make()->title('Successfully delete division')->success()->send();
+                Notification::make()->title('Successfully delete user')->success()->send();
 
-                $this->redirect(route('hrd.division.index'));
+                $this->redirect(route('hrd.employee.index'));
             });
     }
 
@@ -38,11 +40,11 @@ new class extends Component implements HasForms, HasActions {
             ->icon('heroicon-o-trash')
             ->requiresConfirmation()
             ->action(function () {
-                $this->division->forceDelete();
+                $this->user->forceDelete();
 
-                Notification::make()->title('Successfully delete permanent division')->success()->send();
+                Notification::make()->title('Successfully delete permanent user')->success()->send();
 
-                $this->redirect(route('hrd.division.index'));
+                $this->redirect(route('hrd.employee.index'));
             });
     }
 
@@ -53,38 +55,38 @@ new class extends Component implements HasForms, HasActions {
             ->icon('heroicon-o-document-arrow-down')
             ->requiresConfirmation()
             ->modalIcon('heroicon-o-document-arrow-down')
-            ->modalHeading('Cetak Kinerja Absensi Divisi')
+            ->modalHeading('Cetak Kinerja Karyawan')
             ->modalDescription('Pilih rentang tanggal yang akan dicetak')
             ->modalWidth(MaxWidth::ExtraLarge)
             ->modalSubmitActionLabel('Export')
             ->form([
-                Grid::make(2)->schema([
-                    DatePicker::make('start')
-                        ->label(false)
-                        ->placeholder('dari tanggal')
-                        ->native(false)
-                        ->displayFormat('d/m/Y')
-                        ->required()
-                        ->default(now()->subMonth()),
+                Grid::make(2)
+                    ->schema([
+                        DatePicker::make('start')
+                            ->label(false)
+                            ->placeholder('dari tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required()
+                            ->default(now()->subMonth()),
 
-                    DatePicker::make('end')
-                        ->label(false)
-                        ->placeholder('sampai tanggal')
-                        ->native(false)
-                        ->displayFormat('d/m/Y')
-                        ->required()
-                        ->default(now()),
-                ]),
-            ])
-            ->action(function ($data) {
-                redirect(
-                    route('hrd.division.kinerja', [
-                        'division' => $this->division,
-                        'start' => $data['start'],
-                        'end' => $data['end'],
-                    ]),
-                );
-            });
+                        DatePicker::make('end')
+                            ->label(false)
+                            ->placeholder('sampai tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required()
+                            ->default(now())
+                    ])
+            ])->action(function ($data) {
+
+                redirect(route('hrd.employee.kinerja', [
+                    'user' => $this->user,
+                    'start' => $data['start'],
+                    'end' => $data['end'],
+                ]));
+            })
+        ;
     }
 };
 ?>

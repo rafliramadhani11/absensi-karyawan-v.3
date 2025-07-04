@@ -3,6 +3,7 @@
 use App\Models\User;
 use Filament\Tables\Table;
 use Livewire\Volt\Component;
+use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Contracts\HasForms;
@@ -13,6 +14,7 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
@@ -67,15 +69,50 @@ new class extends Component implements HasTable, HasForms {
             ->defaultSort('created_at', 'desc')
             ->filters([TrashedFilter::make()])
             ->actions([
+                Action::make('export')
+                    ->label('Cetak Kinerja')
+                    ->color('success')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->modalIcon('heroicon-o-document-arrow-down')
+                    ->modalHeading('Cetak Kinerja Karyawan')
+                    ->modalDescription('Pilih rentang tanggal yang akan dicetak')
+                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalSubmitActionLabel('Export')
+                    ->form([
+                        Grid::make(2)
+                            ->schema([
+                                DatePicker::make('start')
+                                    ->label(false)
+                                    ->placeholder('dari tanggal')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->default(now()->subMonth()),
+
+                                DatePicker::make('end')
+                                    ->label(false)
+                                    ->placeholder('sampai tanggal')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->default(now())
+                            ])
+                    ])->action(function ($data, $record) {
+
+                        redirect(route('hrd.employee.kinerja', [
+                            'user' => $record,
+                            'start' => $data['start'],
+                            'end' => $data['end'],
+                        ]));
+                    }),
+
                 ActionGroup::make([
                     EditAction::make()
                         ->label('Detail')
                         ->icon('heroicon-o-eye')
                         ->color('info')
-                        ->url(fn($record) => route('hrd.employee.edit', $record))
-                        ->extraAttributes([
-                            'wire:navigate' => true
-                        ]),
+                        ->url(fn($record) => route('hrd.employee.edit', $record)),
 
                     DeleteAction::make()
                         ->icon('heroicon-o-archive-box-arrow-down')

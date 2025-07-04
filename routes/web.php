@@ -3,10 +3,15 @@
 use App\Models\User;
 use App\Models\Division;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\DivisionPdfController;
+use App\Http\Controllers\PdfControllerAllEmployee;
+use App\Http\Controllers\UserController;
 
 Route::get('/', fn() => view('welcome'));
+
 
 Route::middleware('auth')->group(function () {
     // Admin
@@ -36,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/{division}/detail', fn(Division $division) => view('hrd.division.detail', compact('division')))
                     ->name('hrd.division.detail');
+
+                Route::get('{division}/kinerja/{start}/{end}', DivisionPdfController::class)
+                    ->name('hrd.division.kinerja');
             });
 
             // Employees
@@ -43,11 +51,17 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', fn() => view('hrd.employee.index'))
                     ->name('hrd.employee.index');
 
+                Route::get('/kinerja/{start}/{end}', PdfControllerAllEmployee::class)
+                    ->name('hrd.employee.kinerja-all-employee');
+
                 Route::get('/create', fn() => view('hrd.employee.create'))
                     ->name('hrd.employee.create');
 
                 Route::get('/{user}/edit', fn(User $user) => view('hrd.employee.edit', compact('user')))
                     ->name('hrd.employee.edit');
+
+                Route::get('{user}/kinerja/{start}/{end}', PdfController::class)
+                    ->name('hrd.employee.kinerja');
             });
 
             // Attendances
@@ -80,9 +94,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/salaries', fn() => view('user.salaries'))
                 ->name('user.salaries');
 
+            Route::get('/salaries/{start}/{end}', [UserController::class, 'exportSalaries'])
+                ->name('user.salaries.export');
+
             // Attendances
             Route::get('/attendances', fn() => view('user.attendance.index'))
                 ->name('user.attendance.index');
+
+            Route::get('/attendances/kinerja/{start}/{end}', [UserController::class, 'exportAttendances'])
+                ->name('user.kinerja.export');
         });
     });
 });

@@ -44,44 +44,12 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Section::make()
-                    ->schema([
-                        Grid::make(['default' => 1, 'sm' => 2])
-                            ->schema([
-                                TextInput::make('name')
-                                    ->placeholder('division name')
-                                    ->required()
-                                    ->unique()
-                                    ->unique('divisions', 'name')
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))),
-
-                                TextInput::make('slug')
-                                    ->placeholder('autogenerate from name')
-                                    ->required()
-                                    ->readOnly(),
-                            ])
-                    ])
-            ])
-            ->statePath('data');
+        return $form->schema([Section::make()->schema([Grid::make(['default' => 1, 'sm' => 2])->schema([TextInput::make('name')->placeholder('division name')->required()->unique()->unique('divisions', 'name')->live(onBlur: true)->afterStateUpdated(fn(Set $set, $state) => $set('slug', Str::slug($state))), TextInput::make('slug')->placeholder('autogenerate from name')->required()->readOnly()])])])->statePath('data');
     }
 
     public function divisionInfoList(Infolist $infolist): Infolist
     {
-        return $infolist
-            ->record($this->division)
-            ->schema([
-                InfolistsSection::make()
-                    ->schema([
-                        ComponentsGrid::make(['default' => 2])
-                            ->schema([
-                                TextEntry::make('created_at'),
-                                TextEntry::make('updated_at'),
-                            ])
-                    ])
-            ]);
+        return $infolist->record($this->division)->schema([InfolistsSection::make()->schema([ComponentsGrid::make(['default' => 2])->schema([TextEntry::make('created_at'), TextEntry::make('updated_at')])])]);
     }
 
     public function table(Table $table): Table
@@ -93,41 +61,9 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
             ->searchPlaceholder('Nik, Name, Email ...')
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('No Employees')
-            ->columns([
-                TextColumn::make('index')
-                    ->label('#')
-                    ->rowIndex(),
-
-                TextColumn::make('nik')
-                    ->copyable()
-                    ->searchable(),
-
-                TextColumn::make('role')
-                    ->sortable(),
-
-                TextColumn::make('name')
-                    ->copyable()
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('email')
-                    ->copyable()
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('gender')
-                    ->label('Jenis Kelamin')
-                    ->sortable()
-            ])
+            ->columns([TextColumn::make('index')->label('#')->rowIndex(), TextColumn::make('nik')->copyable()->searchable(), TextColumn::make('role')->sortable(), TextColumn::make('name')->copyable()->searchable()->sortable(), TextColumn::make('email')->copyable()->searchable()->sortable(), TextColumn::make('gender')->label('Jenis Kelamin')->sortable()])
             ->actions([
-                ViewAction::make()
-                    ->label('Detail')
-                    ->icon('heroicon-o-eye')
-                    ->color('info')
-                    ->url(fn($record) => route('hrd.employee.edit', $record))
-                    ->extraAttributes([
-                        'wire:navigate' => true
-                    ]),
+                ViewAction::make()->label('Detail')->icon('heroicon-o-eye')->color('info')->url(fn($record) => route('hrd.employee.edit', $record)),
                 DissociateAction::make()
                     ->label('Change')
                     ->color('success')
@@ -136,7 +72,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         Select::make('division_id')
                             ->label('Division')
                             ->options(Division::all()->pluck('name', 'id'))
-                            ->searchable()
+                            ->searchable(),
                     ])
                     ->using(function ($record, $data) {
                         $user = $record;
@@ -146,11 +82,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     ->modalHeading('Change user division')
                     ->modalDescription(null)
                     ->modalSubmitActionLabel('Change Division')
-                    ->successNotification(
-                        Notification::make()
-                            ->title('Successfully change user division')
-                            ->success()
-                    ),
+                    ->successNotification(Notification::make()->title('Successfully change user division')->success()),
             ]);
     }
 

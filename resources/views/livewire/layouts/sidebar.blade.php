@@ -18,7 +18,7 @@
                 @if (Auth::user()->is_admin)
                     {{-- Employees Qr Code --}}
                     <li>
-                        <x-nav-link wire:navigate :href="route('admin.employees-qr-code')" :active="request()->routeIs('admin.employees-qr-code*')">
+                        <x-nav-link :href="route('admin.employees-qr-code')" :active="request()->routeIs('admin.employees-qr-code*')">
                             <div class="flex">
                                 <x-filament::icon icon="icon-qr-code"
                                     class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
@@ -30,7 +30,7 @@
                 @else
                     {{-- Dashboard --}}
                     <li>
-                        <x-nav-link wire:navigate :href="Auth::user()->is_hrd ? route('hrd.dashboard') : route('user.dashboard')" :active="Auth::user()->is_hrd
+                        <x-nav-link :href="Auth::user()->is_hrd ? route('hrd.dashboard') : route('user.dashboard')" :active="Auth::user()->is_hrd
                             ? request()->routeIs('hrd.dashboard*')
                             : request()->routeIs('user.dashboard*')">
                             <div class="flex">
@@ -60,7 +60,7 @@
                                 </x-nav-link>
                             </li>
                             <li>
-                                <x-nav-link wire:navigate :href="Auth::user()->is_hrd ? route('hrd.salaries') : route('user.salaries')" :active="Auth::user()->is_hrd
+                                <x-nav-link :href="Auth::user()->is_hrd ? route('hrd.salaries') : route('user.salaries')" :active="Auth::user()->is_hrd
                                     ? request()->routeIs('hrd.salaries*')
                                     : request()->routeIs('user.salaries*')">
                                     <div class="flex">
@@ -83,7 +83,7 @@
                                 @if (Auth::user()->is_hrd)
                                     {{-- Divisions --}}
                                     <li>
-                                        <x-nav-link wire:navigate :href="route('hrd.division.index')" :active="request()->routeIs('hrd.division.index*')">
+                                        <x-nav-link :href="route('hrd.division.index')" :active="request()->routeIs('hrd.division.index*')">
                                             <div class="flex">
                                                 <x-filament::icon icon="heroicon-o-user-group"
                                                     class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
@@ -96,7 +96,7 @@
                                     </li>
                                     {{-- Employees --}}
                                     <li>
-                                        <x-nav-link wire:navigate :href="route('hrd.employee.index')" :active="request()->routeIs('hrd.employee.index*')">
+                                        <x-nav-link :href="route('hrd.employee.index')" :active="request()->routeIs('hrd.employee.index*')">
                                             <div class="flex">
                                                 <x-filament::icon icon="heroicon-o-user"
                                                     class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
@@ -110,7 +110,7 @@
                                 @endif
                                 {{-- Attendances --}}
                                 <li>
-                                    <x-nav-link wire:navigate :href="Auth::user()->is_hrd
+                                    <x-nav-link :href="Auth::user()->is_hrd
                                         ? route('hrd.attendance.index')
                                         : route('user.attendance.index')" :active="Auth::user()->is_hrd
                                         ? request()->routeIs('hrd.attendance.index*')

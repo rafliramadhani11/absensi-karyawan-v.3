@@ -17,6 +17,6 @@
         </h1>
     </div>
 
-    <livewire:salary.salary-table lazy />
+    <livewire:salary.salary-table />
 
 </x-app-layout>

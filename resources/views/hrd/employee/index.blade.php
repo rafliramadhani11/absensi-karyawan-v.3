@@ -15,12 +15,14 @@
         <h1 class="mt-3 text-2xl font-semibold sm:text-3xl">
             Employees List
         </h1>
-        <x-filament::button size="sm" class="btn-primary" icon="heroicon-m-plus" :href="route('hrd.employee.create')" tag="a">
-            New User
-        </x-filament::button>
+        <div class="flex space-x-3">
+            <livewire:export-pdf-action />
+
+            <x-filament::button size="sm" class="btn-primary" icon="heroicon-m-plus" :href="route('hrd.employee.create')" tag="a">
+                New Employee
+            </x-filament::button>
+        </div>
     </div>
 
-
-
-    <livewire:user.user-table lazy />
+    <livewire:user.user-table />
 </x-app-layout>
