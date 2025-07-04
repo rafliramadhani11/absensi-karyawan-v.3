@@ -18,5 +18,5 @@
         <livewire:division.division-create />
     </div>
 
-    <livewire:division.division-table lazy />
+    <livewire:division.division-table />
 </x-app-layout>

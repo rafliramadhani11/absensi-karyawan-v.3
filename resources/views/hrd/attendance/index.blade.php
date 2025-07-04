@@ -21,5 +21,5 @@
 
 
 
-    <livewire:attendance.attendance-table lazy />
+    <livewire:attendance.attendance-table />
 </x-app-layout>

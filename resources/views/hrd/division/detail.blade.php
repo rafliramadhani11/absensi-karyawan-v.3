@@ -24,5 +24,5 @@
     </div>
 
 
-    <livewire:division.division-detail lazy :$division />
+    <livewire:division.division-detail :$division />
 </x-app-layout>

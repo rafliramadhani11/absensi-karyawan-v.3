@@ -16,7 +16,9 @@
         <h1 class="mt-3 text-2xl font-semibold sm:text-3xl">
             Attendance List
         </h1>
+
+        <livewire:user.export-pdf-action />
     </div>
 
-    <livewire:attendance.attendance-table lazy />
+    <livewire:attendance.attendance-table />
 </x-app-layout>

@@ -15,10 +15,12 @@
         <h1 class="mt-3 text-2xl font-semibold sm:text-3xl">
             Salary List
         </h1>
+
+        <livewire:user.salary.export-pdf />
     </div>
 
 
-    <livewire:user.salary-table lazy />
+    <livewire:user.salary-table />
 
 
 

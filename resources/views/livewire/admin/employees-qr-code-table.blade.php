@@ -9,6 +9,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Infolists\Components\ViewEntry;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Infolists\Components\Grid;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Concerns\InteractsWithTable;
 
 new class extends Component implements HasForms, HasTable {
@@ -34,17 +36,40 @@ new class extends Component implements HasForms, HasTable {
 
                 TextColumn::make('in')
                     ->view('admin.in-qr-code'),
+                // ->visible(fn() => now()->between(
+                //     now()->copy()->setTime(9, 0, 0),
+                //     now()->copy()->setTime(10, 0, 0)
+                // )),
 
                 TextColumn::make('out')
                     ->view('admin.out-qr-code'),
+                // ->visible(fn() => now()->between(
+                //     now()->copy()->setTime(17, 0, 0),
+                //     now()->copy()->setTime(18, 0, 0)
+                // )),
             ])
             ->actions([
                 ViewAction::make()
                     ->infolist([
-                        ViewEntry::make('in')
-                            ->label('In')
-                            ->view('infolists.components.admin.in-qr-code')
-                    ])
+                        Grid::make(2)
+                            ->schema([
+                                ViewEntry::make('in')
+                                    ->label('In')
+                                    ->view('infolists.components.admin.in-qr-code'),
+                                // ->visible(fn() => now()->between(
+                                //     now()->copy()->setTime(9, 0, 0),
+                                //     now()->copy()->setTime(10, 0, 0)
+                                // )),
+                                ViewEntry::make('out')
+                                    ->label('Out')
+                                    ->view('infolists.components.admin.out-qr-code'),
+                                // ->visible(fn() => now()->between(
+                                //     now()->copy()->setTime(17, 0, 0),
+                                //     now()->copy()->setTime(20, 0, 0)
+                                // )),
+                            ])
+                    ])->modalHeading(fn($record) => 'Detail Qr Code ' . $record->name)
+                    ->modalWidth(MaxWidth::ExtraLarge),
             ]);
     }
 }; ?>

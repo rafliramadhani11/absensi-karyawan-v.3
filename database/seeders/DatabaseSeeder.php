@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
 
 
         // Division::factory(3)->create();
-        User::factory(1)->create();
+        // User::factory(1)->create();
         Attendance::factory(20)->create();
     }
 }

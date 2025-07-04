@@ -29,7 +29,7 @@ class AttendanceFactory extends Factory
 
             'status' => $status,
             // 'user_id' => $users->random()->id,
-            'user_id' => 4,
+            'user_id' => 5,
         ];
     }
 }
