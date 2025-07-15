@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,5 +22,12 @@ class UserController extends Controller
         return pdf()
             ->view('user.salary.export-pdf', compact('start', 'end'))
             ->name('Gaji ' . Auth::user()->name);
+    }
+
+    public function exportProfilePdf(User $user)
+    {
+        return pdf()
+            ->view('user.profile-pdf', compact('user'))
+            ->name('Profile ' . Auth::user()->name);
     }
 }

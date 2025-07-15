@@ -23,6 +23,5 @@
         <livewire:user.user-header-action :$user />
     </div>
 
-
     <livewire:user.user-edit :$user />
 </x-app-layout>

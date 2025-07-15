@@ -14,9 +14,12 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\DateTimePicker;
@@ -39,28 +42,47 @@ new class extends Component implements HasForms, HasTable {
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(8)
+            ->headerActions([
+                CreateAction::make()
+                    ->label('Izin Absen')
+                    ->color('warning')
+                    ->form([
+                        FileUpload::make('surat_keterangan')
+                            ->label('Surat Keterangan Sakit/Izin')
+                            ->directory('surat-keterangan')
+                            ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
+                            ->downloadable()
+                            ->nullable(),
+                    ])
+                    ->createAnother(false)
+                    ->using(function ($data) {
+                        return Attendance::create([
+                            'user_id' => Auth::user()->id,
+                            'status' => 'izin',
+                            'surat_keterangan' => $data['surat_keterangan'],
+                        ]);
+                    })
+                    ->after(function () {
+                        return redirect(route('user.daily-absent'));
+                    })
+                    ->hidden(function (): bool {
+                        return Attendance::where('user_id', Auth::id())
+                            ->whereDate('created_at', today())
+                            ->exists();
+                    }),
+            ])
             ->columns([
-                TextColumn::make('index')
-                    ->label('#')
-                    ->rowIndex(),
+                TextColumn::make('index')->label('#')->rowIndex(),
 
                 TextColumn::make('user.name')
                     ->label('Employee')
                     ->visible(Auth::user()->is_hrd),
 
-                TextColumn::make('created_at')
-                    ->label('Date')
-                    ->date('l')
-                    ->sortable()
-                    ->description(fn($state) => Carbon::parse($state)->format('j F Y')),
+                TextColumn::make('created_at')->label('Date')->date('l')->sortable()->description(fn($state) => Carbon::parse($state)->format('j F Y')),
 
-                TextColumn::make('absen_datang')
-                    ->label('in')
-                    ->formatStateUsing(fn($state) => Carbon::parse($state)->translatedFormat('H:i')),
+                TextColumn::make('absen_datang')->label('in')->formatStateUsing(fn($state) => Carbon::parse($state)->translatedFormat('H:i')),
 
-                TextColumn::make('absen_pulang')
-                    ->label('out')
-                    ->formatStateUsing(fn($state) => Carbon::parse($state)->translatedFormat('H:i')),
+                TextColumn::make('absen_pulang')->label('out')->formatStateUsing(fn($state) => Carbon::parse($state)->translatedFormat('H:i')),
 
                 TextColumn::make('status')
                     ->badge()
