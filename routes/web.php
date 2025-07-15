@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DivisionPdfController;
 use App\Http\Controllers\PdfControllerAllEmployee;
+use App\Http\Controllers\PdfHRDSalaryController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', fn() => view('welcome'));
@@ -31,8 +32,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/absent', fn() => view('hrd.daily-absent'))
                 ->name('hrd.daily-absent');
 
+            // Salaries
             Route::get('/salaries', fn() => view('hrd.salaries'))
                 ->name('hrd.salaries');
+
+            Route::get('/salaries/export-pdf/{start}/{end}', PdfHRDSalaryController::class)
+                ->name('hrd.salaries.pdf');
 
             // Division
             Route::prefix('divisions')->group(function () {
@@ -75,6 +80,9 @@ Route::middleware('auth')->group(function () {
     // Employee
     Route::middleware('isEmployee')->group(function () {
         Route::prefix('employee')->group(function () {
+            Route::get('/profile-pdf/{user}', [UserController::class, 'exportProfilePdf'])
+                ->name('user.profile-pdf');
+
             Route::get('/', fn() => view('user.dashboard'))
                 ->name('user.dashboard');
 
@@ -94,8 +102,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/salaries', fn() => view('user.salaries'))
                 ->name('user.salaries');
 
-            Route::get('/salaries/{start}/{end}', [UserController::class, 'exportSalaries'])
-                ->name('user.salaries.export');
+            // Route::get('/salaries/{start}/{end}', [UserController::class, 'exportSalaries'])
+            //     ->name('user.salaries.export');
 
             // Attendances
             Route::get('/attendances', fn() => view('user.attendance.index'))

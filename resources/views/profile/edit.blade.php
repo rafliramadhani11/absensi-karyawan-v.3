@@ -12,8 +12,10 @@
 
     <div class="py-2">
         <div class="space-y-6 sm:space-y-3">
-
             @if (!Auth::user()->is_admin && !Auth::user()->is_hrd)
+                <div class="flex justify-end">
+                    <livewire:user.user-profile-pdf />
+                </div>
                 <div class="grid-cols-4 space-y-5 py-4 md:grid md:gap-x-6 md:space-y-0">
                     <div class="col-span-2 flex flex-col justify-start">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">

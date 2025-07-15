@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
 
-            // $table->date('date');
             $table->time('absen_datang')->nullable();
             $table->time('absen_pulang')->nullable();
             $table->enum('status', ['hadir', 'izin', 'tidak hadir', 'proses'])
                 ->default('tidak hadir');
             $table->string('alasan')->nullable();
-
-            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->string('surat_keterangan')->nullable();
+            $table->boolean('is_approved')->nullable();
 
             $table->timestamps();
         });

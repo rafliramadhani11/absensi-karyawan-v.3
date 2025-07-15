@@ -4,10 +4,16 @@
     <head>
         <meta charset="UTF-8">
         <title>Kinerja Absensi Karyawan</title>
+        <script src="https://cdn.tailwindcss.com"></script>
         <style>
+            @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap');
+
             body {
-                font-family: Arial, sans-serif;
-                padding: 40px;
+                font-family: 'Lato', sans-serif;
+            }
+
+            .font-tinos {
+                font-family: 'Tinos', serif;
             }
 
             h2 {
@@ -64,69 +70,115 @@
         </style>
     </head>
 
-    <body>
+    <body class="p-4">
 
-        <h2>ABSENSI KARYAWAN
-            {{ Carbon\Carbon::parse($start)->translatedFormat('j F Y') }} -
-            {{ Carbon\Carbon::parse($end)->translatedFormat('j F Y') }}
-        </h2>
+        <div class="mx-auto w-full max-w-4xl p-8">
+            <header class="mb-6 border-b-4 border-black pb-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="font-tinos text-4xl font-bold italic">Birdie</h1>
+                        <p class="font-tinos text-lg italic">It's Time</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-right text-2xl font-bold">PT BIRDIE INDONESIA</h2>
+                        <div class="logo">
+                            <img src="{{ asset('img/logo-birdie-hexagon-light.png') }}" alt="Logo Perusahaan">
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-2 text-xs text-gray-600">Alamat: Jl. Kav. Polri No.21 Blok D, Jagakarsa, Kec. Jagakarsa,
+                    Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12550</p>
+            </header>
 
-        <div class="info">
-            <div class="employee-details">
-                <p><strong>Nama Karyawan:</strong> {{ $user->name }} </p>
-                <p><strong>Divisi:</strong> {{ $user->division->name }} </p>
+            <div class="mb-6">
+                <h3 class="mb-2 text-left text-xl font-bold tracking-wider">
+                    LAPORAN ABSENSI {{ Carbon\Carbon::parse($start)->translatedFormat('j F Y') }} -
+                    {{ Carbon\Carbon::parse($end)->translatedFormat('j F Y') }}
+                </h3>
+                <p>Nama : {{ $user->name }}</p>
+                <p>Divisi : {{ $user->division->name }}</p>
             </div>
-            <div class="logo">
-                <img src="{{ asset('img/logo-birdie-hexagon-light.png') }}" alt="Logo Perusahaan">
-            </div>
-        </div>
 
-        <?php
-        use App\Models\Attendance;
-        use Carbon\Carbon;
-        
-        $attendances = Attendance::where('user_id', $user->id)
-            ->whereBetween('created_at', [$start, $end])
-            ->orderBy('created_at', 'asc')
-            ->get();
-        ?>
+            <?php
+            use App\Models\Attendance;
+            use Carbon\Carbon;
+            
+            $attendances = Attendance::whereBetween('created_at', [$start, $end])
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'asc')
+                ->get();
+            
+            $totalHadir = $attendances->where('status', 'hadir')->count();
+            $totalTidakHadir = $attendances->where('status', 'tidak hadir')->count();
+            $totalIzin = $attendances->where('status', 'izin')->count();
+            
+            $totalTelat = $attendances->where('status', 'hadir')->where('absen_datang', '>', '08:00:00')->count();
+            ?>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Hari</th>
-                    <th>Jam Masuk</th>
-                    <th>Jam Pulang</th>
-                    <th>Keterangan</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($attendances as $attendance)
-                    @php
-                        $tanggal = Carbon::parse($attendance->created_at)->format('d/m');
-                        $hari = Carbon::parse($attendance->created_at)->locale('id')->isoFormat('dddd');
-                        $hari = ucfirst($hari);
-                    @endphp
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $tanggal }}</td>
-                        <td>{{ $hari }}</td>
-                        <td>{{ $attendance->absen_datang ?? '-' }}</td>
-                        <td>{{ $attendance->absen_pulang ?? '-' }}</td>
-                        <td>{{ $attendance->status }}</td>
+            <table class="w-full border-collapse border border-gray-400 text-left">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border border-gray-400 px-4 py-2">No</th>
+                        <th class="border border-gray-400 px-4 py-2">Tanggal</th>
+                        <th class="border border-gray-400 px-4 py-2">Hari</th>
+                        <th class="border border-gray-400 px-4 py-2">Jam Masuk</th>
+                        <th class="border border-gray-400 px-4 py-2">Jam Pulang</th>
+                        <th class="border border-gray-400 px-4 py-2">Keterangan</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($attendances as $attendance)
+                        @php
+                            $tanggal = Carbon::parse($attendance->created_at)->format('d/m');
+                            $hari = Carbon::parse($attendance->created_at)->locale('id')->isoFormat('dddd');
+                            $hari = ucfirst($hari);
+                        @endphp
+                        <tr>
+                            <td class="border border-gray-400 px-4 py-2">{{ $loop->iteration }}</td>
+                            <td class="border border-gray-400 px-4 py-2">{{ $tanggal }}</td>
+                            <td class="border border-gray-400 px-4 py-2">{{ $hari }}</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                @if ($attendance->absen_datang > '08:00:00')
+                                    <span class="font-semibold text-red-600">{{ $attendance->absen_datang }}</span>
+                                @else
+                                    <span>{{ $attendance->absen_datang ?? '-' }}</span>
+                                @endif
+                            </td>
+                            <td class="border border-gray-400 px-4 py-2">{{ $attendance->absen_pulang ?? '-' }}</td>
+                            <td class="border border-gray-400 px-4 py-2">
+                                <span>{{ ucwords($attendance->status) }}</span>
+                                @if ($attendance->status === 'hadir' && $attendance->absen_datang > '08:00:00')
+                                    <span class="font-semibold text-red-600"> (telat)</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
 
-        <div class="ttd">
-            <div class="kanan">
-                <p>Mengetahui</p>
-                <p style="margin-top: 100px;">Andika</p>
+                </tbody>
+            </table>
+
+            <div class="mt-8">
+                <div class="flex justify-between space-x-8">
+                    <div>
+                        <div class="text-right font-semibold">
+                            <p>HADIR: {{ $totalHadir }}</p>
+                            <p>TIDAK HADIR: {{ $totalTidakHadir }}</p>
+                            <p>IZIN: {{ $totalIzin }}</p>
+                            <p class="text-red-600">TOTAL TELAT: {{ $totalTelat }}</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <p>Mengetahui,</p>
+                        <div class="relative h-24 w-48">
+                        </div>
+                        <p class="font-bold underline">Erlin Usnaharoh</p>
+                        <p class="font-semibold">HRD</p>
+                    </div>
+                </div>
             </div>
         </div>
+
+
 
     </body>
 

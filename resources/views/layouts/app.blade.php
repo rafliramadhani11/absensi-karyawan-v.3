@@ -26,8 +26,6 @@ $watch('darkMode', val => localStorage.setItem('darkMode', val))"
         <div x-data="{ isOpen: false }" @click.outside="isOpen = false" x-cloak>
             {{-- Sidebar --}}
             <livewire:layouts.sidebar />
-
-
             {{-- Header --}}
             <livewire:layouts.header />
         </div>

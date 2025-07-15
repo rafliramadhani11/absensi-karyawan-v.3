@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use Filament\Tables\Table;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Computed;
+use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Livewire\Attributes\Renderless;
 use Filament\Support\Enums\MaxWidth;
@@ -16,6 +17,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
@@ -38,7 +40,7 @@ new class extends Component implements HasTable, HasForms {
                         return $query->where('status', $this->filter);
                     });
             })
-            ->searchPlaceholder('Employee Name ...')
+            ->searchPlaceholder('Tahun-Bulan-Tanggal')
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(8)
@@ -51,12 +53,12 @@ new class extends Component implements HasTable, HasForms {
                     ->label('Date')
                     ->date('l')
                     ->sortable()
-                    ->description(fn($state) => Carbon::parse($state)->format('j F Y')),
+                    ->searchable()
+                    ->description(fn($state) => Carbon::parse($state)->format('Y-m-d')),
 
                 TextColumn::make('user.name')
                     ->label('Employee')
                     ->sortable()
-                    ->searchable()
                     ->visible(Auth::user()->is_hrd),
 
                 TextColumn::make('absen_datang')
@@ -80,6 +82,13 @@ new class extends Component implements HasTable, HasForms {
                         'tidak hadir' => 'danger',
                         'proses' => 'gray'
                     })
+                    ->description(function (Attendance $record) {
+                        if ($record->status === 'izin') {
+                            $url = Storage::url($record->surat_keterangan);
+                            $link = "<a href='{$url}' target='_blank' class='text-xs text-white hover:underline'>Lihat Surat Izin</a>";
+                            return new HtmlString($link);
+                        }
+                    })
                     ->icon(fn(string $state): string => match ($state) {
                         'hadir' => 'heroicon-o-check-circle',
                         'izin' => 'heroicon-o-envelope',
@@ -87,6 +96,8 @@ new class extends Component implements HasTable, HasForms {
                         'proses' => 'icon-timer',
                     })
                     ->sortable(),
+
+
             ])
             ->actions([
                 ActionGroup::make([

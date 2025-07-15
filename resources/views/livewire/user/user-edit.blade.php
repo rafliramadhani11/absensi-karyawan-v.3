@@ -8,6 +8,7 @@ use Filament\Tables\Table;
 use Livewire\Volt\Component;
 use Filament\Infolists\Infolist;
 use Livewire\Attributes\Computed;
+use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Components\Select;
@@ -17,6 +18,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
@@ -216,6 +218,13 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         'hadir' => 'success',
                         'izin' => 'warning',
                         'tidak hadir' => 'danger',
+                    })
+                    ->description(function (Attendance $record) {
+                        if ($record->status === 'izin') {
+                            $url = Storage::url($record->surat_keterangan);
+                            $link = "<a href='{$url}' target='_blank' class='text-xs text-white hover:underline'>Lihat Surat Izin</a>";
+                            return new HtmlString($link);
+                        }
                     })
                     ->icon(fn(string $state): string => match ($state) {
                         'hadir' => 'heroicon-o-check-circle',
