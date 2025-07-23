@@ -40,13 +40,13 @@ new class extends Component implements HasForms {
         return $form
             ->schema([
                 Wizard::make([
-
                     Step::make('Personal Account')
                         ->completedIcon('heroicon-m-check-circle')
                         ->schema([
                             TextInput::make('email')
                                 ->placeholder('yourmail@mail.com')
                                 ->unique('users', 'email')
+                                ->email()
                                 ->required(),
 
                             Grid::make([
@@ -101,9 +101,13 @@ new class extends Component implements HasForms {
                             ])->schema([
                                 TextInput::make('nik')
                                     ->placeholder('9999 9999 9999 9999')
-                                    ->mask('9999 9999 9999 9999')
+                                    ->mask('9999 9999 9999 9999 99')
                                     ->required()
-                                    ->tel(),
+                                    ->minLength(19)
+                                    ->maxLength(22)
+                                    ->validationMessages([
+                                        'min' => 'the NIK value must be at least 16 digit'
+                                    ]),
 
                                 TextInput::make('name')
                                     ->placeholder('your name')
@@ -123,6 +127,7 @@ new class extends Component implements HasForms {
                                     ->native(false),
 
                                 DatePicker::make('birth_date')
+                                    ->date()
                                     ->placeholder('your birth date')
                                     ->required()
                                     ->native(false),
@@ -131,7 +136,12 @@ new class extends Component implements HasForms {
                                     ->placeholder('9999 9999 9999')
                                     ->mask('9999 9999 9999 99')
                                     ->tel()
-                                    ->required(),
+                                    ->minLength(14)
+                                    ->maxLength(17)
+                                    ->required()
+                                    ->validationMessages([
+                                        'min' => 'the Phone value must be at least 12 digit'
+                                    ]),
 
                                 TextInput::make('address')
                                     ->placeholder('your address')
@@ -183,10 +193,6 @@ new class extends Component implements HasForms {
 
     <form wire:submit="create">
         {{ $this->form }}
-
-        <!-- <button type="submit">
-            Submit
-        </button> -->
     </form>
 
     <x-filament-actions::modals />

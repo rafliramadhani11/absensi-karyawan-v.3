@@ -51,6 +51,7 @@ new class extends Component implements HasForms, HasActions {
     public function exportAction(): Action
     {
         return Action::make('export')
+            ->label('Export Absensi')
             ->color('success')
             ->icon('heroicon-o-document-arrow-down')
             ->requiresConfirmation()

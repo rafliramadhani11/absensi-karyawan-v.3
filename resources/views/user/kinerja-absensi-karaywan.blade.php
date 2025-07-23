@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Kinerja Absensi Karyawan</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap');
+
+            body {
+                font-family: 'Lato', sans-serif;
+            }
+
+            .font-tinos {
+                font-family: 'Tinos', serif;
+            }
+
+            .header-yellow {
+                background-color: #FFFF00;
+                font-weight: bold;
+            }
+
+            h2 {
+                text-align: center;
+                margin: 0 0 20px 0;
+            }
+
+            .info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .logo {
+                flex: 0 0 auto;
+            }
+
+            .logo img {
+                height: 60px;
+                width: auto;
+            }
+
+            .employee-details {
+                text-align: left;
+            }
+
+            .employee-details p {
+                margin: 4px 0;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 40px;
+            }
+
+            th,
+            td {
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: center;
+            }
+
+            .ttd {
+                width: 100%;
+                margin-top: 80px;
+            }
+
+            .ttd .kanan {
+                float: right;
+                text-align: center;
+            }
+        </style>
+    </head>
+
+    <body class="p-4">
+
+        @php
+            use Carbon\Carbon;
+            use Carbon\CarbonPeriod;
+
+            // 1. AMBIL DATA ABSENSI KARYAWAN PADA RENTANG TANGGAL YANG DIPILIH
+            $attendances = \App\Models\Attendance::where('user_id', $user->id)
+                ->whereBetween('created_at', [Carbon::parse($start)->startOfDay(), Carbon::parse($end)->endOfDay()])
+                ->get();
+
+            // 2. HITUNG NILAI REALISASI DARI SETIAP KPI
+            $realisasiHadir = $attendances->where('status', 'hadir')->count();
+            $realisasiIzin = $attendances->where('status', 'izin')->count();
+            $realisasiTelat = $attendances->where('status', 'hadir')->where('absen_datang', '>', '08:00:00')->count();
+            $realisasiAlpha = $attendances->where('status', 'tidak hadir')->count();
+
+            // dd($attendances);
+
+            // 3. TENTUKAN NILAI MAKSIMUM & BOBOT (SESUAI GAMBAR)
+            // Hitung total hari kerja pada rentang tanggal (Senin-Jumat)
+            $period = CarbonPeriod::create($start, $end);
+            $totalWorkingDays = 0;
+            foreach ($period as $date) {
+                if (!$date->isWeekend()) {
+                    // isWeekend() mencakup Sabtu & Minggu
+                    $totalWorkingDays++;
+                }
+            }
+            $maksimumHadir = $totalWorkingDays; // Nilai maksimum hadir adalah total hari kerja
+            $maksimumIzin = 5; // Batas toleransi izin
+            $maksimumTelat = 3; // Batas toleransi telat
+            $maksimumAlpha = 0; // Idealnya tidak ada alpha
+
+            $bobotHadir = 40;
+            $bobotIzin = 15;
+            $bobotTelat = 15;
+            $bobotAlpha = 30;
+
+            // 4. HITUNG NILAI AKHIR UNTUK SETIAP KPI
+            // Untuk KPI "semakin tinggi semakin baik" (cth: Hadir)
+            $nilaiHadir = $maksimumHadir > 0 ? ($realisasiHadir / $maksimumHadir) * $bobotHadir : 0;
+
+            // Untuk KPI "semakin rendah semakin baik" (cth: Izin, Telat, Alpha)
+            // Jika realisasi masih dalam batas toleransi, dapat nilai penuh. Jika tidak, dapat 0.
+            $nilaiIzin = $realisasiIzin <= $maksimumIzin ? $bobotIzin : 0;
+            $nilaiTelat = $realisasiTelat <= $maksimumTelat ? $bobotTelat : 0;
+            $nilaiAlpha = $realisasiAlpha <= $maksimumAlpha ? $bobotAlpha : 0;
+
+            // 5. HITUNG TOTAL NILAI AKHIR DAN TENTUKAN KATEGORI
+            $totalNilaiAkhir = $nilaiHadir + $nilaiIzin + $nilaiTelat + $nilaiAlpha;
+
+            $kategoriPenilaian = '';
+            if ($totalNilaiAkhir >= 85) {
+                $kategoriPenilaian = 'Sangat Disiplin';
+            } elseif ($totalNilaiAkhir >= 70) {
+                $kategoriPenilaian = 'Disiplin';
+            } elseif ($totalNilaiAkhir >= 50) {
+                $kategoriPenilaian = 'Kurang Disiplin';
+            } else {
+                $kategoriPenilaian = 'Tidak Disiplin';
+            }
+        @endphp
+
+        <div class="mx-auto w-full max-w-4xl p-8">
+            <header class="mb-6 border-b-4 border-black pb-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="font-tinos text-4xl font-bold italic">Birdie</h1>
+                        <p class="font-tinos text-lg italic">It's Time</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-right text-2xl font-bold">PT BIRDIE INDONESIA</h2>
+                        <div class="logo">
+                            <img src="{{ asset('img/logo-birdie-hexagon-light.png') }}" alt="Logo Perusahaan">
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-2 text-xs text-gray-600">Alamat: Jl. Kav. Polri No.21 Blok D, Jagakarsa, Kec. Jagakarsa,
+                    Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12550</p>
+            </header>
+
+            <div class="mb-6">
+                <h2 class="text-center text-xl font-bold">PENILAIAN KINERJA KARYAWAN</h2>
+                <div class="mt-4">
+                    <p><strong>Nama Karyawan :</strong> {{ $user->name }}</p>
+                    <p><strong>Divisi :</strong> {{ $user->division->name ?? 'N/A' }}</p>
+                    <p><strong>Periode :</strong> {{ Carbon::parse($start)->translatedFormat('j F Y') }} s/d
+                        {{ Carbon::parse($end)->translatedFormat('j F Y') }}</p>
+                </div>
+            </div>
+
+            <table class="w-full border-collapse border border-gray-400 text-left">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border border-gray-400 px-4 py-2">No</th>
+                        <th class="border border-gray-400 px-4 py-2">Indikator Kinerja</th>
+                        <th class="border border-gray-400 px-4 py-2">Nilai Maksimum</th>
+                        <th class="border border-gray-400 px-4 py-2">Realisasi</th>
+                        <th class="border border-gray-400 px-4 py-2">Bobot (%)</th>
+                        <th class="border border-gray-400 px-4 py-2">Nilai Akhir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- KPI 1: Jumlah Hari Hadir --}}
+                    <tr>
+                        <td class="border border-gray-400 px-4 py-2">1</td>
+                        <td class="border border-gray-400 px-4 py-2">Jumlah Hari Hadir</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $maksimumHadir }} Hari</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $realisasiHadir }} Hari</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $bobotHadir }}</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiHadir, 2, ',', '.') }}</td>
+                    </tr>
+                    {{-- KPI 2: Jumlah Izin Resmi --}}
+                    <tr>
+                        <td class="border border-gray-400 px-4 py-2">2</td>
+                        <td class="border border-gray-400 px-4 py-2">Jumlah Izin Resmi (Sakit/Cuti)</td>
+                        <td class="border border-gray-400 px-4 py-2">&le; {{ $maksimumIzin }} Hari</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $realisasiIzin }} Hari</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $bobotIzin }}</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiIzin, 2, ',', '.') }}</td>
+                    </tr>
+                    {{-- KPI 3: Jumlah Terlambat Masuk --}}
+                    <tr>
+                        <td class="border border-gray-400 px-4 py-2">3</td>
+                        <td class="border border-gray-400 px-4 py-2">Jumlah Terlambat Masuk</td>
+                        <td class="border border-gray-400 px-4 py-2">&le; {{ $maksimumTelat }} Kali</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $realisasiTelat }} Kali</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $bobotTelat }}</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiTelat, 2, ',', '.') }}</td>
+                    </tr>
+                    {{-- KPI 4: Tidak Hadir Tanpa Keterangan --}}
+                    <tr>
+                        <td class="border border-gray-400 px-4 py-2">4</td>
+                        <td class="border border-gray-400 px-4 py-2">Tidak Hadir Tanpa Keterangan</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $maksimumAlpha }} Hari</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $realisasiAlpha }} Hari</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $bobotAlpha }}</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiAlpha, 2, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="font-bold">
+                        <td colspan="4" class="border-none"></td>
+                        <td class="border border-gray-400 px-4 py-2">Total Nilai Akhir</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ number_format($totalNilaiAkhir, 2, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr class="font-bold">
+                        <td colspan="4" class="border-none"></td>
+                        <td class="border border-gray-400 px-4 py-2">Kategori Penilaian</td>
+                        <td class="border border-gray-400 px-4 py-2">{{ $kategoriPenilaian }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="mt-8">
+                <div class="flex justify-end space-x-8">
+                    <div class="text-center">
+                        <p>Mengetahui,</p>
+                        <div class="relative h-24 w-48">
+                        </div>
+                        <p class="font-bold underline">Erlin Usnaharoh</p>
+                        <p class="font-semibold">HRD</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </body>
+
+</html>

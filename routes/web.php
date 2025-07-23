@@ -65,8 +65,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('/{user}/edit', fn(User $user) => view('hrd.employee.edit', compact('user')))
                     ->name('hrd.employee.edit');
 
-                Route::get('{user}/kinerja/{start}/{end}', PdfController::class)
+                Route::get('{user}/kinerja/{start}/{end}', [PdfController::class, 'kinerja'])
                     ->name('hrd.employee.kinerja');
+
+                Route::get('{user}/kinerja-absensi/{start}/{end}', [PdfController::class, 'kinerjaAbsensi'])
+                    ->name('hrd.employee.kinerja-karyawan');
             });
 
             // Attendances

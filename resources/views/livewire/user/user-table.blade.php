@@ -70,13 +70,13 @@ new class extends Component implements HasTable, HasForms {
             ->filters([TrashedFilter::make()])
             ->actions([
                 Action::make('export')
-                    ->label('Cetak Kinerja')
+                    ->label('Export Absensi')
                     ->color('success')
                     ->icon('heroicon-o-document-arrow-down')
                     ->requiresConfirmation()
                     ->modalIcon('heroicon-o-document-arrow-down')
-                    ->modalHeading('Cetak Kinerja Karyawan')
-                    ->modalDescription('Pilih rentang tanggal yang akan dicetak')
+                    ->modalHeading('Export Absensi Karyawan')
+                    ->modalDescription('Pilih rentang tanggal yang akan export')
                     ->modalWidth(MaxWidth::ExtraLarge)
                     ->modalSubmitActionLabel('Export')
                     ->form([
@@ -101,6 +101,43 @@ new class extends Component implements HasTable, HasForms {
                     ])->action(function ($data, $record) {
 
                         redirect(route('hrd.employee.kinerja', [
+                            'user' => $record,
+                            'start' => $data['start'],
+                            'end' => $data['end'],
+                        ]));
+                    }),
+
+                Action::make('exportKinerja')
+                    ->label('Export Kinerja')
+                    ->color('success')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->modalIcon('heroicon-o-document-arrow-down')
+                    ->modalHeading('Export Kinerja Karyawan')
+                    ->modalDescription('Pilih rentang tanggal yang akan export')
+                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalSubmitActionLabel('Export')
+                    ->form([
+                        Grid::make(2)
+                            ->schema([
+                                DatePicker::make('start')
+                                    ->label(false)
+                                    ->placeholder('dari tanggal')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->default(now()->subMonth()),
+
+                                DatePicker::make('end')
+                                    ->label(false)
+                                    ->placeholder('sampai tanggal')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->default(now())
+                            ])
+                    ])->action(function ($data, $record) {
+                        redirect(route('hrd.employee.kinerja-karyawan', [
                             'user' => $record,
                             'start' => $data['start'],
                             'end' => $data['end'],

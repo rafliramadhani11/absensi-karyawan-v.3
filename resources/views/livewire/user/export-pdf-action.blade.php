@@ -26,31 +26,26 @@ new class extends Component implements HasForms, HasActions {
             ->modalWidth(MaxWidth::ExtraLarge)
             ->modalSubmitActionLabel('Export')
             ->form([
-                Grid::make(2)
-                    ->schema([
-                        DatePicker::make('start')
-                            ->label(false)
-                            ->placeholder('dari tanggal')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->required()
-                            ->default(now()->subMonth()),
+                Grid::make(2)->schema([
+                    DatePicker::make('start')
+                        ->label(false)
+                        ->placeholder('dari tanggal')
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->required()
+                        ->default(now()->subMonth()),
 
-                        DatePicker::make('end')
-                            ->label(false)
-                            ->placeholder('sampai tanggal')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->required()
-                            ->default(now())
-                    ])
-            ])->action(function ($data) {
-                redirect(route('user.kinerja.export', [
-                    'start' => $data['start'],
-                    'end' => $data['end'],
-                ]));
-            })
-        ;
+                    DatePicker::make('end')->label(false)->placeholder('sampai tanggal')->native(false)->displayFormat('d/m/Y')->required()->default(now()),
+                ]),
+            ])
+            ->action(function ($data) {
+                redirect(
+                    route('user.kinerja.export', [
+                        'start' => $data['start'],
+                        'end' => $data['end'],
+                    ]),
+                );
+            });
     }
 }; ?>
 

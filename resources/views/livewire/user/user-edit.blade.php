@@ -10,6 +10,7 @@ use Filament\Infolists\Infolist;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\Filter;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Forms\Components\Select;
 use Filament\Support\Enums\Alignment;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Forms\Components\DatePicker;
 use Filament\Infolists\Components\Section;
 use Filament\Forms\Components\ToggleButtons;
@@ -61,12 +63,20 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                             'xl' => 2
                         ])->schema([
                             TextInput::make('email')
-                                ->required()
-                                ->email(),
+                                ->placeholder('yourmail@mail.com')
+                                ->unique('users', 'email')
+                                ->email()
+                                ->required(),
                             TextInput::make('phone')
+                                ->placeholder('9999 9999 9999')
                                 ->mask('9999 9999 9999 99')
                                 ->tel()
-                                ->required(),
+                                ->minLength(14)
+                                ->maxLength(17)
+                                ->required()
+                                ->validationMessages([
+                                    'min' => 'the Phone value must be at least 12 digit'
+                                ]),
                         ])
                     ])
                     ->footerActions([
@@ -103,8 +113,14 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                             'xl' => 2
                         ])->schema([
                             TextInput::make('nik')
-                                ->mask('9999 9999 9999 9999')
-                                ->tel(),
+                                ->placeholder('9999 9999 9999 9999')
+                                ->mask('9999 9999 9999 9999 99')
+                                ->required()
+                                ->minLength(19)
+                                ->maxLength(22)
+                                ->validationMessages([
+                                    'min' => 'the NIK value must be at least 16 digit'
+                                ]),
                             TextInput::make('name')
                                 ->required(),
                             Select::make('gender')
@@ -113,6 +129,9 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                                     'Perempuan' => 'Perempuan',
                                 ])->native(false),
                             DatePicker::make('birth_date')
+                                ->date()
+                                ->placeholder('your birth date')
+                                ->required()
                                 ->native(false),
                             TextInput::make('address')
                                 ->columnSpan(['md' => 2])
@@ -188,6 +207,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
             ->defaultPaginationPageOption(5)
             ->defaultSort('created_at', 'desc')
             ->emptyStateHeading('No Attendances')
+            ->searchPlaceholder('Y-m-d')
             ->columns([
                 TextColumn::make('index')
                     ->label('#')
@@ -197,6 +217,7 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     ->label('Date')
                     ->dateTime('l')
                     ->sortable()
+                    ->searchable()
                     ->description(fn($state) => Carbon::parse($state)->format('j F Y')),
 
                 TextColumn::make('absen_datang')
@@ -233,6 +254,34 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                     })
                     ->sortable(),
             ])
+            ->filters([
+                Filter::make('date_range')
+                    ->form([
+                        DatePicker::make('from')->label('Dari Tanggal'),
+                        DatePicker::make('until')->label('Sampai Tanggal')
+                            ->default(now())
+                            ->maxDate(now()),
+                    ])
+                    ->query(function ($query, array $data) {
+                        return $query
+                            ->when($data['from'], fn($q) => $q->whereDate('created_at', '>=', $data['from']))
+                            ->when($data['until'], fn($q) => $q->whereDate('created_at', '<=', $data['until']));
+                    })
+                    ->indicateUsing(function (array $data): ?string {
+                        if ($data['from'] && $data['until']) {
+                            return 'Dari ' . \Carbon\Carbon::parse($data['from'])->translatedFormat('d M Y') .
+                                ' sampai ' . \Carbon\Carbon::parse($data['until'])->translatedFormat('d M Y');
+                        } elseif ($data['from']) {
+                            return 'Dari ' . \Carbon\Carbon::parse($data['from'])->translatedFormat('d M Y');
+                        } elseif ($data['until']) {
+                            return 'Sampai ' . \Carbon\Carbon::parse($data['until'])->translatedFormat('d M Y');
+                        }
+
+                        return null;
+                    })
+                    ->columns(2)
+                    ->columnSpanFull(),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 ActionGroup::make([
                     EditAction::make()
