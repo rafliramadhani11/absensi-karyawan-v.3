@@ -47,7 +47,11 @@ new class extends Component implements HasForms {
                                 ->placeholder('yourmail@mail.com')
                                 ->unique('users', 'email')
                                 ->email()
-                                ->required(),
+                                ->required()
+                                ->rule('regex:/^[\w\.-]+@gmail\.com$/i')
+                                ->validationMessages([
+                                    'regex' => 'The email must end with @gmail.com.',
+                                ]),
 
                             Grid::make([
                                 'sm' => 2
@@ -57,7 +61,11 @@ new class extends Component implements HasForms {
                                         ->password()
                                         ->revealable()
                                         ->confirmed()
-                                        ->required(),
+                                        ->required()
+                                        ->rule('regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/')
+                                        ->validationMessages([
+                                            'regex' => 'The password must contain both letters and numbers.',
+                                        ]),
 
                                     TextInput::make('password_confirmation')
                                         ->password()
@@ -101,12 +109,14 @@ new class extends Component implements HasForms {
                             ])->schema([
                                 TextInput::make('nik')
                                     ->placeholder('9999 9999 9999 9999')
-                                    ->mask('9999 9999 9999 9999 99')
+                                    ->mask('9999 9999 9999 9999')
                                     ->required()
                                     ->minLength(19)
                                     ->maxLength(22)
+                                    ->unique('users', 'nik')
                                     ->validationMessages([
-                                        'min' => 'the NIK value must be at least 16 digit'
+                                        'minLength' => 'The NIK must be at least 16 digits.',
+                                        'unique' => 'This NIK is already registered.',
                                     ]),
 
                                 TextInput::make('name')

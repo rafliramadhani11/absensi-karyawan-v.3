@@ -89,10 +89,94 @@ new class extends Component implements HasForms, HasActions {
             })
         ;
     }
+
+    public function exportKinerja(): Action
+    {
+        return  Action::make('exportKinerja')
+            ->label('Export Kinerja')
+            ->color('success')
+            ->icon('heroicon-o-document-arrow-down')
+            ->requiresConfirmation()
+            ->modalIcon('heroicon-o-document-arrow-down')
+            ->modalHeading('Export Kinerja Karyawan')
+            ->modalDescription('Pilih rentang tanggal yang akan export')
+            ->modalWidth(MaxWidth::ExtraLarge)
+            ->modalSubmitActionLabel('Export')
+            ->form([
+                Grid::make(2)
+                    ->schema([
+                        DatePicker::make('start')
+                            ->label(false)
+                            ->placeholder('dari tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required()
+                            ->default(now()->subMonth()),
+
+                        DatePicker::make('end')
+                            ->label(false)
+                            ->placeholder('sampai tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required()
+                            ->default(now())
+                    ])
+            ])->action(function ($data, $record) {
+                redirect(route('hrd.employee.kinerja-karyawan', [
+                    'user' => $this->user,
+                    'start' => $data['start'],
+                    'end' => $data['end'],
+                ]));
+            });
+    }
+
+    public function exportSalary(): Action
+    {
+        return  Action::make('exportSalary')
+            ->label('Export Salary')
+            ->color('success')
+            ->icon('heroicon-o-document-arrow-down')
+            ->requiresConfirmation()
+            ->modalIcon('heroicon-o-document-arrow-down')
+            ->modalHeading('Export Salary Karyawan')
+            ->modalDescription('Pilih rentang tanggal yang akan export')
+            ->modalWidth(MaxWidth::ExtraLarge)
+            ->modalSubmitActionLabel('Export')
+            ->form([
+                Grid::make(2)
+                    ->schema([
+                        DatePicker::make('start')
+                            ->label(false)
+                            ->placeholder('dari tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required()
+                            ->default(now()->startOfYear()),
+
+                        DatePicker::make('end')
+                            ->label(false)
+                            ->placeholder('sampai tanggal')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->required()
+                            ->default(now()->endOfYear()),
+                    ])
+            ])->action(function ($data) {
+                redirect(
+                    route('hrd.user-salaries.pdf', [
+                        'user' => $this->user,
+                        'start' => $data['start'],
+                        'end' => $data['end'],
+                    ]),
+                );
+            });
+    }
 };
 ?>
 
 <div class="space-x-3">
+    {{ $this->exportSalary }}
+    {{ $this->exportKinerja }}
     {{ $this->exportAction }}
     {{ $this->deleteAction }}
     {{ $this->forceDeleteAction }}

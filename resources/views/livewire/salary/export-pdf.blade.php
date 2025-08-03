@@ -16,6 +16,7 @@ new class extends Component implements HasForms, HasActions {
     public function exportAction(): Action
     {
         return Action::make('export')
+            // ->label('ss')
             ->color('success')
             ->icon('heroicon-o-document-arrow-down')
             ->requiresConfirmation()
@@ -25,31 +26,32 @@ new class extends Component implements HasForms, HasActions {
             ->modalWidth(MaxWidth::ExtraLarge)
             ->modalSubmitActionLabel('Export')
             ->form([
-                Grid::make(2)
-                    ->schema([
-                        DatePicker::make('start')
-                            ->label(false)
-                            ->placeholder('dari tanggal')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->required()
-                            ->default(now()->startOfYear()),
+                Grid::make(2)->schema([
+                    DatePicker::make('start')
+                        ->label(false)
+                        ->placeholder('dari tanggal')
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->required()
+                        ->default(now()->startOfYear()),
 
-                        DatePicker::make('end')
-                            ->label(false)
-                            ->placeholder('sampai tanggal')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->required()
-                            ->default(now()->endOfYear())
-                    ])
-            ])->action(function ($data) {
-                redirect(route('hrd.salaries.pdf', [
-                    'start' => $data['start'],
-                    'end' => $data['end'],
-                ]));
-            })
-        ;
+                    DatePicker::make('end')
+                        ->label(false)
+                        ->placeholder('sampai tanggal')
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
+                        ->required()
+                        ->default(now()->endOfYear()),
+                ]),
+            ])
+            ->action(function ($data) {
+                redirect(
+                    route('hrd.salaries.pdf', [
+                        'start' => $data['start'],
+                        'end' => $data['end'],
+                    ]),
+                );
+            });
     }
 }; ?>
 

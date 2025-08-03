@@ -36,7 +36,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/salaries', fn() => view('hrd.salaries'))
                 ->name('hrd.salaries');
 
-            Route::get('/salaries/export-pdf/{start}/{end}', PdfHRDSalaryController::class)
+            Route::get('/salaries/export-pdf/{start}/{end}', [PdfHRDSalaryController::class, 'usersSalaries'])
                 ->name('hrd.salaries.pdf');
 
             // Division
@@ -47,8 +47,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('/{division}/detail', fn(Division $division) => view('hrd.division.detail', compact('division')))
                     ->name('hrd.division.detail');
 
-                Route::get('{division}/kinerja/{start}/{end}', DivisionPdfController::class)
+                Route::get('{division}/kinerja/{start}/{end}', [DivisionPdfController::class, 'absensi'])
                     ->name('hrd.division.kinerja');
+
+                Route::get('{division}/kinerja-divisi/{start}/{end}', [DivisionPdfController::class, 'kinerja'])
+                    ->name('hrd.division.kinerja-divisi');
             });
 
             // Employees
@@ -70,6 +73,9 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('{user}/kinerja-absensi/{start}/{end}', [PdfController::class, 'kinerjaAbsensi'])
                     ->name('hrd.employee.kinerja-karyawan');
+
+                Route::get('/salaries/export-pdf/{user}/{start}/{end}', [PdfHRDSalaryController::class, 'userSalaries'])
+                    ->name('hrd.user-salaries.pdf');
             });
 
             // Attendances

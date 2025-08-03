@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Kinerja Absensi Karyawan</title>
+        <title>Kinerja Divisi</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap');
@@ -80,49 +80,45 @@
         @php
             use Carbon\Carbon;
             use Carbon\CarbonPeriod;
+            use App\Models\Attendance;
 
-            // 1. AMBIL DATA ABSENSI KARYAWAN PADA RENTANG TANGGAL YANG DIPILIH
-            $attendances = \App\Models\Attendance::where('user_id', $user->id)
+            $userIds = $division->users->pluck('id');
+
+            $attendances = Attendance::whereIn('user_id', $userIds)
                 ->whereBetween('created_at', [Carbon::parse($start)->startOfDay(), Carbon::parse($end)->endOfDay()])
                 ->get();
 
-            // 2. HITUNG NILAI REALISASI DARI SETIAP KPI
+            // Total realisasi agregat untuk seluruh divisi
             $realisasiHadir = $attendances->where('status', 'hadir')->count();
             $realisasiIzin = $attendances->where('status', 'izin')->count();
-            $realisasiTelat = $attendances->where('status', 'hadir')->where('absen_datang', '>', '08:00:00')->count();
+            $realisasiTelat = $attendances
+                ->where('status', 'hadir')
+                ->filter(function ($item) {
+                    return $item->absen_datang > '08:00:00';
+                })
+                ->count();
             $realisasiAlpha = $attendances->where('status', 'tidak hadir')->count();
 
-            // dd($attendances);
-
-            // 3. TENTUKAN NILAI MAKSIMUM & BOBOT (SESUAI GAMBAR)
-            // Hitung total hari kerja pada rentang tanggal (Senin-Jumat)
+            // Total hari kerja
             $period = CarbonPeriod::create($start, $end);
-            $totalWorkingDays = 0;
-            foreach ($period as $date) {
-                if (!$date->isWeekend()) {
-                    // isWeekend() mencakup Sabtu & Minggu
-                    $totalWorkingDays++;
-                }
-            }
-            $maksimumHadir = $totalWorkingDays; // Nilai maksimum hadir adalah total hari kerja
-            $maksimumIzin = 5; // Batas toleransi izin
-            $maksimumTelat = 3; // Batas toleransi telat
-            $maksimumAlpha = 0; // Idealnya tidak ada alpha
+            $totalWorkingDays = collect($period)->reject(fn($d) => $d->isWeekend())->count();
+            $jumlahKaryawan = $division->users->count();
+            $maksimumHadir = $totalWorkingDays * $jumlahKaryawan;
+            $maksimumIzin = 5 * $jumlahKaryawan;
+            $maksimumTelat = 3 * $jumlahKaryawan;
+            $maksimumAlpha = 0;
 
             $bobotHadir = 40;
             $bobotIzin = 15;
             $bobotTelat = 15;
             $bobotAlpha = 30;
 
-            // 4. HITUNG NILAI AKHIR UNTUK SETIAP KPI
-            // Untuk KPI "semakin tinggi semakin baik" (cth: Hadir)
             $nilaiHadir = $maksimumHadir > 0 ? ($realisasiHadir / $maksimumHadir) * $bobotHadir : 0;
             $nilaiIzin =
                 $realisasiIzin <= $maksimumIzin ? (($maksimumIzin - $realisasiIzin) / $maksimumIzin) * $bobotIzin : 0;
             $nilaiTelat = $maksimumTelat > 0 ? max(0, (1 - $realisasiTelat / $maksimumTelat) * $bobotTelat) : 0;
             $nilaiAlpha = $maksimumHadir > 0 ? max(0, (1 - $realisasiAlpha / $maksimumHadir) * $bobotAlpha) : 0;
 
-            // 5. HITUNG TOTAL NILAI AKHIR DAN TENTUKAN KATEGORI
             $totalNilaiAkhir = $nilaiHadir + $nilaiIzin + $nilaiTelat + $nilaiAlpha;
 
             $kategoriPenilaian = match (true) {
@@ -152,28 +148,27 @@
             </header>
 
             <div class="mb-6">
-                <h2 class="text-center text-xl font-bold">PENILAIAN KINERJA KARYAWAN</h2>
+                <h2 class="mb-4 text-center text-xl font-bold">PENILAIAN KINERJA DIVISI</h2>
                 <div class="mt-4">
-                    <p><strong>Nama Karyawan :</strong> {{ $user->name }}</p>
-                    <p><strong>Divisi :</strong> {{ $user->division->name ?? 'N/A' }}</p>
-                    <p><strong>Periode :</strong> {{ Carbon::parse($start)->translatedFormat('j F Y') }} s/d
+                    <p><strong>Divisi:</strong> {{ $division->name }}</p>
+                    <p><strong>Jumlah Karyawan:</strong> {{ $jumlahKaryawan }}</p>
+                    <p><strong>Periode:</strong> {{ Carbon::parse($start)->translatedFormat('j F Y') }} s/d
                         {{ Carbon::parse($end)->translatedFormat('j F Y') }}</p>
                 </div>
             </div>
 
             <table class="w-full border-collapse border border-gray-400 text-left">
                 <thead>
-                    <tr class="bg-gray-200">
+                    <tr class="bg-gray-200 text-center">
                         <th class="border border-gray-400 px-4 py-2">No</th>
-                        <th class="border border-gray-400 px-4 py-2">Indikator Kinerja</th>
-                        <th class="border border-gray-400 px-4 py-2">Nilai Maksimum</th>
+                        <th class="border border-gray-400 px-4 py-2">Indikator</th>
+                        <th class="border border-gray-400 px-4 py-2">Maksimum</th>
                         <th class="border border-gray-400 px-4 py-2">Realisasi</th>
                         <th class="border border-gray-400 px-4 py-2">Bobot (%)</th>
                         <th class="border border-gray-400 px-4 py-2">Nilai Akhir</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {{-- KPI 1: Jumlah Hari Hadir --}}
+                <tbody class="text-center">
                     <tr>
                         <td class="border border-gray-400 px-4 py-2">1</td>
                         <td class="border border-gray-400 px-4 py-2">Jumlah Hari Hadir</td>
@@ -182,28 +177,25 @@
                         <td class="border border-gray-400 px-4 py-2">{{ $bobotHadir }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiHadir, 2, ',', '.') }}</td>
                     </tr>
-                    {{-- KPI 2: Jumlah Izin Resmi --}}
                     <tr>
                         <td class="border border-gray-400 px-4 py-2">2</td>
-                        <td class="border border-gray-400 px-4 py-2">Jumlah Izin Resmi (Sakit/Cuti)</td>
+                        <td class="border border-gray-400 px-4 py-2">Izin Resmi</td>
                         <td class="border border-gray-400 px-4 py-2">&le; {{ $maksimumIzin }} Hari</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $realisasiIzin }} Hari</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $bobotIzin }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiIzin, 2, ',', '.') }}</td>
                     </tr>
-                    {{-- KPI 3: Jumlah Terlambat Masuk --}}
                     <tr>
                         <td class="border border-gray-400 px-4 py-2">3</td>
-                        <td class="border border-gray-400 px-4 py-2">Jumlah Terlambat Masuk</td>
+                        <td class="border border-gray-400 px-4 py-2">Terlambat Masuk</td>
                         <td class="border border-gray-400 px-4 py-2">&le; {{ $maksimumTelat }} Kali</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $realisasiTelat }} Kali</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $bobotTelat }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ number_format($nilaiTelat, 2, ',', '.') }}</td>
                     </tr>
-                    {{-- KPI 4: Tidak Hadir Tanpa Keterangan --}}
                     <tr>
                         <td class="border border-gray-400 px-4 py-2">4</td>
-                        <td class="border border-gray-400 px-4 py-2">Tidak Hadir Tanpa Keterangan</td>
+                        <td class="border border-gray-400 px-4 py-2">Tidak Hadir (Alpha)</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $maksimumAlpha }} Hari</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $realisasiAlpha }} Hari</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $bobotAlpha }}</td>
@@ -211,34 +203,27 @@
                     </tr>
                 </tbody>
                 <tfoot>
-                    <tr class="font-bold">
+                    <tr class="text-center font-bold">
                         <td colspan="4" class="border-none"></td>
                         <td class="border border-gray-400 px-4 py-2">Total Nilai Akhir</td>
                         <td class="border border-gray-400 px-4 py-2">{{ number_format($totalNilaiAkhir, 2, ',', '.') }}
                         </td>
                     </tr>
-                    <tr class="font-bold">
+                    <tr class="text-center font-bold">
                         <td colspan="4" class="border-none"></td>
-                        <td class="border border-gray-400 px-4 py-2">Kategori Penilaian</td>
+                        <td class="border border-gray-400 px-4 py-2">Kategori</td>
                         <td class="border border-gray-400 px-4 py-2">{{ $kategoriPenilaian }}</td>
                     </tr>
                 </tfoot>
             </table>
 
-            <div class="mt-8">
-                <div class="flex justify-end space-x-8">
-                    <div class="text-center">
-                        <p>Mengetahui,</p>
-                        <div class="relative h-24 w-48">
-                        </div>
-                        <p class="font-bold underline">Erlin Usnaharoh</p>
-                        <p class="font-semibold">HRD</p>
-                    </div>
-                </div>
+            <div class="mt-12 text-right">
+                <p>Mengetahui,</p>
+                <div class="h-24"></div>
+                <p class="font-bold underline">Erlin Usnaharoh</p>
+                <p class="font-semibold">HRD</p>
             </div>
         </div>
-
-
 
     </body>
 

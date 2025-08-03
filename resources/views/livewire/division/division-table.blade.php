@@ -5,6 +5,8 @@ use App\Models\Division;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Livewire\Volt\Component;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\RestoreAction;
@@ -60,6 +63,39 @@ new class extends Component implements HasForms, HasTable {
                 TrashedFilter::make()
             ])
             ->actions([
+                Action::make('exportKinerja')
+                    ->label('Export Kinerja')
+                    ->color('success')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->requiresConfirmation()
+                    ->modalIcon('heroicon-o-document-arrow-down')
+                    ->modalHeading('Export Kinerja Divisi')
+                    ->modalDescription('Pilih rentang tanggal yang akan export')
+                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalSubmitActionLabel('Export')
+                    ->form([
+                        Grid::make(2)->schema([
+                            DatePicker::make('start')
+                                ->label(false)
+                                ->placeholder('dari tanggal')
+                                ->native(false)
+                                ->displayFormat('d/m/Y')
+                                ->required()
+                                ->default(now()->subMonth()),
+
+                            DatePicker::make('end')->label(false)->placeholder('sampai tanggal')->native(false)->displayFormat('d/m/Y')->required()->default(now()),
+                        ]),
+                    ])
+                    ->action(function ($data, $record) {
+                        redirect(
+                            route('hrd.division.kinerja-divisi', [
+                                'division' => $record,
+                                'start' => $data['start'],
+                                'end' => $data['end'],
+                            ]),
+                        );
+                    }),
+
                 ActionGroup::make([
                     ViewAction::make()
                         ->color('info')

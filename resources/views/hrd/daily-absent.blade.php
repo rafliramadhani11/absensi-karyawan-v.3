@@ -8,11 +8,11 @@
         </h1>
     </div>
 
-    {{-- @if (!Auth::user()->is_hrd && !Auth::user()->is_admin)
+    @if (!Auth::user()->is_hrd && !Auth::user()->is_admin)
         <div wire:ignore class="mt-10">
             <div id="reader" width="10px" class="md:w-1/2 md:translate-x-1/2"></div>
         </div>
-    @endif --}}
+    @endif
 
     {{-- Session --}}
     <div class="mt-10">
@@ -45,7 +45,7 @@
 
     <livewire:user.user-qr-absent-daily-table />
 
-    {{-- <script src="{{ asset('js/html5-qrcode.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/html5-qrcode.min.js') }}" type="text/javascript"></script>
     <script>
         function onScanSuccess(decodedText, decodedResult) {
             window.location.href = decodedText;
@@ -65,6 +65,6 @@
             }
         }, false);
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-    </script> --}}
+    </script>
 
 </x-app-layout>

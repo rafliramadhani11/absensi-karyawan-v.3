@@ -52,6 +52,7 @@ class AttendanceController extends Controller
 
         return DB::transaction(function () use ($user, $time, $request) {
             $currentInterval = Carbon::now()->startOfMinute()->floorMinutes(1)->format('H:i');
+
             $attendance = Attendance::where('user_id', $user->id)
                 ->whereDate('created_at', today())
                 ->lockForUpdate()

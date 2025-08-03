@@ -9,10 +9,17 @@ use function Spatie\LaravelPdf\Support\pdf;
 
 class DivisionPdfController extends Controller
 {
-    public function __invoke(Division $division, $start, $end)
+    public function absensi(Division $division, $start, $end)
     {
         return pdf()
             ->view('division.kinerja-pdf', compact('division', 'start', 'end'))
+            ->name('Kinerja Divisi ' . $division->name);
+    }
+
+    public function kinerja(Division $division, $start, $end)
+    {
+        return pdf()
+            ->view('division.kinerja-divisi-pdf', compact('division', 'start', 'end'))
             ->name('Kinerja Divisi ' . $division->name);
     }
 }

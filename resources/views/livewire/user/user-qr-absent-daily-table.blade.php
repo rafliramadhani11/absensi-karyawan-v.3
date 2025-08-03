@@ -5,6 +5,7 @@ use Filament\Forms\Get;
 use App\Models\Attendance;
 use Filament\Tables\Table;
 use Livewire\Volt\Component;
+use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
@@ -66,9 +67,13 @@ new class extends Component implements HasForms, HasTable {
                         return redirect(route('user.daily-absent'));
                     })
                     ->hidden(function (): bool {
-                        return Attendance::where('user_id', Auth::id())
+                        $exists = Attendance::where('user_id', Auth::id())
                             ->whereDate('created_at', today())
                             ->exists();
+
+                        $hrd = Auth::user()->is_hrd;
+
+                        return $exists || $hrd;
                     }),
             ])
             ->columns([
@@ -103,6 +108,13 @@ new class extends Component implements HasForms, HasTable {
                             'proses' => 'icon-timer',
                         },
                     )
+                    ->description(function (Attendance $record) {
+                        if ($record->status === 'izin') {
+                            $url = Storage::url($record->surat_keterangan);
+                            $link = "<a href='{$url}' target='_blank' class='text-xs text-white hover:underline'>Lihat Surat Izin</a>";
+                            return new HtmlString($link);
+                        }
+                    })
                     ->sortable(),
             ])
             ->actions([

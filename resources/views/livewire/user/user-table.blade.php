@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\DeleteAction;
@@ -47,41 +48,62 @@ new class extends Component implements HasTable, HasForms {
             ->paginated([5, 8, 10, 25, 50, 100, 'all'])
             ->defaultPaginationPageOption(8)
             ->searchPlaceholder('Nik, Name, Email ...')
-            ->columns([
-                TextColumn::make('index')
-                    ->label('#')
-                    ->rowIndex(),
-                TextColumn::make('nik')
-                    ->copyable()
-                    ->searchable(),
-                TextColumn::make('name')
-                    ->copyable()
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('email')
-                    ->copyable()
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('gender')
-                    ->label('Jenis Kelamin')
-                    ->sortable()
-            ])
+            ->columns([TextColumn::make('index')->label('#')->rowIndex(), TextColumn::make('nik')->copyable()->searchable(), TextColumn::make('name')->copyable()->searchable()->sortable(), TextColumn::make('email')->copyable()->searchable()->sortable(), TextColumn::make('gender')->label('Jenis Kelamin')->sortable()])
             ->defaultSort('created_at', 'desc')
             ->filters([TrashedFilter::make()])
             ->actions([
-                Action::make('export')
-                    ->label('Export Absensi')
-                    ->color('success')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->requiresConfirmation()
-                    ->modalIcon('heroicon-o-document-arrow-down')
-                    ->modalHeading('Export Absensi Karyawan')
-                    ->modalDescription('Pilih rentang tanggal yang akan export')
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->modalSubmitActionLabel('Export')
-                    ->form([
-                        Grid::make(2)
-                            ->schema([
+                ActionGroup::make([
+                    Action::make('exportSalary')
+                        ->label('Export Salary')
+                        ->color('success')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->requiresConfirmation()
+                        ->modalIcon('heroicon-o-document-arrow-down')
+                        ->modalHeading('Export Salary Karyawan')
+                        ->modalDescription('Pilih rentang tanggal yang akan export')
+                        ->modalWidth(MaxWidth::ExtraLarge)
+                        ->modalSubmitActionLabel('Export')
+                        ->form([
+                            Grid::make(2)->schema([
+                                DatePicker::make('start')
+                                    ->label(false)
+                                    ->placeholder('dari tanggal')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->default(now()->startOfYear()),
+
+                                DatePicker::make('end')
+                                    ->label(false)
+                                    ->placeholder('sampai tanggal')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->required()
+                                    ->default(now()->endOfYear()),
+                            ]),
+                        ])
+                        ->action(function ($data, $record) {
+                            redirect(
+                                route('hrd.user-salaries.pdf', [
+                                    'user' => $record,
+                                    'start' => $data['start'],
+                                    'end' => $data['end'],
+                                ]),
+                            );
+                        }),
+
+                    Action::make('export')
+                        ->label('Export Absensi')
+                        ->color('success')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->requiresConfirmation()
+                        ->modalIcon('heroicon-o-document-arrow-down')
+                        ->modalHeading('Export Absensi Karyawan')
+                        ->modalDescription('Pilih rentang tanggal yang akan export')
+                        ->modalWidth(MaxWidth::ExtraLarge)
+                        ->modalSubmitActionLabel('Export')
+                        ->form([
+                            Grid::make(2)->schema([
                                 DatePicker::make('start')
                                     ->label(false)
                                     ->placeholder('dari tanggal')
@@ -90,36 +112,31 @@ new class extends Component implements HasTable, HasForms {
                                     ->required()
                                     ->default(now()->subMonth()),
 
-                                DatePicker::make('end')
-                                    ->label(false)
-                                    ->placeholder('sampai tanggal')
-                                    ->native(false)
-                                    ->displayFormat('d/m/Y')
-                                    ->required()
-                                    ->default(now())
-                            ])
-                    ])->action(function ($data, $record) {
+                                DatePicker::make('end')->label(false)->placeholder('sampai tanggal')->native(false)->displayFormat('d/m/Y')->required()->default(now()),
+                            ]),
+                        ])
+                        ->action(function ($data, $record) {
+                            redirect(
+                                route('hrd.employee.kinerja', [
+                                    'user' => $record,
+                                    'start' => $data['start'],
+                                    'end' => $data['end'],
+                                ]),
+                            );
+                        }),
 
-                        redirect(route('hrd.employee.kinerja', [
-                            'user' => $record,
-                            'start' => $data['start'],
-                            'end' => $data['end'],
-                        ]));
-                    }),
-
-                Action::make('exportKinerja')
-                    ->label('Export Kinerja')
-                    ->color('success')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->requiresConfirmation()
-                    ->modalIcon('heroicon-o-document-arrow-down')
-                    ->modalHeading('Export Kinerja Karyawan')
-                    ->modalDescription('Pilih rentang tanggal yang akan export')
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->modalSubmitActionLabel('Export')
-                    ->form([
-                        Grid::make(2)
-                            ->schema([
+                    Action::make('exportKinerja')
+                        ->label('Export Kinerja')
+                        ->color('success')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->requiresConfirmation()
+                        ->modalIcon('heroicon-o-document-arrow-down')
+                        ->modalHeading('Export Kinerja Karyawan')
+                        ->modalDescription('Pilih rentang tanggal yang akan export')
+                        ->modalWidth(MaxWidth::ExtraLarge)
+                        ->modalSubmitActionLabel('Export')
+                        ->form([
+                            Grid::make(2)->schema([
                                 DatePicker::make('start')
                                     ->label(false)
                                     ->placeholder('dari tanggal')
@@ -128,38 +145,34 @@ new class extends Component implements HasTable, HasForms {
                                     ->required()
                                     ->default(now()->subMonth()),
 
-                                DatePicker::make('end')
-                                    ->label(false)
-                                    ->placeholder('sampai tanggal')
-                                    ->native(false)
-                                    ->displayFormat('d/m/Y')
-                                    ->required()
-                                    ->default(now())
-                            ])
-                    ])->action(function ($data, $record) {
-                        redirect(route('hrd.employee.kinerja-karyawan', [
-                            'user' => $record,
-                            'start' => $data['start'],
-                            'end' => $data['end'],
-                        ]));
-                    }),
+                                DatePicker::make('end')->label(false)->placeholder('sampai tanggal')->native(false)->displayFormat('d/m/Y')->required()->default(now()),
+                            ]),
+                        ])
+                        ->action(function ($data, $record) {
+                            redirect(
+                                route('hrd.employee.kinerja-karyawan', [
+                                    'user' => $record,
+                                    'start' => $data['start'],
+                                    'end' => $data['end'],
+                                ]),
+                            );
+                        }),
+                ])
+                    ->button()
+                    ->color('success')
+                    ->icon('heroicon-o-ellipsis-horizontal')
+                    ->label('Export Actions')
+                    ->iconPosition(IconPosition::After),
+
 
                 ActionGroup::make([
-                    EditAction::make()
-                        ->label('Detail')
-                        ->icon('heroicon-o-eye')
-                        ->color('info')
-                        ->url(fn($record) => route('hrd.employee.edit', $record)),
+                    EditAction::make()->label('Detail')->icon('heroicon-o-eye')->color('info')->url(fn($record) => route('hrd.employee.edit', $record)),
 
                     DeleteAction::make()
                         ->icon('heroicon-o-archive-box-arrow-down')
                         ->requiresConfirmation()
                         ->modalIcon('heroicon-o-archive-box-arrow-down')
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Successfully delete user')
-                        )
+                        ->successNotification(Notification::make()->success()->title('Successfully delete user'))
                         ->after(function () {
                             $this->dispatch('user-updated');
                         }),
@@ -189,11 +202,7 @@ new class extends Component implements HasTable, HasForms {
                         ->modalIcon('heroicon-o-archive-box-arrow-down')
                         ->requiresConfirmation()
 
-                        ->successNotification(
-                            Notification::make()
-                                ->success()
-                                ->title('Succesfully delete selected user.')
-                        )
+                        ->successNotification(Notification::make()->success()->title('Succesfully delete selected user.'))
                         ->after(function () {
                             $this->dispatch('user-updated');
                         }),
@@ -206,10 +215,7 @@ new class extends Component implements HasTable, HasForms {
                         ->action(function (Collection $records) {
                             $records->each->forceDelete();
 
-                            Notification::make()
-                                ->success()
-                                ->title('Succesfully force delete selected user.')
-                                ->send();
+                            Notification::make()->success()->title('Succesfully force delete selected user.')->send();
 
                             $this->redirect(url()->previous());
                         })
@@ -223,10 +229,9 @@ new class extends Component implements HasTable, HasForms {
                             $this->dispatch('user-updated');
                         }),
                 ]),
-            ])->selectCurrentPageOnly();
+            ])
+            ->selectCurrentPageOnly();
     }
-
-
 
     public function placeholder()
     {

@@ -37,6 +37,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Components\Grid as ComponentsGrid;
+use Filament\Tables\Actions\DeleteBulkAction;
 
 new class extends Component implements HasForms, HasInfolists, HasTable {
     use InteractsWithForms, InteractsWithInfolists, InteractsWithTable;
@@ -381,6 +382,9 @@ new class extends Component implements HasForms, HasInfolists, HasTable {
                         ->requiresConfirmation()
                 ])->icon('heroicon-o-ellipsis-horizontal')
                     ->iconButton()
+            ])
+            ->bulkActions([
+                DeleteBulkAction::make()
             ]);
     }
 

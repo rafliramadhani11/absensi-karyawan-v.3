@@ -41,6 +41,6 @@ class DatabaseSeeder extends Seeder
 
         // Division::factory(3)->create();
         // User::factory(1)->create();
-        Attendance::factory(200)->create();
+        Attendance::factory(100)->create();
     }
 }
