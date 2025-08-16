@@ -3,7 +3,7 @@
         {!! QrCode::size(200)->margin(2)->generate(
                 route('user.absen-pulang', [
                     'userId' => $getRecord()->id,
-                    'time' => Carbon\Carbon::now()->startOfMinute()->floorMinutes(10)->format('H:i'),
+                    'time' => Carbon\Carbon::now()->startOfMinute()->floorMinutes(5)->format('H:i'),
                 ]),
             ) !!}
     </div>
