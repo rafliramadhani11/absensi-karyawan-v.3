@@ -119,7 +119,7 @@
 
                 $gajiPerHadir = 200000;
                 $potonganIzin = 10000;
-                $potonganAlpha = 20000;
+                $potonganAlpha = 100000;
             @endphp
 
             <table class="w-full border-collapse border border-gray-400 text-left">
