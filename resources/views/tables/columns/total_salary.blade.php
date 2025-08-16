@@ -18,7 +18,7 @@
 
     $hadirSalary = 200000 * $hadir;
     $izinSalary = 10000 * $izin;
-    $tidakHadirSalary = 20000 * $tidakHadir;
+    $tidakHadirSalary = 100000 * $tidakHadir;
 
     $totalSalary = $hadirSalary - $izinSalary - $tidakHadirSalary;
 @endphp

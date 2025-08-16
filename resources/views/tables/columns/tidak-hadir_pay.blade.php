@@ -11,7 +11,7 @@
         ->whereYear('created_at', $yearFilter)
         ->count();
 
-    $tidakHadir_pay = $totalTidak_hadir * 20000;
+    $tidakHadir_pay = $totalTidak_hadir * 100000;
 @endphp
 <div class="ms-3">
     Rp. - {{ number_format($tidakHadir_pay, 0, ',', '.') }}
