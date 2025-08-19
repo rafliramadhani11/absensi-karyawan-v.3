@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="UTF-8">
-        <title>Total Penggajian karyawan</title>
+        <title>Slip Gaji Karyawan</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap');
@@ -70,7 +70,7 @@
         </style>
     </head>
 
-    <body class="">
+    <body class="p-4">
         <div class="w-full">
             <header class="mb-6 border-b-4 border-black p-4 pb-4">
                 <div class="flex items-center justify-between">
@@ -89,120 +89,132 @@
                     Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12550</p>
             </header>
 
-            <h2 class="mb-5 text-center text-xl font-bold">
-                LAPORAN PENGGAJIAN KARYAWAN <br>
-                Periode {{ \Carbon\Carbon::parse($start)->translatedFormat('j F Y') }} -
-                {{ \Carbon\Carbon::parse($end)->translatedFormat('j F Y') }}
-            </h2>
+            <!-- Header Info -->
+            <div class="mb-6 flex justify-between">
+                <div>
+                    <p>Nik &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ $user->nik }}</p>
+                    <p>Periode Gaji: {{ \Carbon\Carbon::parse($start)->translatedFormat('j F Y') }} -
+                        {{ \Carbon\Carbon::parse($end)->translatedFormat('j F Y') }}</p>
+                </div>
+                <div>
+                    <p>Nama &nbsp;: {{ $user->name }}</p>
+                    <p>Divisi &nbsp;: {{ $user->division->name }}</p>
+                </div>
+            </div>
 
             @php
-                $attendances = \App\Models\Attendance::with('user')
-                    ->where('user_id', $user->id)
+                use Carbon\Carbon;
+                use Illuminate\Support\Facades\Auth;
+
+                // User & periode
+                $user = $user ?? Auth::user();
+                $periodeLabel =
+                    Carbon::parse($start)->isSameMonth(Carbon::parse($end)) &&
+                    Carbon::parse($start)->isSameYear(Carbon::parse($end))
+                        ? Carbon::parse($start)->translatedFormat('F Y')
+                        : Carbon::parse($start)->translatedFormat('F Y') .
+                            ' - ' .
+                            Carbon::parse($end)->translatedFormat('F Y');
+
+                // Ambil absensi dalam rentang
+                $records = \App\Models\Attendance::where('user_id', $user->id)
                     ->whereBetween('created_at', [$start, $end])
                     ->get();
 
-                $groupedByUser = $attendances->groupBy('user_id');
+                // Hitung status
+                $hadir = $records->where('status', 'hadir')->count();
+                $izin = $records->where('status', 'izin')->count();
+                $alpha = $records->where('status', 'tidak hadir')->count();
 
-                $grandTotalHadir = 0;
-                $grandTotalIzin = 0;
-                $grandTotalAlpha = 0;
-                $grandTotalGajiHadir = 0;
-                $grandTotalPotonganIzin = 0;
-                $grandTotalPotonganAlpha = 0;
-                $grandTotalGajiBersih = 0;
+                // Rate (silakan ubah sesuai kebijakanmu)
+                $rateHarian = 200000; // gaji per hadir
+                $ratePotIzin = 20000; // potongan per izin
+                $ratePotAlpha = 100000; // potongan per tidak hadir
+                $bonus = $bonus ?? 0; // opsional dikirim dari controller
 
-                $gajiPerHadir = 200000;
-                $potonganIzin = 10000;
-                $potonganAlpha = 100000;
+                // Perhitungan
+                $gajiPokok = $hadir * $rateHarian;
+                $totalPendapatan = $gajiPokok + $bonus;
+
+                $totalPotonganIzin = $izin * $ratePotIzin;
+                $totalPotonganAlpha = $alpha * $ratePotAlpha;
+                $totalPengurangan = $totalPotonganIzin + $totalPotonganAlpha;
+
+                $gajiBersih = $totalPendapatan - $totalPengurangan;
+
+                // helper format
+                $rp = fn($n) => 'Rp' . number_format($n, 0, ',', '.');
             @endphp
 
-            <table class="w-full border-collapse border border-gray-400 text-left">
+            <!-- Main Salary Table -->
+            <table class="mb-10 w-full border-collapse border-black text-sm">
                 <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border border-gray-400 px-4 py-2">Bulan</th>
-                        <th class="border border-gray-400 px-4 py-2">Nama Karyawan</th>
-                        <th class="border border-gray-400 px-4 py-2">Hadir</th>
-                        <th class="border border-gray-400 px-4 py-2">Izin</th>
-                        <th class="border border-gray-400 px-4 py-2">Tidak Hadir</th>
-                        <th class="border border-gray-400 px-4 py-2">Gaji Hadir</th>
-                        <th class="border border-gray-400 px-4 py-2">Potongan Izin</th>
-                        <th class="border border-gray-400 px-4 py-2">Potongan Tdk Hadir</th>
-                        <th class="border border-gray-400 px-4 py-2">Total Gaji</th>
+                    <tr>
+                        <th class="w-1/4 border border-black p-2 text-center">PENDAPATAN</th>
+                        <th class="w-1/4 border border-black p-2 text-center">AMOUNT</th>
+                        <th class="w-1/4 border border-black p-2 text-center">PENGURANGAN</th>
+                        <th class="w-1/4 border border-black p-2 text-center">AMOUNT</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($groupedByUser as $userId => $userAttendances)
-                        @php
-                            $user = $userAttendances->first()->user;
-
-                            // ====================================================== //
-                            // BAGIAN PERBAIKAN: TAMBAHKAN ->sortKeys() DI SINI        //
-                            // ====================================================== //
-                            $monthlyRecords = $userAttendances
-                                ->groupBy(function ($item) {
-                                    return \Carbon\Carbon::parse($item->created_at)->format('Y-m');
-                                })
-                                ->sortKeys(); // <-- Mengurutkan bulan secara kronologis
-
-                        @endphp
-
-                        @foreach ($monthlyRecords as $month => $records)
-                        @php
-                            $hadir = $records->where('status', 'hadir')->count();
-                            $izin = $records->where('status', 'izin')->count();
-                            $alpha = $records->where('status', 'tidak hadir')->count();
-                            $gajiHadir = $hadir * $gajiPerHadir;
-                            $potIzin = $izin * $potonganIzin;
-                            $potAlpha = $alpha * $potonganAlpha;
-                            $totalGaji = $gajiHadir - $potIzin - $potAlpha;
-                            $grandTotalHadir += $hadir;
-                            $grandTotalIzin += $izin;
-                            $grandTotalAlpha += $alpha;
-                            $grandTotalGajiHadir += $gajiHadir;
-                            $grandTotalPotonganIzin += $potIzin;
-                            $grandTotalPotonganAlpha += $potAlpha;
-                            $grandTotalGajiBersih += $totalGaji;
-                        @endphp
-                        <tr>
-                            <td class="px-4 py-2 border border-gray-400">{{ \Carbon\Carbon::createFromFormat('Y-m', $month)->translatedFormat('F Y') }}</td>
-                            <td class="px-4 py-2 border border-gray-400">{{ $user->name }}</td>
-                            <td class="px-4 py-2 border border-gray-400">{{ $hadir }}</td>
-                            <td class="px-4 py-2 border border-gray-400">{{ $izin }}</td>
-                            <td class="px-4 py-2 border border-gray-400">{{ $alpha }}</td>
-                            <td class="px-4 py-2 border border-gray-400">Rp{{ number_format($gajiHadir, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 border border-gray-400">Rp{{ number_format($potIzin, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 border border-gray-400">Rp{{ number_format($potAlpha, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 border border-gray-400">Rp{{ number_format($totalGaji, 0, ',', '.') }}</td>
-                        </tr> @endforeach
-                    @empty
-                        <tr>
-                            <td colspan="10">Tidak ada data absensi pada rentang tanggal ini.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-                <tfoot>
-                    <tr class="bg-gray-200 font-bold">
-                        <td colspan="2" class="text-right">TOTAL KESELURUHAN</td>
-                        <td>{{ $grandTotalHadir }}</td>
-                        <td>{{ $grandTotalIzin }}</td>
-                        <td>{{ $grandTotalAlpha }}</td>
-                        <td class="text-right">Rp{{ number_format($grandTotalGajiHadir, 0, ',', '.') }}</td>
-                        <td class="text-right">Rp{{ number_format($grandTotalPotonganIzin, 0, ',', '.') }}</td>
-                        <td class="text-right">Rp{{ number_format($grandTotalPotonganAlpha, 0, ',', '.') }}</td>
-                        <td class="text-right">Rp{{ number_format($grandTotalGajiBersih, 0, ',', '.') }}</td>
+                    <tr>
+                        <td class="border border-black p-2">GAJI POKOK</td>
+                        <td class="border border-black p-2 text-center">
+                            Rp{{ number_format($gajiPokok ?? 0, 0, ',', '.') }}
+                        </td>
+                        <td class="border border-black p-2">IZIN ({{ $izin ?? 0 }}x)</td>
+                        <td class="border border-black p-2 text-center">
+                            Rp{{ number_format($totalPotonganIzin ?? 0, 0, ',', '.') }}
+                        </td>
                     </tr>
-                </tfoot>
+                    <tr>
+                        <td class="border border-black p-2">BONUS</td>
+                        <td class="border border-black p-2 text-center">
+                            {{ $bonus ?? 0 ? 'Rp' . number_format($bonus, 0, ',', '.') : '-' }}
+                        </td>
+                        <td class="border border-black p-2">TIDAK HADIR ({{ $alpha ?? 0 }}x)</td>
+                        <td class="border border-black p-2 text-center">
+                            Rp{{ number_format($totalPotonganAlpha ?? 0, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr class="font-bold">
+                        <td class="border border-black p-2 uppercase">TOTAL PENDAPATAN</td>
+                        <td class="border border-black p-2 text-center">
+                            Rp{{ number_format(($gajiPokok ?? 0) + ($bonus ?? 0), 0, ',', '.') }}
+                        </td>
+                        <td class="border border-black p-2 uppercase">TOTAL PENGURANGAN</td>
+                        <td class="border border-black p-2 text-center">
+                            Rp{{ number_format(($totalPotonganIzin ?? 0) + ($totalPotonganAlpha ?? 0), 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr class="font-bold">
+                        <td class="border border-black p-2 uppercase">GAJI BERSIH</td>
+                        <td class="p-2" style="border-right:none;"></td> {{-- kosong tanpa border --}}
+                        <td class="p-2" style="border-left:none;"></td> {{-- kosong tanpa border --}}
+                        <td class="border border-black p-2 text-center">
+                            Rp{{ number_format(
+                                ($gajiPokok ?? 0) + ($bonus ?? 0) - (($totalPotonganIzin ?? 0) + ($totalPotonganAlpha ?? 0)),
+                                0,
+                                ',',
+                                '.',
+                            ) }}
+                        </td>
+                    </tr>
+                </tbody>
             </table>
 
-            <div class="mt-8">
-                <div class="flex justify-end space-x-8">
-                    <div class="text-center">
-                        <p>Mengetahui,</p>
-                        <div class="relative h-16 w-48">
-                        </div>
-                        <p class="font-bold underline">Erlin Usnaharoh</p>
-                        <p class="font-semibold">HRD</p>
-                    </div>
+            <!-- Tanda Tangan -->
+            <div class="mt-16 flex justify-between">
+                <div class="text-center">
+                    <p>MENGETAHUI</p>
+                    <div class="h-20"></div>
+                    <p class="font-bold">ERLIN USNAHAROH</p>
+                    <p>HRD</p>
+                </div>
+                <div class="text-center">
+                    <p>MENGETAHUI</p>
+                    <div class="h-20"></div>
+                    <p class="font-bold uppercase">{{ $user->name }}</p>
                 </div>
             </div>
         </div>

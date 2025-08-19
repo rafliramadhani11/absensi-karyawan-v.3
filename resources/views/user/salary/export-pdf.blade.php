@@ -70,7 +70,7 @@
         </style>
     </head>
 
-    <body class="">
+    <body>
         <div class="w-full">
             <header class="mb-6 border-b-4 border-black p-4 pb-4">
                 <div class="flex items-center justify-between">

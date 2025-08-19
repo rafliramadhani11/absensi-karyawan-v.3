@@ -38,6 +38,9 @@ class LoginForm extends Component implements HasForms
                     ->password()
                     ->revealable()
                     ->required()
+                    ->hint(
+                        str('[Forgotten your password?](/forgot-password)')->inlineMarkdown()->toHtmlString()
+                    )
             ])
             ->statePath('data');
     }

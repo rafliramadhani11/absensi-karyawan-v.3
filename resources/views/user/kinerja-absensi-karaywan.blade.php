@@ -226,7 +226,13 @@
             </table>
 
             <div class="mt-8">
-                <div class="flex justify-end space-x-8">
+                <div class="flex justify-between space-x-8">
+                    <div>
+                        <p>Sangat Disiplin > 95</p>
+                        <p>Disiplin > 80</p>
+                        <p>Kurang Disiplin > 60</p>
+                        <p>Tidak Disiplin < 60 </p>
+                    </div>
                     <div class="text-center">
                         <p>Mengetahui,</p>
                         <div class="relative h-24 w-48">
