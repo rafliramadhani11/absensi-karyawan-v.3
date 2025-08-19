@@ -124,39 +124,6 @@ new class extends Component implements HasTable, HasForms {
                                 ]),
                             );
                         }),
-
-                    Action::make('exportKinerja')
-                        ->label('Export Kinerja')
-                        ->color('success')
-                        ->icon('heroicon-o-document-arrow-down')
-                        ->requiresConfirmation()
-                        ->modalIcon('heroicon-o-document-arrow-down')
-                        ->modalHeading('Export Kinerja Karyawan')
-                        ->modalDescription('Pilih rentang tanggal yang akan export')
-                        ->modalWidth(MaxWidth::ExtraLarge)
-                        ->modalSubmitActionLabel('Export')
-                        ->form([
-                            Grid::make(2)->schema([
-                                DatePicker::make('start')
-                                    ->label(false)
-                                    ->placeholder('dari tanggal')
-                                    ->native(false)
-                                    ->displayFormat('d/m/Y')
-                                    ->required()
-                                    ->default(now()->subMonth()),
-
-                                DatePicker::make('end')->label(false)->placeholder('sampai tanggal')->native(false)->displayFormat('d/m/Y')->required()->default(now()),
-                            ]),
-                        ])
-                        ->action(function ($data, $record) {
-                            redirect(
-                                route('hrd.employee.kinerja-karyawan', [
-                                    'user' => $record,
-                                    'start' => $data['start'],
-                                    'end' => $data['end'],
-                                ]),
-                            );
-                        }),
                 ])
                     ->button()
                     ->color('success')
