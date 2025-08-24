@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Attendance::class);
     }
+
+    public function cutis(): HasMany
+    {
+        return $this->hasMany(Cuti::class);
+    }
 }

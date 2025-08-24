@@ -18,6 +18,22 @@ new class extends Component implements HasForms, HasActions {
     use InteractsWithForms, InteractsWithActions;
     public $user;
 
+    public function exportCuti(): Action
+    {
+        return Action::make('exportCuti')
+            ->label('Export Cuti')
+            ->color('success')
+            ->icon('heroicon-o-document-arrow-down')
+            ->action(function () {
+                redirect(
+                    route('hrd.user-cuti.pdf', [
+                        'user' => $this->user,
+                    ]),
+                );
+            })
+        ;
+    }
+
     public function deleteAction(): Action
     {
         return Action::make('delete')
@@ -129,6 +145,7 @@ new class extends Component implements HasForms, HasActions {
 ?>
 
 <div class="space-x-3">
+    {{ $this->exportCuti }}
     {{ $this->exportSalary }}
     {{ $this->exportAction }}
     {{ $this->deleteAction }}

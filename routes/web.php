@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', fn() => view('hrd.employee.index'))
                     ->name('hrd.employee.index');
 
-                Route::get('/kinerja/{start}/{end}', PdfControllerAllEmployee::class)
+                Route::get('/kinerja/{start}/{end}', [PdfControllerAllEmployee::class, 'pdf'])
                     ->name('hrd.employee.kinerja-all-employee');
 
                 Route::get('/create', fn() => view('hrd.employee.create'))
@@ -76,6 +76,12 @@ Route::middleware('auth')->group(function () {
 
                 Route::get('/salaries/export-pdf/{user}/{start}/{end}', [PdfHRDSalaryController::class, 'userSalaries'])
                     ->name('hrd.user-salaries.pdf');
+
+                Route::get('/cuti', fn() => view('hrd.user-cuti'))
+                    ->name('hrd.user-cuti.index');
+
+                Route::get('/cuti/{user}', [PdfControllerAllEmployee::class, 'cutiPdf'])
+                    ->name('hrd.user-cuti.pdf');
             });
 
             // Attendances
@@ -120,6 +126,10 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/attendances/kinerja/{start}/{end}', [UserController::class, 'exportAttendances'])
                 ->name('user.kinerja.export');
+
+            // Cuti
+            Route::get('/cutis', fn() => view('user.cuti.index'))
+                ->name('user.cuti.index');
         });
     });
 });

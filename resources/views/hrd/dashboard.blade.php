@@ -11,6 +11,7 @@
 
         @livewire(App\Livewire\StatsOverview::class)
         @livewire(App\Livewire\AttendancesChart::class)
+        @livewire(App\Livewire\KinerjaAbsensiChart::class)
 
     </div>
 </x-app-layout>

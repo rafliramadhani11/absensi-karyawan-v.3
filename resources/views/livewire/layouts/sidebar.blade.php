@@ -122,6 +122,20 @@
                                         </div>
                                     </x-nav-link>
                                 </li>
+
+                                <li>
+                                    <x-nav-link :href="Auth::user()->is_hrd
+                                        ? route('hrd.user-cuti.index')
+                                        : route('user.cuti.index')" :active="Auth::user()->is_hrd
+                                        ? request()->routeIs('hrd.user-cuti.index*')
+                                        : request()->routeIs('user.cuti.index*')">
+                                        <div class="flex">
+                                            <x-filament::icon icon="icon-calendar-check-2"
+                                                class="me-3 h-5 w-5 text-theme dark:text-darkTheme" />
+                                            Cuti
+                                        </div>
+                                    </x-nav-link>
+                                </li>
                             </ul>
                         </li>
                     @endif

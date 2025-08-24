@@ -3,14 +3,17 @@
 use Carbon\Carbon;
 use Filament\Forms\Get;
 use App\Models\Attendance;
+use App\Models\Cuti;
 use Filament\Tables\Table;
 use Livewire\Volt\Component;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
 use Filament\Support\Enums\Alignment;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -44,7 +47,45 @@ new class extends Component implements HasForms, HasTable {
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(8)
             ->headerActions([
-                CreateAction::make()
+                CreateAction::make('ajukanCuti')
+                    ->label('Ajukan Cuti')
+                    ->form([
+                        Grid::make(2)
+                            ->schema([
+                                DatePicker::make('start_date')
+                                    ->label('Tanggal Mulai')
+                                    ->required(),
+                                DatePicker::make('end_date')
+                                    ->label('Tanggal Selesai')
+                                    ->required()
+                                    ->after('start_date'),
+                            ]),
+                        Select::make('type')
+                            ->label('Jenis Cuti')
+                            ->options([
+                                'Tahunan' => 'Cuti Tahunan',
+                                'Sakit' => 'Cuti Sakit',
+                                'Melahirkan' => 'Cuti Melahirkan',
+                            ])
+                            ->native(false)
+                            ->required(),
+                        Textarea::make('reason')
+                            ->label('Alasan Cuti')
+                            ->required()
+                            ->rows(3),
+                    ])
+                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->using(function ($data) {
+                        return Cuti::create([
+                            'user_id' => Auth::user()->id,
+                            'start_date' => $data['start_date'],
+                            'end_date' => $data['end_date'],
+                            'type' => $data['type'],
+                            'reason' => $data['reason'],
+                        ]);
+                    }),
+
+                CreateAction::make('izinAbsen')
                     ->label('Izin Absen')
                     ->color('warning')
                     ->form([
@@ -74,7 +115,7 @@ new class extends Component implements HasForms, HasTable {
                         $hrd = Auth::user()->is_hrd;
 
                         return $exists || $hrd;
-                    }),
+                    })
             ])
             ->columns([
                 TextColumn::make('index')->label('#')->rowIndex(),
